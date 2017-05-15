@@ -1,7 +1,9 @@
-#export ZPLUG_HOME="~/.config/zplug"
+export ZPLUG_HOME="$HOME/.zplug"
 
 if [ ! -f ~/.zplug/init.zsh ]; then
-  curl -sL --proto-redir -all,https https://zplug.sh/installer | zsh
+  echo "install zplug"
+  git clone https://github.com/zplug/zplug $ZPLUG_HOME
+#  curl -sL --proto-redir -all,https https://zplug.sh/installer | zsh
 fi
 source ~/.zplug/init.zsh
 
@@ -50,7 +52,7 @@ export GOPATH="$HOME/workspace/go"
 export FZF_DEFAULT_COMMAND='ag -l -g ""' # Use ag as the default source for fzf
 #export LANG=en_US.UTF-8
 #export GHQ_ROOT='~/workspace/prj'
-export PATH=$GOROOT/bin:$PATH
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
 #if zplug check zsh-users/zsh-autosuggestions; then
 #    echo "test"

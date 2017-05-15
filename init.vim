@@ -81,7 +81,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 "Plug 'zchee/deoplete-go', { 'do': 'make'}
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'zchee/deoplete-jedi'
 Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
