@@ -34,7 +34,7 @@ zplug "sindresorhus/pure"
 zplug "~/.zsh", from:local, if:"[ -d ~/.zsh ]"
 
 # Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
+if ! zplug check; then
     printf "Install? [y/N]: "
     if read -q; then
         echo; zplug install
@@ -42,7 +42,7 @@ if ! zplug check --verbose; then
 fi
 
 # Then, source plugins and add commands to $PATH
-zplug load --verbose
+zplug load
 
 alias vi='nvim'
 alias ls='ls --color'
@@ -74,6 +74,9 @@ mkcscope() {
 if [ -z "$HISTFILE" ]; then
     HISTFILE=$HOME/.zsh_history
 fi
+
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
 
 HISTSIZE=10000
 SAVEHIST=10000
