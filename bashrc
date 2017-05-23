@@ -46,9 +46,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export EDITOR=vim
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+[ -f "$HOME"/.export.sh ] && source "$HOME"/.export.sh
 
 # Prompt
 # --------------------------------------------------------------------
@@ -69,11 +67,6 @@ else
   PS1="$PS1\[\e[m\]\w\[\e[1;31m\]> \[\e[0m\]"
 fi
 
-
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
-# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND | with-dir"
-export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 command -v blsd > /dev/null && export FZF_ALT_C_COMMAND='blsd'
 command -v tree > /dev/null && export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
@@ -323,6 +316,3 @@ mkcscope() {
 }
 
 [ -f $HOME/.agignore ] && alias ag='ag --path-to-agignore ~/.agignore'
-
-export GOPATH=~/workspace/go
-export PATH=$PATH:$GOPATH/bin

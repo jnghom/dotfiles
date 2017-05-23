@@ -44,20 +44,11 @@ fi
 # Then, source plugins and add commands to $PATH
 zplug load
 
-[ -f $HOME/.sh_aliases ] && source "$HOME/.sh_aliases"
+[ -f "$HOME/.export.sh" ] && source "$HOME/.export.sh"
 
-#export GOROOT=/usr/local/go
-export GOPATH="$HOME/workspace/go"
-export FZF_DEFAULT_COMMAND='ag -l -g ""' # Use ag as the default source for fzf
-#export LANG=en_US.UTF-8
-#export GHQ_ROOT='~/workspace/prj'
-export PATH=$GOROOT/bin:$GOPATH/bin:$HOME/.local/bin:$PATH
+[ -f "$HOME/.sh_aliases" ] && source "$HOME/.sh_aliases"
 
-#if zplug check zsh-users/zsh-autosuggestions; then
-#    echo "test"
-#fi
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 
 mkcscope() {
     rm -rf cscope.files cscope.files
