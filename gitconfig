@@ -1,0 +1,6 @@
+[user]
+	name = Jeongho Mok
+	email = jngho.m@gmail.com
+[core]
+	editor = nvim
+	excludesfile = ~/.gitignore
