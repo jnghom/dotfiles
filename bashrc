@@ -348,7 +348,12 @@ mkcscope() {
     cscope -i cscope.files
 }
 
-alias ag='ag --path-to-agignore ~/.agignore'
+[ -f $HOME/.agignore ] && alias ag='ag --path-to-agignore ~/.agignore'
+
+if command -v nvim >/dev/null ; then
+  alias vi="nvim"
+  alias vim="nvim"
+fi
 
 export GOPATH=~/workspace/go
 export PATH=$PATH:$GOPATH/bin
