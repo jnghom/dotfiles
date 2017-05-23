@@ -28,8 +28,6 @@ set tabstop=4
 set scrolloff=4
 set textwidth=80
 
-set encoding=utf-8
-set guifont=Consolas\ 10
 
 set laststatus=2
 set showtabline=2
@@ -65,7 +63,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'majutsushi/tagbar'
 "Plug 'Shougo/vimshell.vim'
 "Plug 'Shougo/vimfiler.vim'
-"Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
@@ -114,6 +112,10 @@ Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
 Plug 'lambdalisue/gina.vim'
 Plug 'jreybert/vimagit'
+Plug 'eagletmt/ghcmod-vim'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'ndmitchell/ghcid', { 'rtp': 'plugins/nvim' }
+Plug 'eagletmt/neco-ghc'
 "Plug 'OmniSharp/omnisharp-vim', { 'do': 'cd omnisharp-roslyn && ./build.sh' }
 "Plug 'astralhpi/deoplete-omnisharp'
 
@@ -347,8 +349,8 @@ let g:lightline = {
       \   'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
       \   'right': [ [ 'close' ], ],
       \ },
-      \ 'separator': { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' }
       \ }
 
 function! LightlineModified()
@@ -356,7 +358,7 @@ function! LightlineModified()
 endfunction
 
 function! LightlineReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '' : ''
 endfunction
 
 function! LightlineFilename()
@@ -371,7 +373,7 @@ endfunction
 function! LightlineFugitive()
   if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
     let branch = fugitive#head()
-    return branch !=# '' ? '⭠ '.branch : ''
+    return branch !=# '' ? ''.branch : ''
   endif
   return ''
 endfunction
@@ -393,7 +395,7 @@ function! LightlineMode()
 endfunction=
 
 " lightline-buffer settings
-let g:lightline_buffer_logo = ' '
+let g:lightline_buffer_logo = ''
 let g:lightline_buffer_readonly_icon = ''
 let g:lightline_buffer_modified_icon = '✭'
 let g:lightline_buffer_git_icon = ' '
@@ -524,3 +526,8 @@ nnoremap ]b :bnext<CR>
 nnoremap [b :bprev<CR>
 
 nnoremap M :Man<CR>
+
+""" for vim devicons
+set encoding=utf-8
+"set guifont=Consolas\ 10
+"set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
