@@ -1,4 +1,8 @@
-"== Basic ======================================================================
+
+" =======================================================================
+" Basic
+" =======================================================================
+
 syntax on
 syntax enable
 
@@ -34,22 +38,29 @@ set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
 set laststatus=2
 set showtabline=2
 
+set pastetoggle=<F2>
+set wildmode=longest,list,full
+set wildmenu
+
 let mapleader = ','
 let g:mapleader = ','
 
-"== Last Position ==============================================================
-autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
+" Colors
+set background=dark
+let g:seoul256_background = 236
 
-"== Easier split navigations ===================================================
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" Tags
+set tagstack
+set nocscopetag
 
-"== Plugins ====================================================================
+" Visual Characters
+set list
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
+set showbreak=↪
+
+" =======================================================================
+" Plugins
+" =======================================================================
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'junegunn/seoul256.vim'
@@ -127,26 +138,24 @@ Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
 Plug 'zchee/deoplete-clang', {'for': 'c'}
 Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-function' " af/if and aF/iF for a function / extensible
-Plug 'sgur/vim-textobj-parameter' " a,/i, : argument
-Plug 'kana/vim-textobj-indent' " ai/ii : similarly indent, aI/iI : same indent block
-Plug 'Julian/vim-textobj-variable-segment' " av/iv : _ or camelCase
-Plug 'kana/vim-textobj-line' " al/il : current line
+Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
+Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
+Plug 'kana/vim-textobj-indent'                 " ai/ii : similarly indent,   aI/iI : same indent block
+Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
+Plug 'kana/vim-textobj-line'                   " al/il : current line
+Plug 'kana/vim-textobj-entire'                 " ae/ie : entire region
 
 call plug#end()
 
-"== Colors =====================================================================
-set background=dark
-let g:seoul256_background = 236
 colo seoul256
 
-"== Tags =======================================================================
-set tagstack
-set nocscopetag
+" =======================================================================
+" Plugin Setting
+" =======================================================================
 
-"===============================================================================
+" -----------------------------------------------
 " Deoplete
-"===============================================================================
+" -----------------------------------------------
 
 let g:deoplete#enable_at_startup = 1
 
@@ -156,10 +165,9 @@ let g:deoplete#sources#clang#std#c = 'c11'
 let g:deoplete#sources#clang#std#cpp = 'c++1z'
 let g:deoplete#sources#clang#sort_algo = 'priority'
 
-"===============================================================================
+" -----------------------------------------------
 " Fugitive
-"===============================================================================
-
+" -----------------------------------------------
 nnoremap <Leader>gb :Gblame<cr>
 nnoremap <Leader>gc :Gcommit<cr>
 nnoremap <Leader>gd :Gdiff<cr>
@@ -170,9 +178,9 @@ nnoremap <Leader>gw :Gwrite<cr>
 " Quickly stage, commit, and push the current file. Useful for editing .vimrc
 nnoremap <Leader>gg :Gwrite<cr>:Gcommit -m 'update'<cr>:Git push<cr>
 
-"===============================================================================
+" -----------------------------------------------
 " FZF
-"===============================================================================
+" -----------------------------------------------
 
 command! -bang -nargs=* Agw call fzf#vim#ag(<q-args>, '-w', <bang>0)
 
@@ -218,36 +226,36 @@ function! SearchVisualSelectionWithAg() range
   execute 'Ag' selection
 endfunction
 
-"===============================================================================
+" -----------------------------------------------
 " GGtagsCscope
-"===============================================================================
+" -----------------------------------------------
 let GtagsCscope_Auto_Load = 0
 let GtagsCscope_Auto_Map = 0
 let GtagsCscope_Quiet = 0
 
-"===============================================================================
+" -----------------------------------------------
 " indent_guides
-"===============================================================================
+" -----------------------------------------------
 let g:indent_guides_enable_on_vim_startup = 0
 
-"===============================================================================
+" -----------------------------------------------
 " Gutentags
-"===============================================================================
+" -----------------------------------------------
 let g:gutentags_project_root = ['.mprj']
 let g:gutentags_add_default_project_roots = 1
 
-"===============================================================================
+" -----------------------------------------------
 " EasyAlign
-"===============================================================================
+" -----------------------------------------------
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-"===============================================================================
+" -----------------------------------------------
 " Lightline
-"===============================================================================
+" -----------------------------------------------
 let g:lightline = {
       \ 'colorscheme': 'seoul256',
       \ 'mode_map': { 'c': 'NORMAL' },
@@ -344,9 +352,11 @@ let g:lightline_buffer_maxfextlen = 3
 let g:lightline_buffer_minflen = 16
 let g:lightline_buffer_minfextlen = 3
 let g:lightline_buffer_reservelen = 20
-"===============================================================================
+
+
+" -----------------------------------------------
 " Cscope
-"===============================================================================
+" -----------------------------------------------
 function! LoadCscope()
   let db = findfile("cscope.out", ".;")
   if (!empty(db))
@@ -367,48 +377,50 @@ nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
-"===============================================================================
+" -----------------------------------------------
 " Ack
-"===============================================================================
+" -----------------------------------------------
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-"===============================================================================
+" -----------------------------------------------
 " Ultisnips
-"===============================================================================
+" -----------------------------------------------
 
-"===============================================================================
+" -----------------------------------------------
 " Tagbar
-"===============================================================================
-
+" -----------------------------------------------
 let g:tagbar_width = 60
 
-"===============================================================================
+" -----------------------------------------------
 " Rooter
-"===============================================================================
+" -----------------------------------------------
 let g:rooter_manual_only = 1
 let g:rooter_use_lcd = 1
-"===============================================================================
 "
-"===============================================================================
+" -----------------------------------------------
 " OmniSharp
-"===============================================================================
+" -----------------------------------------------
 let g:OmniSharp_server_type = 'v1'
 let g:OmniSharp_server_type = 'roslyn'
 
 let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
-"===============================================================================
 
+" -----------------------------------------------
+
+
+" =======================================================================
+" More Customization
+" =======================================================================
+
+" -----------------------------------------------
+"  Some conveniences
+" -----------------------------------------------
 nmap <F7> :SrcExplToggle<CR>
 nmap <F8> :TagbarToggle<CR>
 nmap <F9> :NERDTreeToggle<CR>
 
-set list
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
-set showbreak=↪
-
-" coming home to vim
 nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
 vnoremap <tab> %
@@ -418,12 +430,16 @@ au FocusLost * :wa
 
 highlight ExtraWhitespace ctermbg=52
 
-"strip all trailing whitespace
+" Strip all trailing whitespace
 nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
-"re-hardwrap paragraphs of text
+
+" Re-hardwrap paragraphs of text
 nnoremap <leader>q gqip
 
+" Open configuration file
 nnoremap <leader>ev <C-w><C-v><C-l>:e ~/.config/nvim/init.vim<cr>
+
+" Duplicate & Switch window
 nnoremap <leader>w <C-w>v<C-w>l
 
 " Open help vertically
@@ -432,20 +448,12 @@ autocmd FileType help wincmd L
 " <Leader>cd: Switch to the directory of the open buffer
 nnoremap <Leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Keep working directory same as file's
-" set autochdir
-"autocmd BufEnter * silent! lcd %:p:h
-
 " Clone Paragraph with cp
 noremap cp yap<S-}>p
 
-" Toggle Paste Mode
-"set pastetoggle=<leader>z
-set pastetoggle=<F2>
-
-set wildmode=longest,list,full
-set wildmenu
-
+" -----------------------------------------------
+"  Iterate tag, tab, buffer
+" -----------------------------------------------
 nnoremap tn :tnext<CR>
 nnoremap tp :tprev<CR>
 nnoremap ]n :tabnext<CR>
@@ -453,8 +461,9 @@ nnoremap [p :tabprev<CR>
 nnoremap ]b :bnext<CR>
 nnoremap [b :bprev<CR>
 
-nnoremap M :Man<CR>
-
+" -----------------------------------------------
+" Move Line/Block
+" -----------------------------------------------
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
 inoremap <A-j> <Esc>:m .+1<CR>==gi
@@ -462,8 +471,10 @@ inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
+" -----------------------------------------------
+"  Highlight Current Word
+" -----------------------------------------------
 set updatetime=750
-
 function! HighlightWordUnderCursor()
     if getline(".")[col(".")-1] !~# '\W'
         exec 'match' 'Search' '/\V\<'.expand('<cword>').'\>/'
@@ -473,3 +484,24 @@ function! HighlightWordUnderCursor()
 endfunction
 
 autocmd! CursorHold,CursorHoldI * call HighlightWordUnderCursor()
+
+" -----------------------------------------------
+" Restore Last Position
+" -----------------------------------------------
+autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+" -----------------------------------------------
+" Easier split navigations
+" -----------------------------------------------
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" -----------------------------------------------
+"  Man Page
+" -----------------------------------------------
+nnoremap M :Man<CR>
