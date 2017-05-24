@@ -144,10 +144,12 @@ Plug 'kana/vim-textobj-indent'                 " ai/ii : similarly indent,   aI/
 Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
 Plug 'kana/vim-textobj-line'                   " al/il : current line
 Plug 'kana/vim-textobj-entire'                 " ae/ie : entire region
+Plug 'terryma/vim-expand-region'               " K/J   : expand/shrink region
 
 call plug#end()
 
 colo seoul256
+
 
 " =======================================================================
 " Plugin Setting
@@ -195,8 +197,8 @@ nnoremap <silent> <space>?       :History<CR>
 nnoremap <silent> <space>hs      :History/<CR>
 nnoremap <silent> <space>hc      :History:<CR>
 nnoremap <silent> <space>/       :execute 'Ag ' . input('Ag/')<CR>
-nnoremap <silent> K              :call SearchWordWithAgW()<CR>
-vnoremap <silent> K              :call SearchVisualSelectionWithAg()<CR>
+nnoremap <silent> **              :call SearchWordWithAgW()<CR>
+vnoremap <silent> **              :call SearchVisualSelectionWithAg()<CR>
 nnoremap <silent> <space>C       :Commits<CR>
 nnoremap <silent> <space>c       :BCommits<CR>
 nnoremap <silent> <space>m       :FZFMru<CR>
@@ -247,7 +249,6 @@ let g:gutentags_add_default_project_roots = 1
 " -----------------------------------------------
 " EasyAlign
 " -----------------------------------------------
-
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
@@ -353,7 +354,6 @@ let g:lightline_buffer_minflen = 16
 let g:lightline_buffer_minfextlen = 3
 let g:lightline_buffer_reservelen = 20
 
-
 " -----------------------------------------------
 " Cscope
 " -----------------------------------------------
@@ -407,6 +407,11 @@ let g:OmniSharp_server_type = 'roslyn'
 
 let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
 
+" -----------------------------------------------
+" Expand region
+" -----------------------------------------------
+map K <Plug>(expand_region_expand)
+map J <Plug>(expand_region_shrink)
 " -----------------------------------------------
 
 
