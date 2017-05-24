@@ -52,10 +52,11 @@ nnoremap <C-H> <C-W><C-H>
 "== Plugins ====================================================================
 call plug#begin('~/.config/nvim/plugged')
 
+Plug 'junegunn/seoul256.vim'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-"Plug 'benekastah/neomake'
+Plug 'benekastah/neomake'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'sheerun/vim-polyglot'
@@ -63,29 +64,21 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-fugitive'
 Plug 'majutsushi/tagbar'
-"Plug 'Shougo/vimshell.vim'
-"Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
-"Plug 'Shougo/unite.vim'
-"Plug 'hewes/unite-gtags'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
-"Plug 'Shougo/unite-outline'
 Plug 'Shougo/neoyank.vim'
-"Plug 'Shougo/unite-build'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
-"Plug 'zchee/deoplete-go', { 'do': 'make'}
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'zchee/deoplete-jedi'
 Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
-"Plug 'guns/xterm-color-table.vim'
 Plug 'mhinz/vim-startify'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'Yggdroot/vim-mark'
@@ -95,14 +88,13 @@ Plug 'mhinz/vim-galore'
 Plug 'nhooyr/neoman.vim'
 Plug 'Shougo/neco-vim'
 Plug 'Shougo/neco-syntax'
-"Plug 'ryanss/vim-hackernews'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'ryanoasis/vim-devicons'
 Plug 'itchyny/lightline.vim'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'wesleyche/SrcExpl'
-"Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'mileszs/ack.vim'
@@ -114,14 +106,13 @@ Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
 Plug 'lambdalisue/gina.vim'
 Plug 'jreybert/vimagit'
-Plug 'eagletmt/ghcmod-vim'
-Plug 'neovimhaskell/haskell-vim'
-Plug 'ndmitchell/ghcid', { 'rtp': 'plugins/nvim' }
-Plug 'eagletmt/neco-ghc'
+Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
+Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
 Plug 'obxhdx/vim-auto-highlight'
-"Plug 'OmniSharp/omnisharp-vim', { 'do': 'cd omnisharp-roslyn && ./build.sh' }
-"Plug 'astralhpi/deoplete-omnisharp'
-
+Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs', 'frozen':1, 'do': 'cd omnisharp-roslyn && ./build.sh' }
+Plug 'astralhpi/deoplete-omnisharp', { 'for': 'cs', 'frozen':1 }
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 
 Plug 'KabbAmine/zeavim.vim', {'on': [
@@ -134,17 +125,14 @@ Plug 'KabbAmine/zeavim.vim', {'on': [
 Plug 'editorconfig/editorconfig-vim'
 Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
+Plug 'zchee/deoplete-clang', {'for': 'c'}
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-function' " af/if and aF/iF for a function / extensible
+Plug 'sgur/vim-textobj-parameter' " a,/i, : argument
+Plug 'kana/vim-textobj-indent' " ai/ii : similarly indent, aI/iI : same indent block
+Plug 'Julian/vim-textobj-variable-segment' " av/iv : _ or camelCase
+Plug 'kana/vim-textobj-line' " al/il : current line
 
-"" Colorschemes
-Plug 'romainl/Apprentice'
-Plug 'junegunn/seoul256.vim'
-Plug 'morhetz/gruvbox'
-
-" candidate
-Plug 'zchee/deoplete-clang'
-"Plug 'Valloric/YouCompleteMe'
-"
-" Add plugins to &runtimepath
 call plug#end()
 
 "== Colors =====================================================================
@@ -181,69 +169,6 @@ nnoremap <Leader>gs :Gstatus<cr>
 nnoremap <Leader>gw :Gwrite<cr>
 " Quickly stage, commit, and push the current file. Useful for editing .vimrc
 nnoremap <Leader>gg :Gwrite<cr>:Gcommit -m 'update'<cr>:Git push<cr>
-
-"===============================================================================
-" Unite
-"===============================================================================
-
-" Map space to the prefix for Unite
-"nnoremap [unite] <Nop>
-"nmap ^ [unite]
-
-"let g:unite_data_directory = '~/.config/nvim/.cache/unite'
-"let g:unite_source_rec_max_cache_files = 500000
-"let g:unite_source_history_yank_enable = 1
-"let g:unite_enable_start_insert = 5
-"let g:unite_split_rule = "botright"
-"let g:unite_force_overwrite_statusline = 0
-"let g:unite_winheight = 25
-
-" custom ignore pattern
-"call unite#custom#source('file_rec,file_rec/async',
-"    \ 'ignore_pattern', join([
-"    \ '\.bzr\/',
-"    \ '\.git\/',
-"    \ ], '\|'))
-
-" fuzzy matcher and sort everything
-"call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" Use the rank sorter for everything
-"call unite#filters#sorter_default#use(['sorter_rank'])
-
-" max match length
-"let g:unite_matcher_fuzzy_max_input_length = 50
-
-" Keep track of yanks
-"let g:unite_source_history_yank_enable = 1
-
-" General fuzzy search
-"nnoremap <silent> <space>y :<C-u>Unite -buffer-name=yanks history/yank<CR>
-"nnoremap <silent> <space>o :<C-u>Unite -buffer-name=outline -vertical outline<CR>
-"nnoremap <silent> <space>gd :<C-u>Unite -buffer-name=gtags gtags/def<CR>
-"nnoremap <silent> <space>gr :<C-u>Unite -buffer-name=gtags gtags/ref<CR>
-
-" Quick commands
-"nnoremap <silent> <space>; :<C-u>Unite -buffer-name=history -default-action=edit history/command command<CR>
-
-
-" Custom Unite settings
-"autocmd FileType unite call s:unite_settings()
-"function! s:unite_settings()
-"  nmap <buffer> <ESC> <Plug>(unite_insert_enter)
-"  imap <buffer> <ESC> <Plug>(unite_exit)
-"endfunction
-
-
-"if executable('ag')
-"  let g:unite_source_grep_command = 'ag'
-"  let g:unite_source_grep_default_opts = '--nocolor --nogroup --hidden --ignore-case --ignore tags'
-"  let g:unite_source_grep_recursive_opt = ''
-"elseif executable('ack-grep')
-"  let g:unite_source_grep_command = 'ack-grep'
-"  let g:unite_source_grep_default_opts =
-"              \ '--no-heading --no-color -a -H'
-"  let g:unite_source_grep_recursive_opt = ''
-"endif
 
 "===============================================================================
 " FZF
@@ -537,10 +462,10 @@ inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
-set updatetime=10
+set updatetime=750
 
 function! HighlightWordUnderCursor()
-    if getline(".")[col(".")-1] !~# '\w'
+    if getline(".")[col(".")-1] !~# '\W'
         exec 'match' 'Search' '/\V\<'.expand('<cword>').'\>/'
     else
         match none

@@ -2,6 +2,8 @@
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
 
+bindkey -e
+
 key[Home]="$terminfo[khome]"
 key[End]="$terminfo[kend]"
 key[Insert]="$terminfo[kich1]"
@@ -38,5 +40,4 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
     zle -N zle-line-finish
 fi
 
-bindkey -e
 
