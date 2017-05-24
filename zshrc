@@ -1,5 +1,10 @@
 export ZPLUG_HOME="$HOME/.zplug"
 
+[ -f "$HOME/.export.sh" ] && source "$HOME/.export.sh"
+[ -f "$HOME/.sh_aliases" ] && source "$HOME/.sh_aliases"
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+[ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
+
 if [ ! -f ~/.zplug/init.zsh ]; then
   echo "install zplug"
   git clone https://github.com/zplug/zplug $ZPLUG_HOME
@@ -44,12 +49,6 @@ fi
 # Then, source plugins and add commands to $PATH
 zplug load
 
-[ -f "$HOME/.export.sh" ] && source "$HOME/.export.sh"
-
-[ -f "$HOME/.sh_aliases" ] && source "$HOME/.sh_aliases"
-
-[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
-
 mkcscope() {
     rm -rf cscope.files cscope.files
     find . \( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' \) -print > cscope.files
@@ -84,4 +83,3 @@ setopt hist_verify
 setopt inc_append_history
 # setopt share_history # share command history data
 
-[ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"

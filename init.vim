@@ -19,7 +19,7 @@ set backspace=eol,start,indent
 set ignorecase
 set smartcase
 set cmdheight=2
-set mouse=c
+set mouse=a
 set cursorline
 set noswapfile
 
@@ -28,6 +28,8 @@ set tabstop=4
 set scrolloff=4
 set textwidth=80
 
+set encoding=utf-8
+set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
 
 set laststatus=2
 set showtabline=2
@@ -106,7 +108,7 @@ Plug 'tpope/vim-repeat'
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
-Plug 'lvht/fzf-mru'
+Plug 'pbogut/fzf-mru.vim'
 Plug 'tpope/vim-commentary'
 Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
@@ -116,6 +118,7 @@ Plug 'eagletmt/ghcmod-vim'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'ndmitchell/ghcid', { 'rtp': 'plugins/nvim' }
 Plug 'eagletmt/neco-ghc'
+Plug 'obxhdx/vim-auto-highlight'
 "Plug 'OmniSharp/omnisharp-vim', { 'do': 'cd omnisharp-roslyn && ./build.sh' }
 "Plug 'astralhpi/deoplete-omnisharp'
 
@@ -527,7 +530,21 @@ nnoremap [b :bprev<CR>
 
 nnoremap M :Man<CR>
 
-""" for vim devicons
-set encoding=utf-8
-"set guifont=Consolas\ 10
-"set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+set updatetime=10
+
+function! HighlightWordUnderCursor()
+    if getline(".")[col(".")-1] !~# '\w'
+        exec 'match' 'Search' '/\V\<'.expand('<cword>').'\>/'
+    else
+        match none
+    endif
+endfunction
+
+autocmd! CursorHold,CursorHoldI * call HighlightWordUnderCursor()
