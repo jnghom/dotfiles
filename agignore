@@ -4,5 +4,7 @@ cscope.files
 GPATH
 GRTAGS
 GTAGS
-html/*
 latex/*
+cmake-build-debug
+.yuv
+.cache

@@ -80,7 +80,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
-Plug 'tpope/vim-sleuth'
+"Plug 'tpope/vim-sleuth'
+Plug 'ciaranm/detectindent'
 Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
@@ -145,6 +146,9 @@ Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
 Plug 'kana/vim-textobj-line'                   " al/il : current line
 Plug 'kana/vim-textobj-entire'                 " ae/ie : entire region
 Plug 'terryma/vim-expand-region'               " K/J   : expand/shrink region
+Plug 'pboettch/vim-highlight-cursor-words'
+Plug 'rbgrouleff/bclose.vim'
+Plug 'francoiscabrol/ranger.vim'
 
 call plug#end()
 
@@ -197,8 +201,8 @@ nnoremap <silent> <space>?       :History<CR>
 nnoremap <silent> <space>hs      :History/<CR>
 nnoremap <silent> <space>hc      :History:<CR>
 nnoremap <silent> <space>/       :execute 'Ag ' . input('Ag/')<CR>
-nnoremap <silent> **              :call SearchWordWithAgW()<CR>
-vnoremap <silent> **              :call SearchVisualSelectionWithAg()<CR>
+nnoremap <silent> **             :call SearchWordWithAgW()<CR>
+vnoremap <silent> **             :call SearchVisualSelectionWithAg()<CR>
 nnoremap <silent> <space>C       :Commits<CR>
 nnoremap <silent> <space>c       :BCommits<CR>
 nnoremap <silent> <space>m       :FZFMru<CR>
@@ -415,12 +419,107 @@ let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
 " -----------------------------------------------
 map K <Plug>(expand_region_expand)
 map J <Plug>(expand_region_shrink)
+let g:expand_region_text_objects = {
+      \ 'iw'  :0,
+      \ 'iW'  :0,
+      \ 'i"'  :0,
+      \ 'i''' :0,
+      \ 'i]'  :1,
+      \ 'ib'  :1,
+      \ 'iB'  :1,
+      \ 'il'  :0,
+      \ 'ip'  :0,
+      \ 'af'  :1,
+      \ 'ie'  :0,
+      \ }
+
 " -----------------------------------------------
+"  DetectIndent
+" -----------------------------------------------
+let g:detectindent_preffered_expandtab = 1
+let g:detectindent_preffered_indent = 4
+function! LoadDetectIndent()
+  if (empty(findfile(".editorconfig", expand('%:p:h') . ';')))
+    autocmd BufReadPost * :DetectIndent
+  endif
+endfunction
+autocmd BufReadPost * call LoadDetectIndent()
+
+" -----------------------------------------------
+"  Highlight Curwor Words
+" -----------------------------------------------
+let g:HiCursorWords_delay = 400
+
+" -----------------------------------------------
+"  Ranger
+" -----------------------------------------------
+let g:ranger_map_keys = 0
+map <leader>f :Ranger<CR>.
+" -----------------------------------------------
+
 
 
 " =======================================================================
 " More Customization
 " =======================================================================
+
+" -----------------------------------------------
+"  Iterate tag, tab, buffer
+" -----------------------------------------------
+nnoremap tn :tnext<CR>
+nnoremap tp :tprev<CR>
+nnoremap ]n :tabnext<CR>
+nnoremap [p :tabprev<CR>
+nnoremap ]b :bnext<CR>
+nnoremap [b :bprev<CR>
+
+" -----------------------------------------------
+" Move Line/Block
+" -----------------------------------------------
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" -----------------------------------------------
+" Restore Last Position
+" -----------------------------------------------
+autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+" -----------------------------------------------
+" Easier split navigations
+" -----------------------------------------------
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" -----------------------------------------------
+"  Man Page
+" -----------------------------------------------
+nnoremap M :Man<CR>
+
+" -----------------------------------------------
+"  Git Root
+" -----------------------------------------------
+function! GitRootPathWithCWD()
+  let gitdir = finddir(".git", getcwd() . ';')
+  if (!empty(gitdir))
+    return fnamemodify(gitdir, ":p:h:h")
+  endif
+endfunction
+
+function! GitRootPathWithCurrentBuffer()
+  let gitdir = finddir(".git", expand('%:p:h') . ';')
+  if (!empty(gitdir))
+    return fnamemodify(gitdir, ":p:h:h")
+  endif
+endfunction
 
 " -----------------------------------------------
 "  Some conveniences
@@ -433,6 +532,7 @@ nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
 vnoremap <tab> %
 noremap ; :
+
 " save when lost focus
 au FocusLost * :wa
 
@@ -459,57 +559,5 @@ nnoremap <Leader>cd :cd %:p:h<cr>:pwd<cr>
 " Clone Paragraph with cp
 noremap cp yap<S-}>p
 
-" -----------------------------------------------
-"  Iterate tag, tab, buffer
-" -----------------------------------------------
-nnoremap tn :tnext<CR>
-nnoremap tp :tprev<CR>
-nnoremap ]n :tabnext<CR>
-nnoremap [p :tabprev<CR>
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprev<CR>
+autocmd FileType help noremap <buffer> q :q<cr>
 
-" -----------------------------------------------
-" Move Line/Block
-" -----------------------------------------------
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
-" -----------------------------------------------
-"  Highlight Current Word
-" -----------------------------------------------
-set updatetime=750
-function! HighlightWordUnderCursor()
-    if getline(".")[col(".")-1] !~# '\W'
-        exec 'match' 'Search' '/\V\<'.expand('<cword>').'\>/'
-    else
-        match none
-    endif
-endfunction
-
-autocmd! CursorHold,CursorHoldI * call HighlightWordUnderCursor()
-
-" -----------------------------------------------
-" Restore Last Position
-" -----------------------------------------------
-autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-
-" -----------------------------------------------
-" Easier split navigations
-" -----------------------------------------------
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-" -----------------------------------------------
-"  Man Page
-" -----------------------------------------------
-nnoremap M :Man<CR>
