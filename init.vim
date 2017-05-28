@@ -560,4 +560,5 @@ nnoremap <Leader>cd :cd %:p:h<cr>:pwd<cr>
 noremap cp yap<S-}>p
 
 autocmd FileType help noremap <buffer> q :q<cr>
+autocmd FileType man noremap <buffer> q :q<cr>
 

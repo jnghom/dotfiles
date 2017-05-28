@@ -321,4 +321,4 @@ mkcscope() {
     cscope -i cscope.files
 }
 
-[ -f $HOME/.agignore ] && alias ag='ag --path-to-agignore ~/.agignore'
+[ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
