@@ -31,9 +31,7 @@ case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
-if [ -f ~/.sh_aliases ]; then
-    . ~/.sh_aliases
-fi
+[ -f "$HOME"/.extra/sh_aliases ] && source "$HOME"/.extra/sh_aliases
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -46,7 +44,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-[ -f "$HOME"/.export.sh ] && source "$HOME"/.export.sh
+[ -f "$HOME"/.extra/export.sh ] && source "$HOME"/.extra/export.sh
 
 # Prompt
 # --------------------------------------------------------------------
