@@ -61,14 +61,25 @@ set showbreak=↪
 " =======================================================================
 " Plugins
 " =======================================================================
-call plug#begin('~/.config/nvim/plugged')
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+"call plug#begin('~/.config/nvim/plugged')
+call plug#begin()
 
 Plug 'junegunn/seoul256.vim'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'benekastah/neomake'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'zchee/deoplete-jedi'
+  Plug 'zchee/deoplete-clang', {'for': 'c'}
+endif
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
@@ -88,7 +99,6 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
-Plug 'zchee/deoplete-jedi'
 Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
 Plug 'mhinz/vim-startify'
@@ -124,7 +134,6 @@ Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
 Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
 Plug 'obxhdx/vim-auto-highlight'
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs', 'frozen':1, 'do': 'cd omnisharp-roslyn && ./build.sh' }
-Plug 'astralhpi/deoplete-omnisharp', { 'for': 'cs', 'frozen':1 }
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 
 Plug 'KabbAmine/zeavim.vim', {'on': [
@@ -137,7 +146,6 @@ Plug 'KabbAmine/zeavim.vim', {'on': [
 Plug 'editorconfig/editorconfig-vim'
 Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
-Plug 'zchee/deoplete-clang', {'for': 'c'}
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
 Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
