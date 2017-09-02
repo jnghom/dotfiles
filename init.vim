@@ -30,7 +30,7 @@ set noswapfile
 set shiftwidth=4
 set tabstop=4
 set scrolloff=4
-set textwidth=80
+set textwidth=100
 
 set encoding=utf-8
 set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
@@ -164,12 +164,30 @@ colo seoul256
 " -----------------------------------------------
 
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#auto_complete_start_length = 1
+
+let g:deoplete#sources#jedi#python_path = '/usr/bin/python3'
+let g:deoplete#sources#jedi#enable_cache = 1
+let g:deoplete#sources#jedi#show_docstring = 1
 
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
 let g:deoplete#sources#clang#std#c = 'c11'
 let g:deoplete#sources#clang#std#cpp = 'c++1z'
 let g:deoplete#sources#clang#sort_algo = 'priority'
+
+
+" -----------------------------------------------
+" Neomake
+" -----------------------------------------------
+let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'vulture']
+" E111,E114 indent should be multiple of 4
+let g:neomake_python_flake8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
+let g:neomake_python_pep8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
+
+autocmd! BufWritePost *.py Neomake
+autocmd! BufReadPost *.py Neomake
+
 
 " -----------------------------------------------
 " Fugitive
@@ -456,7 +474,12 @@ let g:HiCursorWords_delay = 400
 let g:ranger_map_keys = 0
 map <leader>f :Ranger<CR>.
 " -----------------------------------------------
-
+"
+" -----------------------------------------------
+"  EditorConfig
+" -----------------------------------------------
+let g:EditorConfig_exec_path = '/usr/bin/editorconfig'
+let g:EditorConfig_core_mode = 'external_command'
 
 
 " =======================================================================
@@ -540,6 +563,7 @@ highlight ExtraWhitespace ctermbg=52
 
 " Strip all trailing whitespace
 nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
+nnoremap <F5> :%s/\r/\r/g<CR>
 
 " Re-hardwrap paragraphs of text
 nnoremap <leader>q gqip
