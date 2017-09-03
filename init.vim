@@ -80,6 +80,7 @@ if has('nvim')
   Plug 'zchee/deoplete-jedi'
   Plug 'zchee/deoplete-clang', {'for': 'c'}
 endif
+Plug 'davidhalter/jedi-vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
@@ -157,6 +158,7 @@ Plug 'terryma/vim-expand-region'               " K/J   : expand/shrink region
 Plug 'pboettch/vim-highlight-cursor-words'
 Plug 'rbgrouleff/bclose.vim'
 Plug 'francoiscabrol/ranger.vim'
+Plug 'tpope/vim-unimpaired'
 
 call plug#end()
 
@@ -171,7 +173,7 @@ colo seoul256
 " Deoplete
 " -----------------------------------------------
 
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 let g:deoplete#auto_complete_start_length = 1
 
 let g:deoplete#sources#jedi#python_path = '/usr/bin/python3'
@@ -183,6 +185,15 @@ let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
 let g:deoplete#sources#clang#std#c = 'c11'
 let g:deoplete#sources#clang#std#cpp = 'c++1z'
 let g:deoplete#sources#clang#sort_algo = 'priority'
+
+" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
+
+
+" -----------------------------------------------
+" jedi-vim
+" -----------------------------------------------
+let g:jedi#completions_enabled = 0
 
 
 " -----------------------------------------------
@@ -396,7 +407,7 @@ function! LoadCscope()
     set cscopeverbose
   endif
 endfunction
-au BufEnter /* call LoadCscope()
+au BufEnter *.c,*.cpp,*.h call LoadCscope()
 
 nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -441,25 +452,6 @@ let g:OmniSharp_server_type = 'roslyn'
 let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
 
 " -----------------------------------------------
-" Expand region
-" -----------------------------------------------
-map K <Plug>(expand_region_expand)
-map J <Plug>(expand_region_shrink)
-let g:expand_region_text_objects = {
-      \ 'iw'  :0,
-      \ 'iW'  :0,
-      \ 'i"'  :0,
-      \ 'i''' :0,
-      \ 'i]'  :1,
-      \ 'ib'  :1,
-      \ 'iB'  :1,
-      \ 'il'  :0,
-      \ 'ip'  :0,
-      \ 'af'  :1,
-      \ 'ie'  :0,
-      \ }
-
-" -----------------------------------------------
 "  DetectIndent
 " -----------------------------------------------
 let g:detectindent_preffered_expandtab = 1
@@ -493,16 +485,6 @@ let g:EditorConfig_core_mode = 'external_command'
 " =======================================================================
 " More Customization
 " =======================================================================
-
-" -----------------------------------------------
-"  Iterate tag, tab, buffer
-" -----------------------------------------------
-nnoremap tn :tnext<CR>
-nnoremap tp :tprev<CR>
-nnoremap ]n :tabnext<CR>
-nnoremap [p :tabprev<CR>
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprev<CR>
 
 " -----------------------------------------------
 " Move Line/Block
@@ -594,3 +576,22 @@ noremap cp yap<S-}>p
 autocmd FileType help noremap <buffer> q :q<cr>
 autocmd FileType man noremap <buffer> q :q<cr>
 
+
+" -----------------------------------------------
+" Expand region
+" -----------------------------------------------
+map ) <Plug>(expand_region_expand)
+map ( <Plug>(expand_region_shrink)
+let g:expand_region_text_objects = {
+      \ 'iw'  :0,
+      \ 'iW'  :0,
+      \ 'i"'  :0,
+      \ 'i''' :0,
+      \ 'i]'  :1,
+      \ 'ib'  :1,
+      \ 'iB'  :1,
+      \ 'il'  :0,
+      \ 'ip'  :0,
+      \ 'af'  :1,
+      \ 'ie'  :0,
+      \ }
