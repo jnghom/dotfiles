@@ -78,7 +78,8 @@ Plug 'benekastah/neomake'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'zchee/deoplete-jedi'
-  Plug 'zchee/deoplete-clang', {'for': 'c'}
+  " Plug 'zchee/deoplete-clang', {'for': 'c'}
+  Plug 'tweekmonster/deoplete-clang2', {'for': 'c'}
 endif
 Plug 'davidhalter/jedi-vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -92,7 +93,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
-"Plug 'tpope/vim-sleuth'
+" Plug 'tpope/vim-sleuth'
 Plug 'ciaranm/detectindent'
 Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
@@ -144,7 +145,7 @@ Plug 'KabbAmine/zeavim.vim', {'on': [
             \   '<Plug>ZVKeyDocset',
             \   '<Plug>ZVMotion'
             \ ]}
-Plug 'editorconfig/editorconfig-vim'
+" Plug 'editorconfig/editorconfig-vim'
 Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
 Plug 'kana/vim-textobj-user'
@@ -159,6 +160,8 @@ Plug 'pboettch/vim-highlight-cursor-words'
 Plug 'rbgrouleff/bclose.vim'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'tpope/vim-unimpaired'
+Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'jceb/vim-orgmode'
 
 call plug#end()
 
@@ -454,14 +457,14 @@ let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
 " -----------------------------------------------
 "  DetectIndent
 " -----------------------------------------------
-let g:detectindent_preffered_expandtab = 1
-let g:detectindent_preffered_indent = 4
-function! LoadDetectIndent()
-  if (empty(findfile(".editorconfig", expand('%:p:h') . ';')))
-    autocmd BufReadPost * :DetectIndent
-  endif
-endfunction
-autocmd BufReadPost * call LoadDetectIndent()
+" let g:detectindent_preffered_expandtab = 1
+" let g:detectindent_preffered_indent = 4
+" function! LoadDetectIndent()
+"   if (empty(findfile(".editorconfig", expand('%:p:h') . ';')))
+"     autocmd BufReadPost * :DetectIndent
+"   endif
+" endfunction
+" autocmd BufReadPost * call LoadDetectIndent()
 
 " -----------------------------------------------
 "  Highlight Curwor Words
@@ -481,6 +484,11 @@ map <leader>f :Ranger<CR>.
 let g:EditorConfig_exec_path = '/usr/bin/editorconfig'
 let g:EditorConfig_core_mode = 'external_command'
 
+" -----------------------------------------------
+"  Auto Pairs
+" -----------------------------------------------
+let g:AutoPairsShortcutToggle = '<F6>'
+
 
 " =======================================================================
 " More Customization
@@ -489,12 +497,16 @@ let g:EditorConfig_core_mode = 'external_command'
 " -----------------------------------------------
 " Move Line/Block
 " -----------------------------------------------
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
+" nnoremap <A-j> :m .+1<CR>==
+" nnoremap <A-k> :m .-2<CR>==
+nnoremap <A-j> :m .+1<CR>
+nnoremap <A-k> :m .-2<CR>
 inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
+" vnoremap <A-j> :m '>+1<CR>gv=gv
+" vnoremap <A-k> :m '<-2<CR>gv=gv
+vnoremap <A-j> :m '>+1<CR>gv
+vnoremap <A-k> :m '<-2<CR>gv
 
 " -----------------------------------------------
 " Restore Last Position

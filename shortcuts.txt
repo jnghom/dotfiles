@@ -1,5 +1,18 @@
-CTRL-GCTRL-F for files
-CTRL-GCTRL-B for branches
-CTRL-GCTRL-T for tags
-CTRL-GCTRL-R for remotes
-CTRL-GCTRL-H for commit hashes
+* vim
+<C-G><C-F> git files
+<C-G><C-B> git branches
+<C-G><C-T> git tags
+<C-G><C-R> git remotes
+<C-G><C-H> git commit hashes
+
+<A-k> move line up
+<A-j> move line down
+
+* jedi-vim
+Completion <C-Space>
+Goto assignments <leader>g (typical goto function)
+Goto definitions <leader>d (follow identifier as far as possible, includes imports and statements)
+Show Documentation/Pydoc K (shows a popup with assignments)
+Renaming <leader>r
+Usages <leader>n (shows all the usages of a name)
+Open module, e.g. :Pyimport os (opens the os module)
