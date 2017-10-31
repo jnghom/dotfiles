@@ -59,30 +59,59 @@ set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
 set showbreak=↪
 
 " =======================================================================
-" Plugins
+" Check vim version
 " =======================================================================
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+if has('nvim')
+  let vimv = 'nvim'
+  let vims = 'async'
+elseif v:version >= 800
+  let vimv = 'vim8'
+  let vims = 'async'
+else
+  let vimv = 'vim7'
+  let vims = 'sync'
 endif
 
+" =======================================================================
+" Plugins
+" =======================================================================
+" if empty(glob('~/.vim/autoload/plug.vim'))
+"   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+"   \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" endif
+
 "call plug#begin('~/.config/nvim/plugged')
-call plug#begin()
+
+function! Cond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
+if has('nvim')
+call plug#begin('~/.local/share/nvim/plugged')
+else
+call plug#begin('~/.vim/plugged')
+endif
 
 Plug 'junegunn/seoul256.vim'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'benekastah/neomake'
+  Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
+  Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
+" Plug 'benekastah/neomake'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'zchee/deoplete-jedi'
-  " Plug 'zchee/deoplete-clang', {'for': 'c'}
-  Plug 'tweekmonster/deoplete-clang2', {'for': 'c'}
+elseif v:version == 800
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'Shougo/deoplete.nvim'
 endif
-Plug 'davidhalter/jedi-vim'
-Plug 'octol/vim-cpp-enhanced-highlight'
+  Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
+  Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
+  " Plug 'zchee/deoplete-clang', {'for': 'c'}
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'jiangmiao/auto-pairs'
@@ -93,8 +122,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
-" Plug 'tpope/vim-sleuth'
-Plug 'ciaranm/detectindent'
+Plug 'tpope/vim-sleuth'
+" Plug 'ciaranm/detectindent'
 Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
@@ -109,9 +138,9 @@ Plug 'Yggdroot/vim-mark'
 Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mhinz/vim-galore'
-Plug 'nhooyr/neoman.vim'
 Plug 'Shougo/neco-vim'
 Plug 'Shougo/neco-syntax'
+" may have problem
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'ryanoasis/vim-devicons'
@@ -124,7 +153,6 @@ Plug 'tpope/vim-repeat'
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
-Plug 'pbogut/fzf-mru.vim'
 Plug 'tpope/vim-commentary'
 Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
@@ -135,7 +163,7 @@ Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
 Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
 Plug 'obxhdx/vim-auto-highlight'
-Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs', 'frozen':1, 'do': 'cd omnisharp-roslyn && ./build.sh' }
+" Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs', 'frozen':1, 'do': 'cd omnisharp-roslyn && ./build.sh' }
 Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 
 Plug 'KabbAmine/zeavim.vim', {'on': [
@@ -149,19 +177,29 @@ Plug 'KabbAmine/zeavim.vim', {'on': [
 Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
 Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
-Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
-Plug 'kana/vim-textobj-indent'                 " ai/ii : similarly indent,   aI/iI : same indent block
-Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
-Plug 'kana/vim-textobj-line'                   " al/il : current line
-Plug 'kana/vim-textobj-entire'                 " ae/ie : entire region
-Plug 'terryma/vim-expand-region'               " K/J   : expand/shrink region
+  Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
+  Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
+  Plug 'kana/vim-textobj-indent'                 " ai/ii : similarly indent,   aI/iI : same indent block
+  Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
+  Plug 'kana/vim-textobj-line'                   " al/il : current line
+  Plug 'kana/vim-textobj-entire'                 " ae/ie : entire region
+  Plug 'terryma/vim-expand-region'               " K/J   : expand/shrink region
 Plug 'pboettch/vim-highlight-cursor-words'
 Plug 'rbgrouleff/bclose.vim'
-Plug 'francoiscabrol/ranger.vim'
+  Plug 'francoiscabrol/ranger.vim', Cond(executable('ranger'))
 Plug 'tpope/vim-unimpaired'
-Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'jceb/vim-orgmode'
+Plug 'ervandew/supertab'
+Plug 'Shougo/echodoc.vim'
+Plug 'chrisbra/NrrwRgn'
+Plug 'w0rp/ale', Cond(vims ==# 'async')
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'edkolev/tmuxline.vim'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'matze/vim-move'
+Plug 'justinmk/vim-sneak'
+Plug 'vim-scripts/YankRing.vim'
+Plug 'junegunn/vim-slash'
 
 call plug#end()
 
@@ -176,10 +214,11 @@ colo seoul256
 " Deoplete
 " -----------------------------------------------
 
-let g:deoplete#enable_at_startup = 0
+let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_complete_start_length = 1
 
-let g:deoplete#sources#jedi#python_path = '/usr/bin/python3'
+" let g:deoplete#sources#jedi#python_path = '/home/mok/anaconda3/bin/python'
+let g:deoplete#sources#jedi#python_path = substitute(system('which python'), '\n', '', '')
 let g:deoplete#sources#jedi#enable_cache = 1
 let g:deoplete#sources#jedi#show_docstring = 1
 
@@ -188,6 +227,11 @@ let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
 let g:deoplete#sources#clang#std#c = 'c11'
 let g:deoplete#sources#clang#std#cpp = 'c++1z'
 let g:deoplete#sources#clang#sort_algo = 'priority'
+
+" Let <Tab> also do completion
+inoremap <silent><expr> <Tab>
+\ pumvisible() ? "\<C-n>" :
+\ deoplete#mappings#manual_complete()
 
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
@@ -207,8 +251,8 @@ let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'vulture']
 let g:neomake_python_flake8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
 let g:neomake_python_pep8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
 
-autocmd! BufWritePost *.py Neomake
-autocmd! BufReadPost *.py Neomake
+" autocmd! BufWritePost *.py Neomake
+" autocmd! BufReadPost *.py Neomake
 
 
 " -----------------------------------------------
@@ -228,7 +272,25 @@ nnoremap <Leader>gg :Gwrite<cr>:Gcommit -m 'update'<cr>:Git push<cr>
 " FZF
 " -----------------------------------------------
 
-command! -bang -nargs=* Agw call fzf#vim#ag(<q-args>, '-w', <bang>0)
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep('git grep --line-number '.shellescape(<q-args>),
+  \                   0,
+  \                   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                   <bang>0)
+
+command! -bang -nargs=* Agw
+  \ call fzf#vim#ag(<q-args>,
+  \                 '-w',
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
+command! -bang -nargs=* Agp
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
 
 nnoremap <silent> <space><space> :Files<CR>
 nnoremap <silent> <space>a       :Buffers<CR>
@@ -240,7 +302,8 @@ nnoremap <silent> <space>t       :BTags<CR>
 nnoremap <silent> <space>?       :History<CR>
 nnoremap <silent> <space>hs      :History/<CR>
 nnoremap <silent> <space>hc      :History:<CR>
-nnoremap <silent> <space>/       :execute 'Ag ' . input('Ag/')<CR>
+nnoremap <silent> <space>/       :execute 'Agp ' . input('Ag/')<CR>
+nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
 nnoremap <silent> **             :call SearchWordWithAgW()<CR>
 vnoremap <silent> **             :call SearchVisualSelectionWithAg()<CR>
 nnoremap <silent> <space>C       :Commits<CR>
@@ -253,7 +316,7 @@ imap <C-x><C-f> <plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <plug>(fzf-complete-line)
 
 function! SearchWordWithAg()
-  execute 'Ag' expand('<cword>')
+  execute 'Agp' expand('<cword>')
 endfunction
 
 function! SearchWordWithAgW()
@@ -271,6 +334,7 @@ function! SearchVisualSelectionWithAg() range
   let &clipboard = old_clipboard
   execute 'Ag' selection
 endfunction
+
 
 " -----------------------------------------------
 " GGtagsCscope
@@ -499,14 +563,17 @@ let g:AutoPairsShortcutToggle = '<F6>'
 " -----------------------------------------------
 " nnoremap <A-j> :m .+1<CR>==
 " nnoremap <A-k> :m .-2<CR>==
-nnoremap <A-j> :m .+1<CR>
-nnoremap <A-k> :m .-2<CR>
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
+
+" nnoremap <A-j> :m .+1<CR>
+" nnoremap <A-k> :m .-2<CR>
+" inoremap <A-j> <Esc>:m .+1<CR>==gi
+" inoremap <A-k> <Esc>:m .-2<CR>==gi
+
 " vnoremap <A-j> :m '>+1<CR>gv=gv
 " vnoremap <A-k> :m '<-2<CR>gv=gv
-vnoremap <A-j> :m '>+1<CR>gv
-vnoremap <A-k> :m '<-2<CR>gv
+"
+" vnoremap <A-j> :m '>+1<CR>gv
+" vnoremap <A-k> :m '<-2<CR>gv
 
 " -----------------------------------------------
 " Restore Last Position
@@ -547,6 +614,11 @@ function! GitRootPathWithCurrentBuffer()
 endfunction
 
 " -----------------------------------------------
+"  Super Tab
+" -----------------------------------------------
+let g:SuperTabDefaultCompletionType = "<c-n>"
+
+" -----------------------------------------------
 "  Some conveniences
 " -----------------------------------------------
 nmap <F7> :SrcExplToggle<CR>
@@ -556,7 +628,7 @@ nmap <F9> :NERDTreeToggle<CR>
 nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
 vnoremap <tab> %
-noremap ; :
+" noremap ; :
 
 " save when lost focus
 au FocusLost * :wa
@@ -587,7 +659,6 @@ noremap cp yap<S-}>p
 
 autocmd FileType help noremap <buffer> q :q<cr>
 autocmd FileType man noremap <buffer> q :q<cr>
-
 
 " -----------------------------------------------
 " Expand region
