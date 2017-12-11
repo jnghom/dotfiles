@@ -58,6 +58,8 @@ set list
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
 set showbreak=↪
 
+set synmaxcol=4096
+
 " =======================================================================
 " Check vim version
 " =======================================================================
@@ -75,13 +77,6 @@ endif
 " =======================================================================
 " Plugins
 " =======================================================================
-" if empty(glob('~/.vim/autoload/plug.vim'))
-"   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-"   \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-"   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-" endif
-
-"call plug#begin('~/.config/nvim/plugged')
 
 function! Cond(cond, ...)
   let opts = get(a:000, 0, {})
@@ -110,7 +105,7 @@ endif
   Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
   Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
   " Plug 'zchee/deoplete-clang', {'for': 'c'}
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+" Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
@@ -241,6 +236,7 @@ autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
 " jedi-vim
 " -----------------------------------------------
 let g:jedi#completions_enabled = 0
+let g:jedi#auto_initialization = 0
 
 
 " -----------------------------------------------
@@ -621,7 +617,8 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 " -----------------------------------------------
 "  Some conveniences
 " -----------------------------------------------
-nmap <F7> :SrcExplToggle<CR>
+" nmap <F7> :SrcExplToggle<CR>
+nmap <F7> :%!python -m json.tool<CR>
 nmap <F8> :TagbarToggle<CR>
 nmap <F9> :NERDTreeToggle<CR>
 
@@ -643,7 +640,11 @@ nnoremap <F5> :%s/\r/\r/g<CR>
 nnoremap <leader>q gqip
 
 " Open configuration file
-nnoremap <leader>ev <C-w><C-v><C-l>:e ~/.config/nvim/init.vim<cr>
+if has('nvim')
+  nnoremap <leader>ev <C-w><C-v><C-l>:e ~/.config/nvim/init.vim<cr>
+else
+  nnoremap <leader>ev <C-w><C-v><C-l>:e ~/.vimrc<cr>
+endif
 
 " Duplicate & Switch window
 nnoremap <leader>w <C-w>v<C-w>l

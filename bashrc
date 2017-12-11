@@ -359,3 +359,74 @@ usage() {
         sed "s:\./::" |\
         sed "s:$HOME:~:"
   }
+
+export PATH=$GOROOT/bin:$GOPATH/bin:$HOME/.local/bin:$PATH
+# added by Anaconda3 installer
+export PATH="$HOME/anaconda3/bin:$PATH"
+
+export GOPATH="$HOME/workspace/go"
+export USER_INSTALL="$HOME/usr/install"
+export USER_SRC="$HOME/usr/src"
+export USER_BIN="$HOME/usr/bin"
+export PATH=$USER_BIN:$PATH
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+if command -v nvim > /dev/null ; then
+	export EDITOR=nvim
+	export VISUAL=nvim
+	export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+elif command -v vim > /dev/null ; then
+	export EDITOR=vim
+	export VISUAL=vim
+	export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+fi
+
+if command -v ag > /dev/null ; then
+	export FZF_DEFAULT_COMMAND='ag --hidden -p ~/.agignore --ignore .git -g ""'
+	export FZF_CTRL_T_COMMAND='ag --hidden -p ~/.agignore --ignore .git -g ""'
+fi
+export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias tmux="tmux -2"
+
+if command -v nvim >/dev/null ; then
+  alias vi="nvim"
+  alias vim="nvim"
+fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+
+alias gs='git status'
+alias gl='git ld'
+
+alias bd=". bd -si"
+
+eval "$(fasd --init auto)"
+
+PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"${HOME}/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"; export PERL_MM_OPT;
