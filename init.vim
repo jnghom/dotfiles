@@ -105,7 +105,7 @@ endif
   Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
   Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
   " Plug 'zchee/deoplete-clang', {'for': 'c'}
-" Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
@@ -193,7 +193,7 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
 Plug 'justinmk/vim-sneak'
-Plug 'vim-scripts/YankRing.vim'
+" Plug 'vim-scripts/YankRing.vim'
 Plug 'junegunn/vim-slash'
 
 call plug#end()

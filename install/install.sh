@@ -2,6 +2,7 @@ mkdir -p $HOME/tmp
 mkdir -p $USER_INSTALL
 mkdir -p $USER_SRC
 mkdir -p $USER_BIN
+mkdir -p $HOME/.colors
 
 gh_download() {
   if [ $# -ne 2 ]; then
@@ -77,7 +78,7 @@ fi
 # lnav
 if wget -L https://github.com/tstack/lnav/releases/download/v0.8.2/lnav-0.8.2-linux-64bit.zip -P $USER_SRC/lnav; then
   unzip $USER_SRC/lnav/lnav-0.8.2-linux-64bit.zip -d $USER_INSTALL/lnav
-  ln -s $USER_INSTALL/lnav $USER_BIN/lnav
+  ln -s $USER_INSTALL/lnav/lnav-0.8.2/lnav $USER_BIN/lnav
 fi
 
 # ncdu
@@ -87,7 +88,7 @@ if wget -L https://dev.yorhel.nl/download/ncdu-1.12.tar.gz -P $HOME/tmp; then
   cd $USER_SRC/ncdu/ncdu-1.12
   ./configure --prefix=$USER_INSTALL/ncdu
   make && make install
-  ln -s $USER_INSTALL/tmux/bin/tmux $USER_BIN/ncdu
+  ln -s $USER_INSTALL/ncdu/bin/ncdu $USER_BIN/ncdu
   cd -
 fi
 
