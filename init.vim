@@ -60,6 +60,20 @@ set showbreak=↪
 
 set synmaxcol=4096
 
+
+function! Chomp(string)
+    return substitute(a:string, '\n\+$', '', '')
+endfunction
+
+function! ChompedSystem( ... )
+    return substitute(call('system', a:000), '\n\+$', '', '')
+endfunction
+
+" python
+if executable('pyenv')
+  let pyenv_root = system('pyenv root')
+  let g:python3_host_prog = ChompedSystem('pyenv root') . '/versions/my/bin/python'
+endif
 " =======================================================================
 " Check vim version
 " =======================================================================
@@ -195,6 +209,8 @@ Plug 'matze/vim-move'
 Plug 'justinmk/vim-sneak'
 " Plug 'vim-scripts/YankRing.vim'
 Plug 'junegunn/vim-slash'
+Plug 'elzr/vim-json', { 'for': 'json' }
+Plug 'Chiel92/vim-autoformat'
 
 call plug#end()
 
@@ -213,7 +229,7 @@ let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_complete_start_length = 1
 
 " let g:deoplete#sources#jedi#python_path = '/home/mok/anaconda3/bin/python'
-let g:deoplete#sources#jedi#python_path = substitute(system('which python'), '\n', '', '')
+" let g:deoplete#sources#jedi#python_path = substitute(system('which python'), '\n', '', '')
 let g:deoplete#sources#jedi#enable_cache = 1
 let g:deoplete#sources#jedi#show_docstring = 1
 
@@ -236,7 +252,7 @@ autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
 " jedi-vim
 " -----------------------------------------------
 let g:jedi#completions_enabled = 0
-let g:jedi#auto_initialization = 0
+let g:jedi#auto_initialization = 1
 
 
 " -----------------------------------------------
@@ -250,6 +266,20 @@ let g:neomake_python_pep8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']
 " autocmd! BufWritePost *.py Neomake
 " autocmd! BufReadPost *.py Neomake
 
+
+" ale
+" let b:ale_linters = ['pylint']
+let g:ale_linters = {
+      \  'python': ['flake8', 'pylint', 'pep8', 'pycodestyle', 'mypy']
+      \}
+let g:ale_fixers = {
+      \  'python': ['autopep8', 'yapf', 'isort']
+      \}
+let g:ale_python_pylint_options= "--msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
+
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%][%severity%] %s'
 
 " -----------------------------------------------
 " Fugitive
@@ -347,8 +377,8 @@ let g:indent_guides_enable_on_vim_startup = 0
 " -----------------------------------------------
 " Gutentags
 " -----------------------------------------------
-let g:gutentags_project_root = ['.mprj']
-let g:gutentags_add_default_project_roots = 1
+" let g:gutentags_project_root = ['.mprj']
+" let g:gutentags_add_default_project_roots = 1
 
 " -----------------------------------------------
 " EasyAlign
@@ -618,9 +648,12 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 "  Some conveniences
 " -----------------------------------------------
 " nmap <F7> :SrcExplToggle<CR>
-nmap <F7> :%!python -m json.tool<CR>
-nmap <F8> :TagbarToggle<CR>
-nmap <F9> :NERDTreeToggle<CR>
+" Strip all trailing whitespace
+nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
+nnoremap <F5> :%s/\r/\r/g<CR>
+nnoremap <F7> :%!python -m json.tool<CR>
+nnoremap <F8> :TagbarToggle<CR>
+nnoremap <F9> :NERDTreeToggle<CR>
 
 nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
@@ -632,9 +665,6 @@ au FocusLost * :wa
 
 highlight ExtraWhitespace ctermbg=52
 
-" Strip all trailing whitespace
-nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
-nnoremap <F5> :%s/\r/\r/g<CR>
 
 " Re-hardwrap paragraphs of text
 nnoremap <leader>q gqip

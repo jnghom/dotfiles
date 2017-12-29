@@ -53,18 +53,17 @@ else
   if [ -e ~/.git-prompt.sh ]; then
     source ~/.git-prompt.sh
   fi
-  #PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
-  #PS1="\[\e[34m\]\u\[\e[1;32m\]@\[\e[0;33m\]\[\e[35m\]:"
-  #PS1="$PS1\[\e[m\]\w\[\e[1;31m\]> \[\e[0m\]"
-  #PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
-  #PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
-  #PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
+  # PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
+  # PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
+  # PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
+
+  # PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
+  # PS1="\[\e[38;5;243m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
+  # PS1="$PS1\[\e[38;5;100m\]\w\[\e[38;5;130m\] > \[\e[0m\]"
+
   PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
-  PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
+  PS1="\[\e[36m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
   PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
-  #if [[ "$TERM" =~ 256color ]]; then
-  #else
-  #fi
 fi
 
 command -v blsd > /dev/null && export FZF_ALT_C_COMMAND='blsd'
@@ -197,14 +196,6 @@ if [ -n "$TMUX_PANE" ]; then
 
   # Bind CTRL-X-CTRL-T to tmuxwords.sh
   bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
-
-elif [ -d ~/github/iTerm2-Color-Schemes/ ]; then
-  ftheme() {
-    local base
-    base=~/github/iTerm2-Color-Schemes
-    $base/tools/preview.rb "$(
-      ls {$base/schemes,~/.vim/plugged/seoul256.vim/iterm2}/*.itermcolors | fzf)"
-  }
 fi
 
 # Switch tmux-sessions
@@ -215,41 +206,8 @@ fs() {
   tmux switch-client -t "$session"
 }
 
-# RVM integration
-frb() {
-  local rb
-  rb=$(
-    (echo system; rvm list | grep ruby | cut -c 4-) |
-       awk '{print $1}' |
-       fzf-tmux -l 30 +m --reverse) && rvm use $rb
-}
-
-# c - browse chrome history
-c() {
-  local cols sep
-  export cols=$(( COLUMNS / 3 ))
-  export sep='{::}'
-
-  cp -f ~/Library/Application\ Support/Google/Chrome/Default/History /tmp/h
-  sqlite3 -separator $sep /tmp/h \
-    "select title, url from urls order by last_visit_time desc" |
-  ruby -ne '
-    cols = ENV["cols"].to_i
-    title, url = $_.split(ENV["sep"])
-    len = 0
-    puts "\x1b[36m" + title.each_char.take_while { |e|
-      if len < cols
-        len += e =~ /\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}/ ? 2 : 1
-      end
-    }.join + " " * (2 + cols - len) + "\x1b[m" + url' |
-  fzf --ansi --multi --no-hscroll --tiebreak=index |
-  sed 's#.*\(https*://\)#\1#' | xargs open
-
-}
-
 # GIT heart FZF
 # -------------
-
 
 is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
@@ -304,10 +262,6 @@ gr() {
   cut -d$'\t' -f1
 }
 
-z() {
-  local dir
-  dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
 
 cf() {
   local file
@@ -346,8 +300,6 @@ mkcscope() {
     cscope -i cscope.files
 }
 
-[ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
-
 usage() {
     du -h --max-depth="${2:-1}"\
       "${1:-.}" |\
@@ -356,11 +308,17 @@ usage() {
         sed "s:$HOME:~:"
   }
 
-export PATH=$GOROOT/bin:$GOPATH/bin:$HOME/.local/bin:$PATH
+[ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
+# [ -f $HOME/.proxy ] && source $HOME/.proxy
+[ -f $HOME/.rg/complete/rg.bash-completion ] && source $HOME/.rg/complete/rg.bash-completion
+
+
+export PATH=$HOME/.local/bin:$PATH
 # added by Anaconda3 installer
 export PATH="$HOME/anaconda3/bin:$PATH"
+export PATH="$HOME/usr/install/node/node-v8.9.3-linux-x64/bin:$PATH"
 
-export GOPATH="$HOME/workspace/go"
+export GOPATH="$HOME/ws/go"
 export USER_INSTALL="$HOME/usr/install"
 export USER_SRC="$HOME/usr/src"
 export USER_BIN="$HOME/usr/bin"
@@ -405,7 +363,7 @@ alias tmux="tmux -2"
 
 if command -v nvim >/dev/null ; then
   alias vi="nvim"
-  alias vim="nvim"
+  # alias vim="nvim"
 fi
 
 alias ..='cd ..'
@@ -421,8 +379,39 @@ alias bd=". bd -si"
 
 eval "$(fasd --init auto)"
 
-PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"${HOME}/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"; export PERL_MM_OPT;
+[ -f $HOME/.localrc ] && source $HOME/.localrc
+if [ ! -z $LOCAL_PROXY ]; then
+  echo local proxy $LOCAL_PROXY
+  export HTTP_PROXY=$LOCAL_PROXY
+  export HTTPS_PROXY=$LOCAL_PROXY
+  export FTP_PROXY=$LOCAL_PROXY
+  export SOCKS_PROXY=$LOCAL_PROXY
+  export ALL_PROXY=$LOCAL_PROXY
+  export http_proxy=$LOCAL_PROXY
+  export https_proxy=$LOCAL_PROXY
+  export ftp_proxy=$LOCAL_PROXY
+  export socks_proxy=$LOCAL_PROXY
+  export all_proxy=$LOCAL_PROXY
+fi
+if [ ! -z $LOCAL_AUTO_PROXY ]; then
+  echo local auto proxy $LOCAL_AUTO_PROXY
+  export AUTO_PROXY=$LOCAL_AUTO_PROXY
+  export auto_proxy=$LOCAL_AUTO_PROXY
+fi
+
+[ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
+[ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
+git config --global core.editor $EDITOR
+
+if [ -d ~/.bash_completion.d ]; then
+  for file in ~/.bash_completion.d/*; do
+    . $file
+  done
+fi
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+eval "$(pyenv virtualenv-init -)"
