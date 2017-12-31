@@ -53,16 +53,10 @@ else
   if [ -e ~/.git-prompt.sh ]; then
     source ~/.git-prompt.sh
   fi
-  # PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
-  # PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
-  # PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
-
-  # PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
-  # PS1="\[\e[38;5;243m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
-  # PS1="$PS1\[\e[38;5;100m\]\w\[\e[38;5;130m\] > \[\e[0m\]"
 
   PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
   PS1="\[\e[36m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
+  PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
   PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
 fi
 
@@ -378,6 +372,8 @@ alias gl='git ld'
 alias bd=". bd -si"
 
 eval "$(fasd --init auto)"
+mkdir -p $HOME/.colors
+[ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
 if [ ! -z $LOCAL_PROXY ]; then
@@ -409,9 +405,12 @@ if [ -d ~/.bash_completion.d ]; then
   done
 fi
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+if [ -d "$HOME/.pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
 fi
-eval "$(pyenv virtualenv-init -)"

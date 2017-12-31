@@ -127,3 +127,6 @@ fi
 if git clone https://github.com/seebi/dircolors-solarized.git $USER_SRC/dircolors-solarized; then
   cp -p $USER_SRC/dircolors-solarized/dircolors.256dark $HOME/.colors
 fi
+
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv

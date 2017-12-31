@@ -27,6 +27,7 @@ set mouse=a
 set cursorline
 set noswapfile
 
+set expandtab
 set shiftwidth=4
 set tabstop=4
 set scrolloff=4
@@ -133,6 +134,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
 " Plug 'ciaranm/detectindent'
+" Plug 'luochen1990/indent-detector.vim'
 Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
@@ -211,6 +213,7 @@ Plug 'justinmk/vim-sneak'
 Plug 'junegunn/vim-slash'
 Plug 'elzr/vim-json', { 'for': 'json' }
 Plug 'Chiel92/vim-autoformat'
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 
 call plug#end()
 
