@@ -105,11 +105,17 @@ call plug#begin('~/.vim/plugged')
 endif
 
 Plug 'junegunn/seoul256.vim'
+Plug 'trevordmiller/nova-vim'
+
+" Plug 'mhinz/vim-galore'
+" Plug 'sheerun/vim-polyglot'
+Plug 'ryanoasis/vim-devicons'
+Plug 'honza/vim-snippets'
+
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
   Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
-" Plug 'benekastah/neomake'
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif v:version == 800
@@ -117,16 +123,10 @@ elseif v:version == 800
   Plug 'roxma/vim-hug-neovim-rpc'
   Plug 'Shougo/deoplete.nvim'
 endif
-  Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
-  Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
-  " Plug 'zchee/deoplete-clang', {'for': 'c'}
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
-Plug 'sheerun/vim-polyglot'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-fugitive'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', Cond(executable('ctags'))
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'easymotion/vim-easymotion'
 Plug 'nathanaelkane/vim-indent-guides'
@@ -135,12 +135,11 @@ Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
 " Plug 'ciaranm/detectindent'
 " Plug 'luochen1990/indent-detector.vim'
-Plug 'Shougo/neoyank.vim'
+" Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
-Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
 Plug 'mhinz/vim-startify'
@@ -148,44 +147,25 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'Yggdroot/vim-mark'
 Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-peekaboo'
-Plug 'mhinz/vim-galore'
-Plug 'Shougo/neco-vim'
-Plug 'Shougo/neco-syntax'
-" may have problem
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'ryanoasis/vim-devicons'
 Plug 'itchyny/lightline.vim'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'wesleyche/SrcExpl'
-Plug 'vimwiki/vimwiki'
+" Plug 'wesleyche/SrcExpl'
+" Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'mileszs/ack.vim'
-Plug 'junegunn/vim-pseudocl'
-Plug 'junegunn/vim-oblique'
+" Plug 'mileszs/ack.vim'
+" Plug 'junegunn/vim-pseudocl'
+" Plug 'junegunn/vim-oblique'
 Plug 'tpope/vim-commentary'
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
-Plug 'lambdalisue/gina.vim'
+" Plug 'lambdalisue/gina.vim'
 Plug 'jreybert/vimagit'
-Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
-Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
 Plug 'obxhdx/vim-auto-highlight'
-" Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs', 'frozen':1, 'do': 'cd omnisharp-roslyn && ./build.sh' }
-Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
-
-Plug 'KabbAmine/zeavim.vim', {'on': [
-            \   'Zeavim', 'Docset',
-            \   '<Plug>Zeavim',
-            \   '<Plug>ZVVisSelection',
-            \   '<Plug>ZVKeyDocset',
-            \   '<Plug>ZVMotion'
-            \ ]}
 " Plug 'editorconfig/editorconfig-vim'
-Plug 'moll/vim-node'
 Plug 'taohex/lightline-buffer'
 Plug 'kana/vim-textobj-user'
   Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
@@ -208,16 +188,33 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
-Plug 'justinmk/vim-sneak'
-" Plug 'vim-scripts/YankRing.vim'
 Plug 'junegunn/vim-slash'
-Plug 'elzr/vim-json', { 'for': 'json' }
-Plug 'Chiel92/vim-autoformat'
+" Plug 'Chiel92/vim-autoformat'
+
+
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+Plug 'Shougo/neco-vim', { 'for': 'vim' }
+Plug 'Shougo/neco-syntax', { 'for': 'vim' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+Plug 'elzr/vim-json', { 'for': 'json' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
+Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
+" Plug 'zchee/deoplete-clang', {'for': 'c'}
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
+Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
+Plug 'moll/vim-node', { 'for': 'javascript' }
 
 call plug#end()
 
 colo seoul256
+" colo nova
 
 
 " =======================================================================
@@ -248,7 +245,7 @@ inoremap <silent><expr> <Tab>
 \ deoplete#mappings#manual_complete()
 
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
+" autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
 
 
 " -----------------------------------------------
@@ -391,6 +388,13 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+
+" -----------------------------------------------
+" Airline
+" -----------------------------------------------
+let g:airline_powerline_fonts = 1
+let g:airline_theme='tomorrow'
+
 " -----------------------------------------------
 " Lightline
 " -----------------------------------------------
@@ -401,10 +405,14 @@ let g:lightline = {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ]]
       \ },
       \ 'component_expand': {
-      \   'buffercurrent': 'lightline#buffer#buffercurrent2',
+      \   'buffercurrent': 'lightline#buffer#buffercurrent',
+      \   'bufferbefore': 'lightline#buffer#bufferbefore',
+      \   'bufferafter': 'lightline#buffer#bufferafter',
       \ },
       \ 'component_type': {
       \   'buffercurrent': 'tabsel',
+      \   'bufferbefore': 'raw',
+      \   'bufferafter': 'raw',
       \ },
       \ 'component_function': {
       \   'modified': 'LightlineModified',
@@ -419,8 +427,11 @@ let g:lightline = {
       \   'bufferafter': 'lightline#buffer#bufferafter',
       \   'bufferinfo': 'lightline#buffer#bufferinfo',
       \ },
+      \ 'component': {
+      \   'separator': '',
+      \ },
       \ 'tabline': {
-      \   'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+      \   'left': [ [ 'bufferinfo' ], [ 'separator' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
       \   'right': [ [ 'close' ], ],
       \ },
       \ 'separator': { 'left': '', 'right': '' },
@@ -539,19 +550,13 @@ let g:tagbar_width = 60
 let g:rooter_manual_only = 1
 let g:rooter_use_lcd = 1
 "
-" -----------------------------------------------
-" OmniSharp
-" -----------------------------------------------
-let g:OmniSharp_server_type = 'v1'
-let g:OmniSharp_server_type = 'roslyn'
-
-let g:OmniSharp_selector_ui = 'fzf'    " Use fzf.vim
 
 " -----------------------------------------------
 "  DetectIndent
 " -----------------------------------------------
-" let g:detectindent_preffered_expandtab = 1
-" let g:detectindent_preffered_indent = 4
+let g:detectindent_preffered_expandtab = 1
+let g:detectindent_preffered_indent = 4
+" autocmd BufReadPost * :DetectIndent
 " function! LoadDetectIndent()
 "   if (empty(findfile(".editorconfig", expand('%:p:h') . ';')))
 "     autocmd BufReadPost * :DetectIndent
@@ -569,13 +574,6 @@ let g:HiCursorWords_delay = 400
 " -----------------------------------------------
 let g:ranger_map_keys = 0
 map <leader>f :Ranger<CR>.
-" -----------------------------------------------
-"
-" -----------------------------------------------
-"  EditorConfig
-" -----------------------------------------------
-let g:EditorConfig_exec_path = '/usr/bin/editorconfig'
-let g:EditorConfig_core_mode = 'external_command'
 
 " -----------------------------------------------
 "  Auto Pairs
