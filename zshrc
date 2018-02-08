@@ -1,7 +1,5 @@
 export ZPLUG_HOME="$HOME/.zplug"
 
-[ -f "$HOME/.export.sh" ] && source "$HOME/.export.sh"
-[ -f "$HOME/.sh_aliases" ] && source "$HOME/.sh_aliases"
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
 
@@ -14,7 +12,7 @@ source ~/.zplug/init.zsh
 
 zplug "zsh-users/zsh-history-substring-search"
 
-zplug "plugins/git",   from:oh-my-zsh, as:plugin
+#zplug "plugins/git",   from:oh-my-zsh, as:plugin
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
@@ -31,9 +29,13 @@ zplug "clvv/fasd", as:command
 zplug "junegunn/fzf", use:shell/key-bindings.zsh
 #zplug "b4b4r07/enhancd", use:init.sh
 #zplug "motemen/ghq", hook-build:"make;make install"
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
 # prompt
-zplug "sindresorhus/pure"
+# zplug "sindresorhus/pure"
+zplug "mgee/slimline"
+export SLIMLINE_CWD_COLOR='yellow'
+export SLIMLINE_PROMPT_SYMBOL='>'
 
 # Can manage local plugins
 zplug "~/.zsh", from:local, if:"[ -d ~/.zsh ]"
@@ -74,6 +76,8 @@ case $HIST_STAMPS in
   *) alias history='fc -l 1' ;;
 esac
 
+alias vi='nvim'
+
 setopt append_history
 setopt extended_history
 setopt hist_expire_dups_first
@@ -83,3 +87,6 @@ setopt hist_verify
 setopt inc_append_history
 # setopt share_history # share command history data
 
+
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

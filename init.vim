@@ -183,7 +183,8 @@ Plug 'jceb/vim-orgmode'
 Plug 'ervandew/supertab'
 Plug 'Shougo/echodoc.vim'
 Plug 'chrisbra/NrrwRgn'
-Plug 'w0rp/ale', Cond(vims ==# 'async')
+" Plug 'w0rp/ale', Cond(vims ==# 'async')
+Plug 'neomake/neomake'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
@@ -258,19 +259,27 @@ let g:jedi#auto_initialization = 1
 " -----------------------------------------------
 " Neomake
 " -----------------------------------------------
-let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'vulture']
+let g:neomake_sh_enabled_markers = ['shellcheck']
+let g:neomake_vim_enabled_markers = ['vint']
+let g:neomake_c_enabled_markers = ['cppcheck', 'clangtidy', 'clang']
+let g:neomake_cpp_enabled_markers = ['cppcheck']
+" npm install jsonlint -g
+let g:neomake_json_enabled_markers = ['jsonlint']
+" let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'vulture', 'pylint']
+let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'pylint']
 " E111,E114 indent should be multiple of 4
 let g:neomake_python_flake8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
 let g:neomake_python_pep8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
+let g:neomake_python_pylint_maker = {'args': ['--ignore=C0111']}
 
-" autocmd! BufWritePost *.py Neomake
-" autocmd! BufReadPost *.py Neomake
+" autocmd! BufWritePost,BufEnter *.py,*.json Neomake
+autocmd! BufWritePost,BufEnter * Neomake
 
 
 " ale
-" let b:ale_linters = ['pylint']
+      " \  'python': ['flake8', 'pylint', 'pep8', 'pycodestyle', 'mypy']
 let g:ale_linters = {
-      \  'python': ['flake8', 'pylint', 'pep8', 'pycodestyle', 'mypy']
+      \  'python': ['flake8', 'pycodestyle']
       \}
 let g:ale_fixers = {
       \  'python': ['autopep8', 'yapf', 'isort']
@@ -280,6 +289,9 @@ let g:ale_python_pylint_options= "--msg-template='{msg_id}:{line:3d},{column}: {
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%][%severity%] %s'
+" if len(readfile(expand('%:p'))) > 1000
+"   let g:ale_lint_on_enter = 0
+" endif
 
 " -----------------------------------------------
 " Fugitive
@@ -580,6 +592,8 @@ map <leader>f :Ranger<CR>.
 " -----------------------------------------------
 let g:AutoPairsShortcutToggle = '<F6>'
 
+" -----------------------------------------------
+let g:vim_json_syntax_conceal = 0
 
 " =======================================================================
 " More Customization
