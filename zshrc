@@ -27,6 +27,7 @@ zplug "marzocchi/zsh-notify"
 zplug "clvv/fasd", as:command
 #zplug "mollifier/anyframe"
 zplug "junegunn/fzf", use:shell/key-bindings.zsh
+zplug "joel-porquet/zsh-dircolors-solarized"
 #zplug "b4b4r07/enhancd", use:init.sh
 #zplug "motemen/ghq", hook-build:"make;make install"
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
@@ -76,8 +77,6 @@ case $HIST_STAMPS in
   *) alias history='fc -l 1' ;;
 esac
 
-alias vi='nvim'
-
 setopt append_history
 setopt extended_history
 setopt hist_expire_dups_first
@@ -87,6 +86,22 @@ setopt hist_verify
 setopt inc_append_history
 # setopt share_history # share command history data
 
+# eval `dircolors ~/.dir_colors/dircolors.256dark`
+source ~/.zsh/zsh-dircolors-solarized/zsh-dircolors-solarized.zsh
+alias grep='grep --color'
+alias ls='ls --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias vi='nvim'
+export EDITOR=nvim
+export VISUAL=nvim
 
+# export PYENV_ROOT="$HOME/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+# if command -v pyenv 1>/dev/null 2>&1; then
+#   eval "$(pyenv init -)"
+# fi
+# eval "$(pyenv virtualenv-init -)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
