@@ -105,16 +105,12 @@ call plug#begin('~/.vim/plugged')
 endif
 
 Plug 'junegunn/seoul256.vim'
-Plug 'trevordmiller/nova-vim'
 
-" Plug 'mhinz/vim-galore'
-" Plug 'sheerun/vim-polyglot'
-Plug 'ryanoasis/vim-devicons'
 Plug 'honza/vim-snippets'
 
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-  Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
+  " Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
   Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -133,13 +129,9 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
-" Plug 'ciaranm/detectindent'
-" Plug 'luochen1990/indent-detector.vim'
-" Plug 'Shougo/neoyank.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
 Plug 'mhinz/vim-startify'
@@ -149,23 +141,13 @@ Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'SirVer/ultisnips'
 Plug 'itchyny/lightline.vim'
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
 Plug 'ludovicchabant/vim-gutentags'
-" Plug 'wesleyche/SrcExpl'
-" Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-" Plug 'mileszs/ack.vim'
-" Plug 'junegunn/vim-pseudocl'
-" Plug 'junegunn/vim-oblique'
 Plug 'tpope/vim-commentary'
-" Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
-" Plug 'lambdalisue/gina.vim'
 Plug 'jreybert/vimagit'
 Plug 'obxhdx/vim-auto-highlight'
-" Plug 'editorconfig/editorconfig-vim'
 Plug 'taohex/lightline-buffer'
 Plug 'kana/vim-textobj-user'
   Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
@@ -182,38 +164,58 @@ Plug 'tpope/vim-unimpaired'
 Plug 'jceb/vim-orgmode'
 Plug 'ervandew/supertab'
 Plug 'Shougo/echodoc.vim'
-Plug 'chrisbra/NrrwRgn'
-" Plug 'w0rp/ale', Cond(vims ==# 'async')
 Plug 'neomake/neomake'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
 Plug 'junegunn/vim-slash'
-" Plug 'Chiel92/vim-autoformat'
 
 
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 Plug 'Shougo/neco-vim', { 'for': 'vim' }
 Plug 'Shougo/neco-syntax', { 'for': 'vim' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'elzr/vim-json', { 'for': 'json' }
-Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
 Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
-" Plug 'zchee/deoplete-clang', {'for': 'c'}
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+" Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
-Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
-Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
-Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
-Plug 'moll/vim-node', { 'for': 'javascript' }
-
 call plug#end()
 
+" Unused
+" Plug 'trevordmiller/nova-vim'
+" Plug 'mhinz/vim-galore'
+" Plug 'sheerun/vim-polyglot'
+" Plug 'ryanoasis/vim-devicons'
+" Plug 'ciaranm/detectindent'
+" Plug 'luochen1990/indent-detector.vim'
+" Plug 'Shougo/neoyank.vim'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+" Plug 'wesleyche/SrcExpl'
+" Plug 'vimwiki/vimwiki'
+" Plug 'mileszs/ack.vim'
+" Plug 'junegunn/vim-pseudocl'
+" Plug 'junegunn/vim-oblique'
+" Plug 'airblade/vim-rooter'
+" Plug 'lambdalisue/gina.vim'
+" Plug 'editorconfig/editorconfig-vim'
+" Plug 'w0rp/ale', Cond(vims ==# 'async')
+" Plug 'Chiel92/vim-autoformat'
+" Plug 'zchee/deoplete-clang', {'for': 'c'}
+" Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+" Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+" Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
+" Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+" Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
+" Plug 'moll/vim-node', { 'for': 'javascript' }
+" Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" Plug 'chrisbra/NrrwRgn'
+" Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+" Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+
+"
 colo seoul256
 " colo nova
 
