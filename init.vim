@@ -110,8 +110,8 @@ Plug 'honza/vim-snippets'
 
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-  " Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
-  Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
+  Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
+  " Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif v:version == 800

@@ -56,7 +56,7 @@ else
 
   PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
   PS1="\[\e[36m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
-  PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
+  # PS1="\[\e[36m\]\u\[\e[1;32m\]@ \[\e[0;33m\]"
   PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
 fi
 
@@ -256,7 +256,6 @@ gr() {
   cut -d$'\t' -f1
 }
 
-
 cf() {
   local file
 
@@ -412,5 +411,5 @@ fi
 
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+  # eval "$(pyenv virtualenv-init -)"
 fi
