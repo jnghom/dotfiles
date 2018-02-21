@@ -46,30 +46,50 @@ export BLOX_BLOCK__SYMBOL_SYMBOL='>'
 # setopt PROMPT_SUBST
 # zplug "caiogondim/bullet-train.zsh", use:bullet-train.zsh-theme, defer:3
 
-# zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-export SPACESHIP_PYENV_SHOW=true
-export SPACESHIP_PYENV_SYMBOL=''
-SPACESHIP_PYENV_PREFIX='Py['
-SPACESHIP_PYENV_SUFFIX=']'
+zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+SPACESHIP_PROMPT_ADD_NEWLINE=false
+SPACESHIP_CHAR_SYMBOL='>'
+SPACESHIP_CHAR_SUFFIX=' '
+SPACESHIP_USER_SHOW='needed'
+SPACESHIP_HOST_SHOW=true
+SPACESHIP_DIR_COLOR=142
+SPACESHIP_DIR_PREFIX=''
+SPACESHIP_HOST_COLOR=064
+SPACESHIP_HOST_COLOR_SSH=064
+
 SPACESHIP_PROMPT_ORDER=(
-  time
   user
+  host
   dir
+  char
+)
+SPACESHIP_RPROMPT_ORDER=(
+  exec_time
+  time
   git
   pyenv
   jobs
   exit_code
-  char
 )
+
+export SPACESHIP_PYENV_SHOW=true
+export SPACESHIP_PYENV_SYMBOL=''
+# SPACESHIP_PYENV_PREFIX='Py['
+SPACESHIP_PYENV_PREFIX='🐍 '
+SPACESHIP_PYENV_SUFFIX=' '
+SPACESHIP_PYENV_COLOR='green'
+
 SPACESHIP_GIT_BRANCH_SHOW=true
 SPACESHIP_GIT_STATUS_SHOW=true
+SPACESHIP_GIT_PREFIX=''
+SPACESHIP_GIT_SUFFIX=' '
 SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
 # zplug "eendroroy/alien"
 # zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 setopt prompt_subst
 # PS1='%n@%m $(shrink_path -f) > '
-zplug "agkozak/agkozak-zsh-theme"
+# zplug "agkozak/agkozak-zsh-theme"
 AGKOZAK_PROMPT_DIRTRIM=4
 
 # Can manage local plugins
@@ -105,8 +125,8 @@ if [ -z "$HISTFILE" ]; then
     HISTFILE=$HOME/.zsh_history
 fi
 
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=10000000
+SAVEHIST=10000000
 
 # Show history
 case $HIST_STAMPS in
@@ -139,16 +159,10 @@ export VISUAL=nvim
 export USER_BIN="$HOME/usr/bin"
 export PATH=$USER_BIN:$PATH
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  # eval "$(pyenv virtualenv-init -)"
-fi
-
 is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
 }
+
 # Switch tmux-sessions
 fs() {
   local session
@@ -355,7 +369,7 @@ if [ -n "$TMUX_PANE" ]; then
   }
 
   # Bind CTRL-X-CTRL-T to tmuxwords.sh
-  bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
+  # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
