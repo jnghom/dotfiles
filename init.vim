@@ -98,6 +98,7 @@ function! Cond(cond, ...)
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
 
+
 if has('nvim')
 call plug#begin('~/.local/share/nvim/plugged')
 else
@@ -147,7 +148,6 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'jreybert/vimagit'
-Plug 'obxhdx/vim-auto-highlight'
 Plug 'taohex/lightline-buffer'
 Plug 'kana/vim-textobj-user'
   Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
@@ -164,19 +164,18 @@ Plug 'tpope/vim-unimpaired'
 Plug 'jceb/vim-orgmode'
 Plug 'ervandew/supertab'
 Plug 'Shougo/echodoc.vim'
-Plug 'neomake/neomake'
+Plug 'w0rp/ale', Cond(vims ==# 'async')
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
 Plug 'junegunn/vim-slash'
 
-
 Plug 'Shougo/neco-vim', { 'for': 'vim' }
 Plug 'Shougo/neco-syntax', { 'for': 'vim' }
 Plug 'elzr/vim-json', { 'for': 'json' }
 Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
-Plug 'tweekmonster/deoplete-clang2', Cond(vims ==# 'async', {'for': 'c'})
+Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
 " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 call plug#end()
@@ -199,9 +198,7 @@ call plug#end()
 " Plug 'airblade/vim-rooter'
 " Plug 'lambdalisue/gina.vim'
 " Plug 'editorconfig/editorconfig-vim'
-" Plug 'w0rp/ale', Cond(vims ==# 'async')
 " Plug 'Chiel92/vim-autoformat'
-" Plug 'zchee/deoplete-clang', {'for': 'c'}
 " Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
 " Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 " Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
@@ -210,9 +207,9 @@ call plug#end()
 " Plug 'moll/vim-node', { 'for': 'javascript' }
 " Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Plug 'chrisbra/NrrwRgn'
-" Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
-" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 " Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 
 "
@@ -236,11 +233,7 @@ let g:deoplete#auto_complete_start_length = 1
 let g:deoplete#sources#jedi#enable_cache = 1
 let g:deoplete#sources#jedi#show_docstring = 1
 
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/libclang.so'
-let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
-let g:deoplete#sources#clang#std#c = 'c11'
-let g:deoplete#sources#clang#std#cpp = 'c++1z'
-let g:deoplete#sources#clang#sort_algo = 'priority'
+let g:deoplete#sources#jedi#server_timeout = 60
 
 " Let <Tab> also do completion
 inoremap <silent><expr> <Tab>
@@ -254,43 +247,27 @@ inoremap <silent><expr> <Tab>
 " -----------------------------------------------
 " jedi-vim
 " -----------------------------------------------
-let g:jedi#completions_enabled = 0
+let g:jedi#completions_enabled = 1
 let g:jedi#auto_initialization = 1
 
 
-" -----------------------------------------------
-" Neomake
-" -----------------------------------------------
-let g:neomake_sh_enabled_markers = ['shellcheck']
-let g:neomake_vim_enabled_markers = ['vint']
-let g:neomake_c_enabled_markers = ['cppcheck', 'clangtidy', 'clang']
-let g:neomake_cpp_enabled_markers = ['cppcheck']
-" npm install jsonlint -g
-let g:neomake_json_enabled_markers = ['jsonlint']
-" let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'vulture', 'pylint']
-let g:neomake_python_enabled_makers = ['flake8', 'pep8', 'pylint']
-" E111,E114 indent should be multiple of 4
-let g:neomake_python_flake8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
-let g:neomake_python_pep8_maker = {'args': ['--ignore=E111,E114,E115,E266,E501']}
-let g:neomake_python_pylint_maker = {'args': ['--ignore=C0111']}
-
-" autocmd! BufWritePost,BufEnter *.py,*.json Neomake
-autocmd! BufWritePost,BufEnter * Neomake
-
-
 " ale
-      " \  'python': ['flake8', 'pylint', 'pep8', 'pycodestyle', 'mypy']
 let g:ale_linters = {
-      \  'python': ['flake8', 'pycodestyle']
+      \  'python': ['flake8', 'pylint', 'pycodestyle']
       \}
 let g:ale_fixers = {
       \  'python': ['autopep8', 'yapf', 'isort']
       \}
-let g:ale_python_pylint_options= "--msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
+let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
+let g:ale_python_flake8_options = "--ignore=E111,E114,E501"
+let g:ale_python_pycodestyle_options = "--ignore=E111,E114,E501"
 
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%][%severity%] %s'
+let g:ale_echo_msg_format = '[%linter%][%code%] %s'
+let g:ale_lint_on_text_changed = 'never'
+" let g:ale_echo_delay = 10000
+" let g:ale_echo_cursor = 0
 " if len(readfile(expand('%:p'))) > 1000
 "   let g:ale_lint_on_enter = 0
 " endif
@@ -707,6 +684,25 @@ noremap cp yap<S-}>p
 
 autocmd FileType help noremap <buffer> q :q<cr>
 autocmd FileType man noremap <buffer> q :q<cr>
+
+" file is large from 10mb
+" let g:LargeFile = 1024 * 1024 * 10
+" augroup LargeFile 
+"  autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
+" augroup END
+
+" function LargeFile()
+"  " no syntax highlighting etc
+"  set eventignore+=FileType
+"  " save memory when other file is viewed
+"  setlocal bufhidden=unload
+"  " is read-only (write with :w new_filename)
+"  setlocal buftype=nowrite
+"  " no undo possible
+"  setlocal undolevels=-1
+"  " display message
+"  autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed (see .vimrc for details)."
+" endfunction
 
 " -----------------------------------------------
 " Expand region

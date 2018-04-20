@@ -34,7 +34,11 @@ zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
 
 # prompt
+# zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 # zplug "sindresorhus/pure"
+
+# zplug "geometry-zsh/geometry"
+GEOMETRY_COLOR_DIR=142
 
 # zplug "mgee/slimline"
 export SLIMLINE_CWD_COLOR='yellow'
@@ -85,7 +89,6 @@ SPACESHIP_GIT_PREFIX=''
 SPACESHIP_GIT_SUFFIX=' '
 SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
 # zplug "eendroroy/alien"
-# zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 setopt prompt_subst
 # PS1='%n@%m $(shrink_path -f) > '
@@ -117,7 +120,6 @@ mkcscope() {
     cscope -i cscope.files
 }
 
-# setopt inc_append_history
 # setopt share_history
 
 ## Command history configuration
@@ -372,4 +374,3 @@ if [ -n "$TMUX_PANE" ]; then
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
