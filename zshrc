@@ -6,13 +6,9 @@ export ZPLUG_HOME="$HOME/.zplug"
 if [ ! -f ~/.zplug/init.zsh ]; then
   echo "install zplug"
   git clone https://github.com/zplug/zplug $ZPLUG_HOME
-#  curl -sL --proto-redir -all,https https://zplug.sh/installer | zsh
 fi
 source ~/.zplug/init.zsh
 
-zplug "zsh-users/zsh-history-substring-search"
-
-#zplug "plugins/git",   from:oh-my-zsh, as:plugin
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
@@ -25,82 +21,83 @@ zplug "mafredri/zsh-async"
 zplug "supercrabtree/k"
 zplug "marzocchi/zsh-notify"
 zplug "clvv/fasd", as:command
-#zplug "mollifier/anyframe"
 zplug "junegunn/fzf", use:shell/key-bindings.zsh
-# zplug "joel-porquet/zsh-dircolors-solarized"
-#zplug "b4b4r07/enhancd", use:init.sh
-#zplug "motemen/ghq", hook-build:"make;make install"
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
+zplug "b4b4r07/enhancd", use:init.sh
+zplug "urbainvaes/fzf-marks"
+export ENHANCD_COMMAND=c
 
-# prompt
 # zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 # zplug "sindresorhus/pure"
 
-# zplug "geometry-zsh/geometry"
-GEOMETRY_COLOR_DIR=142
+# zplug "geometry-zsh/geometry", hook-load:my_geometry_init
+# my_geometry_init() {
+#   GEOMETRY_COLOR_DIR=142
+# }
 
-# zplug "mgee/slimline"
-export SLIMLINE_CWD_COLOR='yellow'
-export SLIMLINE_PROMPT_SYMBOL='>'
+# zplug "mgee/slimline", hook-load:my_slimline_init
+# my_slimline_init() {
+#   export SLIMLINE_CWD_COLOR='yellow'
+# #   export SLIMLINE_PROMPT_SYMBOL='>'
+# }
 
-# zplug "yardnsm/blox-zsh-theme"
-export BLOX_BLOCK__SYMBOL_SYMBOL='>'
+# zplug "yardnsm/blox-zsh-theme", hook-load:my_blox_zsh_theme_init
+# my_blox_zsh_theme_init() {
+#   export BLOX_BLOCK__SYMBOL_SYMBOL='>'
+# }
 
-# setopt PROMPT_SUBST
-# zplug "caiogondim/bullet-train.zsh", use:bullet-train.zsh-theme, defer:3
+function my_prompt_dir {
+  echo -n %{$fg[yellow]%}
+  echo -n $(pwd | sed -e "s,^$HOME,~,")
+  echo -n %{$reset_color%}
+}
 
-zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_CHAR_SYMBOL='>'
-SPACESHIP_CHAR_SUFFIX=' '
-SPACESHIP_USER_SHOW='needed'
-SPACESHIP_HOST_SHOW=true
-SPACESHIP_DIR_COLOR=142
-SPACESHIP_DIR_PREFIX=''
-SPACESHIP_HOST_COLOR=064
-SPACESHIP_HOST_COLOR_SSH=064
+# PROMPT="%{$fg[yellow]%}$(my_prompt_dir)%{$reset_color%}"
+# PROMPT="$(my_prompt_dir)"
 
-SPACESHIP_PROMPT_ORDER=(
-  user
-  host
-  dir
-  char
-)
-SPACESHIP_RPROMPT_ORDER=(
-  exec_time
-  time
-  git
-  pyenv
-  jobs
-  exit_code
-)
+zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme, hook-load:my_spaceship_prompt_init
+my_spaceship_prompt_init() {
+  SPACESHIP_PROMPT_ADD_NEWLINE=false
+  SPACESHIP_CHAR_SYMBOL='>'
+  SPACESHIP_CHAR_SUFFIX=' '
+  SPACESHIP_USER_SHOW='needed'
+  SPACESHIP_HOST_SHOW=true
+  SPACESHIP_DIR_COLOR=142
+  SPACESHIP_DIR_PREFIX=''
+  SPACESHIP_HOST_COLOR=064
+  SPACESHIP_HOST_COLOR_SSH=064
 
-export SPACESHIP_PYENV_SHOW=true
-export SPACESHIP_PYENV_SYMBOL=''
-# SPACESHIP_PYENV_PREFIX='Py['
-SPACESHIP_PYENV_PREFIX='🐍 '
-SPACESHIP_PYENV_SUFFIX=' '
-SPACESHIP_PYENV_COLOR='green'
+  SPACESHIP_PROMPT_ORDER=(
+    user
+    host
+    dir
+    char
+  )
+  SPACESHIP_RPROMPT_ORDER=(
+    exec_time
+    time
+    git
+    pyenv
+    jobs
+    exit_code
+  )
+  export SPACESHIP_PYENV_SHOW=true
+  export SPACESHIP_PYENV_SYMBOL=''
+  SPACESHIP_PYENV_PREFIX='🐍 '
+  SPACESHIP_PYENV_SUFFIX=' '
+  SPACESHIP_PYENV_COLOR='green'
 
-SPACESHIP_GIT_BRANCH_SHOW=true
-SPACESHIP_GIT_STATUS_SHOW=true
-SPACESHIP_GIT_PREFIX=''
-SPACESHIP_GIT_SUFFIX=' '
-SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
-# zplug "eendroroy/alien"
-
-setopt prompt_subst
-# PS1='%n@%m $(shrink_path -f) > '
-# zplug "agkozak/agkozak-zsh-theme"
-AGKOZAK_PROMPT_DIRTRIM=4
+  SPACESHIP_GIT_BRANCH_SHOW=true
+  SPACESHIP_GIT_STATUS_SHOW=true
+  SPACESHIP_GIT_PREFIX=''
+  SPACESHIP_GIT_SUFFIX=' '
+  SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
+}
 
 # Can manage local plugins
 zplug "~/.zsh", from:local, if:"[ -d ~/.zsh ]"
 
-# if zplug check joel-porquet/zsh-dircolors-solarized; then
-#     setupsolarized dircolors.256dark
-# fi
 [ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
 # Install plugins if there are plugins that have not been installed
@@ -147,8 +144,6 @@ setopt hist_verify
 setopt inc_append_history
 # setopt share_history # share command history data
 
-# eval `dircolors ~/.dir_colors/dircolors.256dark`
-# source ~/.zsh/zsh-dircolors-solarized/zsh-dircolors-solarized.zsh
 alias grep='grep --color'
 alias ls='ls --color=auto'
 alias ..='cd ..'
@@ -374,3 +369,5 @@ if [ -n "$TMUX_PANE" ]; then
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

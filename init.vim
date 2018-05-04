@@ -178,6 +178,11 @@ Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
 Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
 " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
 call plug#end()
 
 " Unused
@@ -207,9 +212,6 @@ call plug#end()
 " Plug 'moll/vim-node', { 'for': 'javascript' }
 " Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Plug 'chrisbra/NrrwRgn'
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
-Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 " Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 
 "
@@ -253,10 +255,15 @@ let g:jedi#auto_initialization = 1
 
 " ale
 let g:ale_linters = {
-      \  'python': ['flake8', 'pylint', 'pycodestyle']
+      \  'python': ['flake8', 'pylint', 'pycodestyle'],
+      \  'javascript': ['eslint', 'flow'],
+      \  'html': ['alex'],
+      \  'css': ['csslint']
       \}
 let g:ale_fixers = {
-      \  'python': ['autopep8', 'yapf', 'isort']
+      \  'python': ['autopep8', 'yapf', 'isort'],
+      \  'javascript': ['eslint', 'prettier'],
+      \  'css': ['prettier']
       \}
 let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
 let g:ale_python_flake8_options = "--ignore=E111,E114,E501"
