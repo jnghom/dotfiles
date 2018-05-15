@@ -15,6 +15,8 @@ zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "plugins/command-not-found", from:oh-my-zsh
 zplug "plugins/history", from:oh-my-zsh, as:plugin
+zplug "plugins/extract", from:oh-my-zsh
+zplug "plugins/history", from:oh-my-zsh, as:plugin
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "chrissicool/zsh-256color"
 zplug "mafredri/zsh-async"
@@ -22,10 +24,10 @@ zplug "supercrabtree/k"
 zplug "marzocchi/zsh-notify"
 zplug "clvv/fasd", as:command
 zplug "junegunn/fzf", use:shell/key-bindings.zsh
-zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
 zplug "b4b4r07/enhancd", use:init.sh
 zplug "urbainvaes/fzf-marks"
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 export ENHANCD_COMMAND=c
 
 # zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
@@ -35,6 +37,19 @@ export ENHANCD_COMMAND=c
 # my_geometry_init() {
 #   GEOMETRY_COLOR_DIR=142
 # }
+
+# export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git hg pyenv)
+export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git pyenv)
+
+geometry_prompt_pyenvs_setup() { true; }
+geometry_prompt_pyenvs_check() {
+  if ! type pyenv > /dev/null; then
+    return 1
+  fi
+}
+geometry_prompt_pyenvs_render() {
+  echo $(pyenv version | awk '{print $1}')
+}
 
 # zplug "mgee/slimline", hook-load:my_slimline_init
 # my_slimline_init() {
@@ -55,6 +70,15 @@ function my_prompt_dir {
 
 # PROMPT="%{$fg[yellow]%}$(my_prompt_dir)%{$reset_color%}"
 # PROMPT="$(my_prompt_dir)"
+
+#setopt prompt_subst
+#PS1='%n@%m $(shrink_path -f)>'
+
+function get_pwd() {
+}
+
+
+
 
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme, hook-load:my_spaceship_prompt_init
 my_spaceship_prompt_init() {
