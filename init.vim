@@ -183,6 +183,19 @@ Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+" Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+" Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
+" Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+" Plug 'parsonsmatt/intero-neovim', { 'for': 'haskell' }
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+" Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
 call plug#end()
 
 " Unused
@@ -204,10 +217,6 @@ call plug#end()
 " Plug 'lambdalisue/gina.vim'
 " Plug 'editorconfig/editorconfig-vim'
 " Plug 'Chiel92/vim-autoformat'
-" Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
-" Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-" Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
-" Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
 " Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
 " Plug 'moll/vim-node', { 'for': 'javascript' }
 " Plug 'jeffkreeftmeijer/vim-numbertoggle'
@@ -222,6 +231,18 @@ colo seoul256
 " =======================================================================
 " Plugin Setting
 " =======================================================================
+
+let g:LanguageClient_serverCommands = {
+    \ 'haskell': ['hie', '--lsp'],
+    \ }
+augroup forhaskell
+  autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+  autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+  autocmd FileType haskell nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+  " autocmd FileType haskell setlocal formatprg=hindent
+augroup END
+
+let g:haskell_indent_disable = 1
 
 " -----------------------------------------------
 " Deoplete
@@ -252,7 +273,7 @@ inoremap <silent><expr> <Tab>
 let g:jedi#completions_enabled = 1
 let g:jedi#auto_initialization = 1
 
-
+      " \  'haskell': ['stack ghc', 'hlint', 'hdevtools']
 " ale
 let g:ale_linters = {
       \  'python': ['flake8', 'pylint', 'pycodestyle'],
@@ -271,8 +292,8 @@ let g:ale_fixers = {
       \  'css': ['prettier']
       \}
 let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
-let g:ale_python_flake8_options = "--ignore=E111,E114,E501"
-let g:ale_python_pycodestyle_options = "--ignore=E111,E114,E501"
+let g:ale_python_flake8_options = '--ignore=E111,E114,E501'
+let g:ale_python_pycodestyle_options = '--ignore=E111,E114,E501'
 
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'

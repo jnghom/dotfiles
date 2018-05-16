@@ -179,6 +179,7 @@ export VISUAL=nvim
 
 export USER_BIN="$HOME/usr/bin"
 export PATH=$USER_BIN:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 [ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
 [ -f $HOME/.rgignore ] && alias rg='rg --ignore-file $HOME/.rgignore'
