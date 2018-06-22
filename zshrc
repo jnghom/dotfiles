@@ -16,7 +16,6 @@ zplug "zsh-users/zsh-autosuggestions"
 zplug "plugins/command-not-found", from:oh-my-zsh
 zplug "plugins/history", from:oh-my-zsh, as:plugin
 zplug "plugins/extract", from:oh-my-zsh
-zplug "plugins/history", from:oh-my-zsh, as:plugin
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "chrissicool/zsh-256color"
 zplug "mafredri/zsh-async"
@@ -33,13 +32,16 @@ export ENHANCD_COMMAND=c
 # zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 # zplug "sindresorhus/pure"
 
-# zplug "geometry-zsh/geometry", hook-load:my_geometry_init
-# my_geometry_init() {
-#   GEOMETRY_COLOR_DIR=142
-# }
+my_geometry_init() {
+  GEOMETRY_COLOR_DIR=142
+  GEOMETRY_SYMBOL_PROMPT="$"
+}
+my_geometry_init
+
+zplug "geometry-zsh/geometry", hook-load:my_geometry_init
 
 # export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git hg pyenv)
-export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git pyenv)
+export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git pyenvs)
 
 geometry_prompt_pyenvs_setup() { true; }
 geometry_prompt_pyenvs_check() {
@@ -397,5 +399,6 @@ if [ -n "$TMUX_PANE" ]; then
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
 
+export LANG=en_US.UTF-8
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

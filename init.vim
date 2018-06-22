@@ -232,6 +232,7 @@ colo seoul256
 " Plugin Setting
 " =======================================================================
 
+let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie', '--lsp'],
     \ }
