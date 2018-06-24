@@ -180,8 +180,8 @@ Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
-Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
@@ -235,6 +235,8 @@ colo seoul256
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie', '--lsp'],
+    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio']
     \ }
 augroup forhaskell
   autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
@@ -298,7 +300,9 @@ let g:ale_python_pycodestyle_options = '--ignore=E111,E114,E501'
 
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%][%code%] %s'
+  " let g:ale_echo_msg_format = '[%linter%][%code%] %s'
+autocmd FileType * let g:ale_echo_msg_format = '[%code%] %s'
+autocmd FileType python let g:ale_echo_msg_format = '[%linter%][%code%] %s'
 let g:ale_lint_on_text_changed = 'never'
 " let g:ale_echo_delay = 10000
 " let g:ale_echo_cursor = 0

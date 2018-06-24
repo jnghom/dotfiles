@@ -24,5 +24,8 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
   # eval "$(pyenv virtualenv-init -)"
 fi
+export YARN_BIN="$HOME/.yarn/bin"
+export PATH="$YARN_BIN:$HOME/.cargo/bin:$PATH"
 
-export PATH="$HOME/.cargo/bin:$PATH"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
