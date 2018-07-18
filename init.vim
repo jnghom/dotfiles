@@ -113,13 +113,12 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
   " Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-elseif v:version == 800
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-  Plug 'Shougo/deoplete.nvim'
-endif
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" elseif v:version == 800
+"   Plug 'roxma/vim-hug-neovim-rpc'
+"   Plug 'Shougo/deoplete.nvim'
+" endif
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-fugitive'
@@ -171,16 +170,35 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
 " Plug 'junegunn/vim-slash'
 
+" deopete
+" Plug 'Shougo/deoplete.nvim'
+" Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
+" Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+
+" ncm2
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+" :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect"
+" CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
+inoremap <c-c> <ESC>
+Plug 'roxma/nvim-yarp'
+Plug 'ncm2/ncm2'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'ncm2/ncm2-tmux'
+Plug 'ncm2/ncm2-path'
+Plug 'ncm2/ncm2-bufword'
+" Plug 'ncm2/ncm2-jedi'
+
+
 Plug 'Shougo/neco-vim', { 'for': 'vim' }
 Plug 'Shougo/neco-syntax', { 'for': 'vim' }
 Plug 'elzr/vim-json', { 'for': 'json' }
-Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
-Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
 " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 " Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -196,6 +214,7 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'do': 'bash install.sh',
     \ }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
+Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'trevordmiller/nova-vim'
 Plug 'mswift42/vim-themes'
 Plug 'morhetz/gruvbox'
@@ -250,10 +269,14 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 
+let g:LanguageClient_loggingFile = '/tmp/lc.log'
+let g:LanguageClient_loggingLevel = 'DEBUG'
+
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
 " augroup forhaskell
 "   autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 "   autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
@@ -278,9 +301,15 @@ let g:deoplete#sources#jedi#show_docstring = 1
 let g:deoplete#sources#jedi#server_timeout = 60
 
 " Let <Tab> also do completion
-inoremap <silent><expr> <Tab>
-\ pumvisible() ? "\<C-n>" :
-\ deoplete#mappings#manual_complete()
+" inoremap <silent><expr> <Tab>
+" \ pumvisible() ? "\<C-n>" :
+" \ deoplete#mappings#manual_complete()
+
+" FIXME
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
 
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 " autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
@@ -293,9 +322,9 @@ let g:jedi#completions_enabled = 1
 let g:jedi#auto_initialization = 1
 
       " \  'haskell': ['stack ghc', 'hlint', 'hdevtools']
+      " \  'python': ['flake8', 'pylint', 'pycodestyle'],
 " ale
 let g:ale_linters = {
-      \  'python': ['flake8', 'pylint', 'pycodestyle'],
       \  'javascript': ['eslint', 'flow'],
       \  'html': ['alex'],
       \  'vim': ['vint'],
@@ -305,14 +334,16 @@ let g:ale_linters = {
       \  'css': ['csslint'],
       \  'sh': ['shellcheck'],
       \}
+      " \  'python': ['autopep8', 'yapf', 'isort'],
 let g:ale_fixers = {
-      \  'python': ['autopep8', 'yapf', 'isort'],
       \  'javascript': ['eslint', 'prettier'],
       \  'css': ['prettier']
       \}
 let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
 let g:ale_python_flake8_options = '--ignore=E111,E114,E501'
 let g:ale_python_pycodestyle_options = '--ignore=E111,E114,E501'
+
+" let g:ale_completion_enabled = 1
 
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -707,7 +738,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 " nmap <F7> :SrcExplToggle<CR>
 " Strip all trailing whitespace
 nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
-nnoremap <F5> :%s/\r/\r/g<CR>
+" nnoremap <F5> :%s/\r/\r/g<CR>
 nnoremap <F7> :%!python -m json.tool<CR>
 nnoremap <F8> :TagbarToggle<CR>
 nnoremap <F9> :NERDTreeToggle<CR>

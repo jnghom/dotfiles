@@ -80,9 +80,7 @@ function get_pwd() {
 }
 
 
-
-
-zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme, hook-load:my_spaceship_prompt_init
+# zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme, hook-load:my_spaceship_prompt_init
 my_spaceship_prompt_init() {
   SPACESHIP_PROMPT_ADD_NEWLINE=false
   SPACESHIP_CHAR_SYMBOL='>'
