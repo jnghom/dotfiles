@@ -169,7 +169,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
-Plug 'junegunn/vim-slash'
+" Plug 'junegunn/vim-slash'
 
 Plug 'Shougo/neco-vim', { 'for': 'vim' }
 Plug 'Shougo/neco-syntax', { 'for': 'vim' }
@@ -196,10 +196,14 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'do': 'bash install.sh',
     \ }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
+Plug 'trevordmiller/nova-vim'
+Plug 'mswift42/vim-themes'
+Plug 'morhetz/gruvbox'
+Plug 'dracula/vim', {'as': 'dracula'}
+Plug 'liuchengxu/space-vim-dark'
 call plug#end()
 
 " Unused
-" Plug 'trevordmiller/nova-vim'
 " Plug 'mhinz/vim-galore'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'ryanoasis/vim-devicons'
@@ -225,7 +229,13 @@ call plug#end()
 
 "
 colo seoul256
+" colo gruvbox
+" colo dracula
+" colo darktooth
+" colo space-vim-dark
 " colo nova
+"
+hi Comment cterm=italic
 
 
 " =======================================================================
@@ -236,14 +246,20 @@ let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie', '--lsp'],
     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio']
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'python': ['pyls'],
     \ }
-augroup forhaskell
-  autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-  autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-  autocmd FileType haskell nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-  " autocmd FileType haskell setlocal formatprg=hindent
-augroup END
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+" augroup forhaskell
+"   autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+"   autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+"   autocmd FileType haskell nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+"   " autocmd FileType haskell setlocal formatprg=hindent
+" augroup END
 
 let g:haskell_indent_disable = 1
 

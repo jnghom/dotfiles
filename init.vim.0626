@@ -196,10 +196,14 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'do': 'bash install.sh',
     \ }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
+Plug 'trevordmiller/nova-vim'
+Plug 'mswift42/vim-themes'
+Plug 'morhetz/gruvbox'
+Plug 'dracula/vim', {'as': 'dracula'}
+Plug 'liuchengxu/space-vim-dark'
 call plug#end()
 
 " Unused
-" Plug 'trevordmiller/nova-vim'
 " Plug 'mhinz/vim-galore'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'ryanoasis/vim-devicons'
@@ -225,7 +229,13 @@ call plug#end()
 
 "
 colo seoul256
+" colo gruvbox
+" colo dracula
+" colo darktooth
+" colo space-vim-dark
 " colo nova
+"
+hi Comment cterm=italic
 
 
 " =======================================================================
