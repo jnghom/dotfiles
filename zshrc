@@ -1,5 +1,5 @@
 
-# [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
 
 ### Added by Zplugin's installer
@@ -411,6 +411,3 @@ if [ -n "$TMUX_PANE" ]; then
   # Bind CTRL-X-CTRL-T to tmuxwords.sh
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
-
-
-

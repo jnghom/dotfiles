@@ -48,3 +48,14 @@ if type cargo > /dev/null ; then
   export EDITOR=nvim
   export VISUAL=nvim
 fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  # export PATH=$PATH:/usr/local/go/bin
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
+fi
+
+if type hub > /dev/null ; then
+  eval "$(hub alias -s)"
+fi
