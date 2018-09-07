@@ -1,58 +1,91 @@
-export ZPLUG_HOME="$HOME/.zplug"
 
-[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+# [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
 
-if [ ! -f ~/.zplug/init.zsh ]; then
-  echo "install zplug"
-  git clone https://github.com/zplug/zplug $ZPLUG_HOME
-fi
-source ~/.zplug/init.zsh
+### Added by Zplugin's installer
+source "$HOME/.zplugin/bin/zplugin.zsh"
+autoload -Uz _zplugin
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
+### End of Zplugin's installer chunk
+zplugin ice wait'!0'
+zplugin light junegunn/fzf-bin
+zplugin ice wait'!0'
+zplugin light zsh-users/zsh-history-substring-search
+zplugin ice wait'!0'
+zplugin light zsh-users/zsh-syntax-highlighting
+zplugin ice wait'!0'
+zplugin light zsh-users/zsh-completions
+zplugin ice wait'!0'
+zplugin light zsh-users/zsh-autosuggestions
+zplugin ice wait'!3'
+zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+zplugin ice wait'!1'
+zplugin snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
+zplugin ice wait'!1'
+zplugin light chrissicool/zsh-256color
+# zplugin ice wait'!1'
+zplugin light mafredri/zsh-async
+zplugin ice wait'!2'
+zplugin light supercrabtree/k
+zplugin ice wait'!2'
+zplugin light marzocchi/zsh-notify
+zplugin ice wait'!2'
+zplugin light clvv/fasd
+# zplugin ice wait'!1'
+# zplugin light junegunn/fzf  #, use:shell/key-bindings.zsh
+# zplugin light plugins/shrink-path, from:oh-my-zsh, as:plugin
+# zplugin light b4b4r07/enhancd, use:init.sh
+zplugin ice wait'!2'
+zplugin light urbainvaes/fzf-marks
+# zplugin ice wait'!1' atload"setupsolarized dircolors.256dark"
+zplugin ice wait'!0'
+zplugin light joel-porquet/zsh-dircolors-solarized
+# zplugin ice wait'!1'
+# zplugin light denysdovhan/spaceship-prompt
 
-zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-syntax-highlighting"
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions"
-zplug "plugins/command-not-found", from:oh-my-zsh
-zplug "plugins/history", from:oh-my-zsh, as:plugin
-zplug "plugins/extract", from:oh-my-zsh
-zplug "zsh-users/zsh-syntax-highlighting"
-zplug "chrissicool/zsh-256color"
-zplug "mafredri/zsh-async"
-zplug "supercrabtree/k"
-zplug "marzocchi/zsh-notify"
-zplug "clvv/fasd", as:command
-zplug "junegunn/fzf", use:shell/key-bindings.zsh
-zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
-zplug "b4b4r07/enhancd", use:init.sh
-zplug "urbainvaes/fzf-marks"
-zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+# zplug "zsh-users/zsh-history-substring-search"
+# zplug "zsh-users/zsh-syntax-highlighting"
+# zplug "zsh-users/zsh-completions"
+# zplug "zsh-users/zsh-autosuggestions"
+# zplug "plugins/command-not-found", from:oh-my-zsh
+# zplug "plugins/history", from:oh-my-zsh, as:plugin
+# zplug "plugins/extract", from:oh-my-zsh
+# zplug "zsh-users/zsh-syntax-highlighting"
+# zplug "chrissicool/zsh-256color"
+# zplug "mafredri/zsh-async"
+# zplug "supercrabtree/k"
+# zplug "marzocchi/zsh-notify"
+# zplug "clvv/fasd", as:command
+# zplug "junegunn/fzf", use:shell/key-bindings.zsh
+# zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
+# zplug "b4b4r07/enhancd", use:init.sh
+# zplug "urbainvaes/fzf-marks"
+# zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+# zplug "geometry-zsh/geometry", hook-load:my_geometry_init
 export ENHANCD_COMMAND=c
 
 # zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 # zplug "sindresorhus/pure"
 
-my_geometry_init() {
-  GEOMETRY_COLOR_DIR=142
-  GEOMETRY_SYMBOL_PROMPT="$"
-}
-my_geometry_init
+# my_geometry_init
+GEOMETRY_COLOR_DIR=142
+GEOMETRY_SYMBOL_PROMPT="^^"
+GEOMETRY_COLOR_PROMPT=214
+GEOMETRY_PROMPT_PREFIX=""
 
-zplug "geometry-zsh/geometry", hook-load:my_geometry_init
 
-# export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git hg pyenv)
-export GEOMETRY_PROMPT_PLUGINS=(virtualenv exec_time git pyenvs)
+# geometry_prompt_pyenvs_setup() { true; }
+# geometry_prompt_pyenvs_check() {
+#   if ! type pyenv > /dev/null; then
+#     return 1
+#   fi
+# }
+# geometry_prompt_pyenvs_render() {
+#   echo $(pyenv version | awk '{print $1}')
+# }
+export GEOMETRY_PROMPT_PLUGINS=(exec_time git)
 
-geometry_prompt_pyenvs_setup() { true; }
-geometry_prompt_pyenvs_check() {
-  if ! type pyenv > /dev/null; then
-    return 1
-  fi
-}
-geometry_prompt_pyenvs_render() {
-  echo $(pyenv version | awk '{print $1}')
-}
-
+zplugin light geometry-zsh/geometry     #, hook-load:my_geometry_init
 # zplug "mgee/slimline", hook-load:my_slimline_init
 # my_slimline_init() {
 #   export SLIMLINE_CWD_COLOR='yellow'
@@ -64,11 +97,11 @@ geometry_prompt_pyenvs_render() {
 #   export BLOX_BLOCK__SYMBOL_SYMBOL='>'
 # }
 
-function my_prompt_dir {
-  echo -n %{$fg[yellow]%}
-  echo -n $(pwd | sed -e "s,^$HOME,~,")
-  echo -n %{$reset_color%}
-}
+# function my_prompt_dir {
+#   echo -n %{$fg[yellow]%}
+#   echo -n $(pwd | sed -e "s,^$HOME,~,")
+#   echo -n %{$reset_color%}
+# }
 
 # PROMPT="%{$fg[yellow]%}$(my_prompt_dir)%{$reset_color%}"
 # PROMPT="$(my_prompt_dir)"
@@ -76,64 +109,52 @@ function my_prompt_dir {
 #setopt prompt_subst
 #PS1='%n@%m $(shrink_path -f)>'
 
-function get_pwd() {
-}
-
 
 # zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme, hook-load:my_spaceship_prompt_init
-my_spaceship_prompt_init() {
-  SPACESHIP_PROMPT_ADD_NEWLINE=false
-  SPACESHIP_CHAR_SYMBOL='>'
-  SPACESHIP_CHAR_SUFFIX=' '
-  SPACESHIP_USER_SHOW='needed'
-  SPACESHIP_HOST_SHOW=true
-  SPACESHIP_DIR_COLOR=142
-  SPACESHIP_DIR_PREFIX=''
-  SPACESHIP_HOST_COLOR=064
-  SPACESHIP_HOST_COLOR_SSH=064
+# my_spaceship_prompt_init() {
+#   SPACESHIP_PROMPT_ADD_NEWLINE=false
+#   SPACESHIP_CHAR_SYMBOL='>'
+#   SPACESHIP_CHAR_SUFFIX=' '
+#   SPACESHIP_USER_SHOW='needed'
+#   SPACESHIP_HOST_SHOW=true
+#   SPACESHIP_DIR_COLOR=142
+#   SPACESHIP_DIR_PREFIX=''
+#   SPACESHIP_HOST_COLOR=064
+#   SPACESHIP_HOST_COLOR_SSH=064
 
-  SPACESHIP_PROMPT_ORDER=(
-    user
-    host
-    dir
-    char
-  )
-  SPACESHIP_RPROMPT_ORDER=(
-    exec_time
-    time
-    git
-    pyenv
-    jobs
-    exit_code
-  )
-  export SPACESHIP_PYENV_SHOW=true
-  export SPACESHIP_PYENV_SYMBOL=''
-  SPACESHIP_PYENV_PREFIX='🐍 '
-  SPACESHIP_PYENV_SUFFIX=' '
-  SPACESHIP_PYENV_COLOR='green'
+#   SPACESHIP_PROMPT_ORDER=(
+#     user
+#     host
+#     dir
+#     char
+#   )
+#   SPACESHIP_RPROMPT_ORDER=(
+#     exec_time
+#     time
+#     git
+#     pyenv
+#     jobs
+#     exit_code
+#   )
+#   export SPACESHIP_PYENV_SHOW=true
+#   export SPACESHIP_PYENV_SYMBOL=''
+#   SPACESHIP_PYENV_PREFIX='🐍 '
+#   SPACESHIP_PYENV_SUFFIX=' '
+#   SPACESHIP_PYENV_COLOR='green'
 
-  SPACESHIP_GIT_BRANCH_SHOW=true
-  SPACESHIP_GIT_STATUS_SHOW=true
-  SPACESHIP_GIT_PREFIX=''
-  SPACESHIP_GIT_SUFFIX=' '
-  SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
-}
+#   SPACESHIP_GIT_BRANCH_SHOW=true
+#   SPACESHIP_GIT_STATUS_SHOW=true
+#   SPACESHIP_GIT_PREFIX=''
+#   SPACESHIP_GIT_SUFFIX=' '
+#   SPACESHIP_PROMPT_DEFAULT_PREFIX='. '
+# }
+# my_spaceship_prompt_init
 
 # Can manage local plugins
-zplug "~/.zsh", from:local, if:"[ -d ~/.zsh ]"
 
-[ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
+# [ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
-# Install plugins if there are plugins that have not been installed
-if ! zplug check; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
 
-# Then, source plugins and add commands to $PATH
-zplug load
 
 mkcscope() {
     rm -rf cscope.files cscope.files
@@ -174,12 +195,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias vi='nvim'
-export EDITOR=nvim
-export VISUAL=nvim
-
-export USER_BIN="$HOME/usr/bin"
-export PATH=$USER_BIN:$PATH
-# export PATH=$HOME/.local/bin:$PATH
 
 [ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
 [ -f $HOME/.rgignore ] && alias rg='rg --ignore-file $HOME/ws/.rgignore'
@@ -397,6 +412,5 @@ if [ -n "$TMUX_PANE" ]; then
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
 
-export LANG=en_US.UTF-8
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
