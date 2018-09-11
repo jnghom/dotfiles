@@ -32,7 +32,8 @@ zplugin light marzocchi/zsh-notify
 zplugin ice wait'!2'
 zplugin light clvv/fasd
 # zplugin ice wait'!1'
-# zplugin light junegunn/fzf  #, use:shell/key-bindings.zsh
+# zplugin light junegunn/fzf/shell/key-bindings.zsh
+zplugin snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
 # zplugin light plugins/shrink-path, from:oh-my-zsh, as:plugin
 # zplugin light b4b4r07/enhancd, use:init.sh
 zplugin ice wait'!2'

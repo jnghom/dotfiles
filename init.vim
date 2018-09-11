@@ -113,12 +113,13 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
   " Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
-" if has('nvim')
-"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" elseif v:version == 800
-"   Plug 'roxma/vim-hug-neovim-rpc'
-"   Plug 'Shougo/deoplete.nvim'
-" endif
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+elseif v:version == 800
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'Shougo/deoplete.nvim'
+endif
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-fugitive'
@@ -147,7 +148,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'jreybert/vimagit'
-Plug 'taohex/lightline-buffer'
+Plug 'taohexxx/lightline-buffer'
 Plug 'kana/vim-textobj-user'
   Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
   Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
@@ -166,63 +167,50 @@ Plug 'Shougo/echodoc.vim'
 Plug 'w0rp/ale', Cond(vims ==# 'async')
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'matze/vim-move'
-" Plug 'junegunn/vim-slash'
 
-" deopete
-" Plug 'Shougo/deoplete.nvim'
-" Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
-" Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
-" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
-
-" ncm2
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-" :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect"
-" CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-inoremap <c-c> <ESC>
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2'
-Plug 'ncm2/ncm2-ultisnips'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-bufword'
-" Plug 'ncm2/ncm2-jedi'
-
-
-Plug 'Shougo/neco-vim', { 'for': 'vim' }
-Plug 'Shougo/neco-syntax', { 'for': 'vim' }
 Plug 'elzr/vim-json', { 'for': 'json' }
+" Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
+
 " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
+
 Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
-Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
-" Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-" Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
-" Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
-" Plug 'parsonsmatt/intero-neovim', { 'for': 'haskell' }
+
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
-" Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
-Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
-Plug 'trevordmiller/nova-vim'
-Plug 'mswift42/vim-themes'
-Plug 'morhetz/gruvbox'
-Plug 'dracula/vim', {'as': 'dracula'}
-Plug 'liuchengxu/space-vim-dark'
+
 call plug#end()
 
 " Unused
+Plug 'terryma/vim-multiple-cursors'
+
+" Plug 'junegunn/vim-slash'
+
+" Plug 'Shougo/neco-vim', { 'for': 'vim' }
+" Plug 'Shougo/neco-syntax', { 'for': 'vim' }
+" Plug 'tweekmonster/deoplete-clang2', Cond(executable('clang') && vims ==# 'async', {'for': 'c'})
+" Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+" Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
+" Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+" Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+" Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+" Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+" Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+" Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
+" Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+" Plug 'parsonsmatt/intero-neovim', { 'for': 'haskell' }
+" Plug 'trevordmiller/nova-vim'
+" Plug 'mswift42/vim-themes'
+" Plug 'morhetz/gruvbox'
+" Plug 'dracula/vim', {'as': 'dracula'}
+" Plug 'liuchengxu/space-vim-dark'
 " Plug 'mhinz/vim-galore'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'ryanoasis/vim-devicons'
@@ -269,14 +257,10 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 
-let g:LanguageClient_loggingFile = '/tmp/lc.log'
-let g:LanguageClient_loggingLevel = 'DEBUG'
-
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-
 " augroup forhaskell
 "   autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 "   autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
@@ -301,15 +285,9 @@ let g:deoplete#sources#jedi#show_docstring = 1
 let g:deoplete#sources#jedi#server_timeout = 60
 
 " Let <Tab> also do completion
-" inoremap <silent><expr> <Tab>
-" \ pumvisible() ? "\<C-n>" :
-" \ deoplete#mappings#manual_complete()
-
-" FIXME
-" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
+inoremap <silent><expr> <Tab>
+\ pumvisible() ? "\<C-n>" :
+\ deoplete#mappings#manual_complete()
 
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 " autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
@@ -394,6 +372,20 @@ command! -bang -nargs=* Agp
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
 
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+command! -bang -nargs=* Rgw
+  \ call fzf#vim#grep(
+  \   'rg -w --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
 nnoremap <silent> <space><space> :Files<CR>
 nnoremap <silent> <space>a       :Buffers<CR>
 nnoremap <silent> <space>A       :Windows<CR>
@@ -404,9 +396,10 @@ nnoremap <silent> <space>t       :BTags<CR>
 nnoremap <silent> <space>?       :History<CR>
 nnoremap <silent> <space>hs      :History/<CR>
 nnoremap <silent> <space>hc      :History:<CR>
-nnoremap <silent> <space>/       :execute 'Agp ' . input('Ag/')<CR>
+" nnoremap <silent> <space>/       :execute 'Agp ' . input('Ag/')<CR>
+nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
 nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
-nnoremap <silent> **             :call SearchWordWithAgW()<CR>
+nnoremap <silent> **             :call SearchWordWithRgW()<CR>
 vnoremap <silent> **             :call SearchVisualSelectionWithAg()<CR>
 nnoremap <silent> <space>C       :Commits<CR>
 nnoremap <silent> <space>c       :BCommits<CR>
@@ -417,12 +410,8 @@ nnoremap <silent> <space>M       :Marks<CR>
 imap <C-x><C-f> <plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <plug>(fzf-complete-line)
 
-function! SearchWordWithAg()
-  execute 'Agp' expand('<cword>')
-endfunction
-
-function! SearchWordWithAgW()
-  execute 'Agw' expand('<cword>')
+function! SearchWordWithRgW()
+  execute 'Rgw' expand('<cword>')
 endfunction
 
 function! SearchVisualSelectionWithAg() range
@@ -588,36 +577,6 @@ let g:lightline_buffer_minfextlen = 3
 let g:lightline_buffer_reservelen = 20
 
 " -----------------------------------------------
-" Cscope
-" -----------------------------------------------
-function! LoadCscope()
-  let db = findfile("cscope.out", ".;")
-  if (!empty(db))
-    let path = strpart(db, 0, match(db, "/cscope.out$"))
-    set nocscopeverbose " suppress 'duplicate connection' error
-    exe "cs add " . db . " " . path
-    set cscopeverbose
-  endif
-endfunction
-au BufEnter *.c,*.cpp,*.h call LoadCscope()
-
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-
-" -----------------------------------------------
-" Ack
-" -----------------------------------------------
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
-
-" -----------------------------------------------
 " Ultisnips
 " -----------------------------------------------
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -641,13 +600,6 @@ let g:rooter_use_lcd = 1
 " -----------------------------------------------
 let g:detectindent_preffered_expandtab = 1
 let g:detectindent_preffered_indent = 4
-" autocmd BufReadPost * :DetectIndent
-" function! LoadDetectIndent()
-"   if (empty(findfile(".editorconfig", expand('%:p:h') . ';')))
-"     autocmd BufReadPost * :DetectIndent
-"   endif
-" endfunction
-" autocmd BufReadPost * call LoadDetectIndent()
 
 " -----------------------------------------------
 "  Highlight Curwor Words
@@ -778,25 +730,6 @@ noremap cp yap<S-}>p
 
 autocmd FileType help noremap <buffer> q :q<cr>
 autocmd FileType man noremap <buffer> q :q<cr>
-
-" file is large from 10mb
-" let g:LargeFile = 1024 * 1024 * 10
-" augroup LargeFile 
-"  autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
-" augroup END
-
-" function LargeFile()
-"  " no syntax highlighting etc
-"  set eventignore+=FileType
-"  " save memory when other file is viewed
-"  setlocal bufhidden=unload
-"  " is read-only (write with :w new_filename)
-"  setlocal buftype=nowrite
-"  " no undo possible
-"  setlocal undolevels=-1
-"  " display message
-"  autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed (see .vimrc for details)."
-" endfunction
 
 " -----------------------------------------------
 " Expand region
