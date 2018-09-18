@@ -106,13 +106,23 @@ call plug#begin('~/.vim/plugged')
 endif
 
 Plug 'junegunn/seoul256.vim'
-
-Plug 'honza/vim-snippets'
-
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'jiangmiao/auto-pairs'
+Plug 'easymotion/vim-easymotion' " slow
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'tpope/vim-fugitive'
+Plug 'majutsushi/tagbar', Cond(executable('ctags'))
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'junegunn/vim-peekaboo'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Yggdroot/vim-mark'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-dispatch'
+
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
-  " Plug 'pbogut/fzf-mru.vim', Cond(executable('fzf'))
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif v:version == 800
@@ -120,13 +130,8 @@ elseif v:version == 800
   Plug 'roxma/vim-hug-neovim-rpc'
   Plug 'Shougo/deoplete.nvim'
 endif
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-fugitive'
-Plug 'majutsushi/tagbar', Cond(executable('ctags'))
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-Plug 'easymotion/vim-easymotion'
-Plug 'nathanaelkane/vim-indent-guides'
+
+Plug 'honza/vim-snippets'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
@@ -137,16 +142,11 @@ Plug 'wellle/tmux-complete.vim'
 Plug 'Konfekt/FastFold'
 Plug 'mhinz/vim-startify'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'Yggdroot/vim-mark'
 Plug 'junegunn/gv.vim'
-Plug 'junegunn/vim-peekaboo'
+
 Plug 'SirVer/ultisnips'
 Plug 'itchyny/lightline.vim'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
+Plug 'ludovicchabant/vim-gutentags'   " slow vim close
 Plug 'jreybert/vimagit'
 Plug 'taohexxx/lightline-buffer'
 Plug 'kana/vim-textobj-user'
@@ -160,35 +160,49 @@ Plug 'kana/vim-textobj-user'
 Plug 'pboettch/vim-highlight-cursor-words'
 Plug 'rbgrouleff/bclose.vim'
   Plug 'francoiscabrol/ranger.vim', Cond(executable('ranger'))
-Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired' " slow
 Plug 'jceb/vim-orgmode'
 Plug 'ervandew/supertab'
 Plug 'Shougo/echodoc.vim'
-Plug 'w0rp/ale', Cond(vims ==# 'async')
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 Plug 'matze/vim-move'
-
-Plug 'elzr/vim-json', { 'for': 'json' }
-" Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
-
-" Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
+Plug 'elzr/vim-json', { 'for': 'json' }
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 
+" Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
+" Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
 " Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 
-Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
+" Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+
+" Plug 'roxma/nvim-yarp'
+" Plug 'ncm2/ncm2'
+
+" " enable ncm2 for all buffers
+" autocmd BufEnter * call ncm2#enable_for_buffer()
+
+" " IMPORTANTE: :help Ncm2PopupOpen for more information
+" set completeopt=noinsert,menuone,noselect
+
+" " NOTE: you need to install completion sources to get completions. Check
+" " our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
+" Plug 'ncm2/ncm2-bufword'
+" Plug 'ncm2/ncm2-tmux'
+" Plug 'ncm2/ncm2-path'
 
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
+    \ 'frozen': 1
     \ }
 
 call plug#end()
 
 " Unused
-Plug 'terryma/vim-multiple-cursors'
+" Plug 'terryma/vim-multiple-cursors'
 
 " Plug 'junegunn/vim-slash'
 
@@ -257,6 +271,8 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 
+let g:LanguageClient_diagnosticsEnable = 0
+
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
@@ -300,7 +316,6 @@ let g:jedi#completions_enabled = 1
 let g:jedi#auto_initialization = 1
 
       " \  'haskell': ['stack ghc', 'hlint', 'hdevtools']
-      " \  'python': ['flake8', 'pylint', 'pycodestyle'],
 " ale
 let g:ale_linters = {
       \  'javascript': ['eslint', 'flow'],
@@ -310,18 +325,19 @@ let g:ale_linters = {
       \  'cpp': ['clangcheck', 'clangtidy', 'cpplint'],
       \  'c': ['clangtidy', 'cppcheck'],
       \  'css': ['csslint'],
+      \  'python': ['flake8', 'pylint', 'pycodestyle'],
       \  'sh': ['shellcheck'],
       \}
-      " \  'python': ['autopep8', 'yapf', 'isort'],
 let g:ale_fixers = {
       \  'javascript': ['eslint', 'prettier'],
-      \  'css': ['prettier']
+      \  'css': ['prettier'],
+      \  'python': ['autopep8', 'yapf', 'isort'],
       \}
 let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
 let g:ale_python_flake8_options = '--ignore=E111,E114,E501'
 let g:ale_python_pycodestyle_options = '--ignore=E111,E114,E501'
 
-" let g:ale_completion_enabled = 1
+let g:ale_completion_enabled = 0
 
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -329,6 +345,7 @@ let g:ale_echo_msg_warning_str = 'W'
 autocmd FileType * let g:ale_echo_msg_format = '[%code%] %s'
 autocmd FileType python let g:ale_echo_msg_format = '[%linter%][%code%] %s'
 let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 1
 " let g:ale_echo_delay = 10000
 " let g:ale_echo_cursor = 0
 " if len(readfile(expand('%:p'))) > 1000
@@ -453,6 +470,7 @@ let g:indent_guides_enable_on_vim_startup = 0
 " -----------------------------------------------
 " let g:gutentags_project_root = ['.mprj']
 " let g:gutentags_add_default_project_roots = 1
+let g:gutentags_enabled = 0
 
 " -----------------------------------------------
 " EasyAlign
