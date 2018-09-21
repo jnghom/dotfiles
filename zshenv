@@ -23,12 +23,12 @@ if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
   eval "$(pyenv virtualenv-init -)"
 fi
 
-if type cargo > /dev/null ; then
+if type cargo &> /dev/null ; then
   export CARGO_BIN="$HOME/.cargo/bin"
   export PATH="$CARGO_BIN:$PATH"
 fi
 
-if type yarn > /dev/null ; then
+if type yarn &> /dev/null ; then
   export YARN_BIN="$HOME/.yarn/bin"
   export PATH="$YARN_BIN:$PATH"
 fi
@@ -44,18 +44,17 @@ if [ -d "$HOME/usr/bin" ]; then
 fi
 
 export LANG=en_US.UTF-8
-if type cargo > /dev/null ; then
+if type nvim &> /dev/null ; then
   export EDITOR=nvim
   export VISUAL=nvim
 fi
 
 if [ -d "/usr/local/go/bin" ]; then
   export GOROOT=/usr/local/go
-  # export PATH=$PATH:/usr/local/go/bin
   export GOPATH=$HOME/go
   export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
 fi
 
-if type hub > /dev/null ; then
+if type hub &> /dev/null ; then
   eval "$(hub alias -s)"
 fi

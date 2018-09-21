@@ -117,7 +117,7 @@ Plug 'majutsushi/tagbar', Cond(executable('ctags'))
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'junegunn/vim-peekaboo'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'Yggdroot/vim-mark'
+" Plug 'Yggdroot/vim-mark'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-dispatch'
 
@@ -172,7 +172,9 @@ Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
 Plug 'elzr/vim-json', { 'for': 'json' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 
-" Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
+Plug 'maxbrunsfeld/vim-yankstack'
+
+Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
 " Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
 " Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern', 'for': 'javascript' }
 
@@ -263,6 +265,33 @@ hi Comment cterm=italic
 " Plugin Setting
 " =======================================================================
 
+" let g:lc_filetypes = []
+" let g:LanguageClient_serverCommands = {}
+" if executable('pyls')
+"   let g:LanguageClient_serverCommands.python = ['pyls']
+"   call add(g:lc_filetypes, 'python')
+" endif
+" if executable('javascript-typescript-stdio')
+"   let g:LanguageClient_serverCommands.javascript = ['javascript-typescript-stdio']
+"   call add(g:lc_filetypes, 'javascript')
+" endif
+" if executable('rustup')
+"   let g:LanguageClient_serverCommands.rust = ['rustup', 'run', 'stable', 'rls']
+"   call add(g:lc_filetypes, 'rust')
+" endif
+" if executable('hie')
+"   let g:LanguageClient_serverCommands.rust = ['hie', '--lsp']
+"   call add(g:lc_filetypes, 'haskell')
+" endif
+" let g:lc_filetypes_str = join(g:lc_filetypes, ',')
+" aug languageclient_map
+"   au!
+"   execute 'au FileType ' . g:lc_filetypes_str . ' nnoremap <silent> <buffer>
+"     \ <F5> :call LanguageClient_contextMenu()<CR>'
+"   execute 'au FileType ' . g:lc_filetypes_str . ' nnoremap <silent> <buffer>
+"     \ lt :call LanguageClient#textDocument_typeDefinition()<CR>'
+" aug END
+"
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie', '--lsp'],
@@ -271,18 +300,25 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 
-let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_diagnosticsEnable = 1
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-" augroup forhaskell
-"   autocmd FileType haskell nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-"   autocmd FileType haskell nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-"   autocmd FileType haskell nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-"   " autocmd FileType haskell setlocal formatprg=hindent
-" augroup END
+nnoremap <silent> <leader>d :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <leader>t :call LanguageClient#textDocument_typeDefinition()<CR>
+nnoremap <silent> <leader>i :call LanguageClient#textDocument_implementation()<CR>
+nnoremap <silent> <leader>n :call LanguageClient#textDocument_rename()<CR>
+nnoremap <silent> <leader>r :call LanguageClient#textDocument_references()<CR>
+nnoremap <silent> <leader>h :call LanguageClient#textDocument_documentHighlight()<CR>
+nnoremap <silent> <leader>c :call LanguageClient#clearDocumentHighlight()<CR>
+nnoremap <silent> <leader>s :call LanguageClient#textDocument_documentSymbol()<CR>
+nnoremap <silent> <leader>ws :call LanguageClient#workspace_symbol()<CR>
+nnoremap <silent> <leader>f :call LanguageClient#textDocument_formatting()<CR>
+
+
+" autocmd FileType python nnoremap <buffer>
+"   \ <leader>lf :call LanguageClient_textDocument_documentSymbol()<cr>
+
 
 let g:haskell_indent_disable = 1
 
@@ -316,23 +352,27 @@ let g:jedi#completions_enabled = 1
 let g:jedi#auto_initialization = 1
 
       " \  'haskell': ['stack ghc', 'hlint', 'hdevtools']
+      " \  'python': ['flake8', 'pylint', 'pycodestyle'],
+      " \  'python': ['pylint', 'pycodestyle'],
 " ale
 let g:ale_linters = {
-      \  'javascript': ['eslint', 'flow'],
-      \  'html': ['alex'],
+      \  'javascript': ['eslint', 'jshint'],
+      \  'html': ['htmlhint'],
       \  'vim': ['vint'],
       \  'markdown': ['alex'],
       \  'cpp': ['clangcheck', 'clangtidy', 'cpplint'],
       \  'c': ['clangtidy', 'cppcheck'],
-      \  'css': ['csslint'],
-      \  'python': ['flake8', 'pylint', 'pycodestyle'],
+      \  'css': ['csslint', 'prettier'],
       \  'sh': ['shellcheck'],
+      \  'yaml': ['prettier'],
       \}
 let g:ale_fixers = {
-      \  'javascript': ['eslint', 'prettier'],
+      \  'javascript': ['eslint'],
       \  'css': ['prettier'],
-      \  'python': ['autopep8', 'yapf', 'isort'],
+      \  'python': ['black'],
+      \  'yaml': ['prettier'],
       \}
+      " \  'javascript': ['eslint', 'prettier'],
 let g:ale_python_pylint_options = "--diable=W0311,C0111 --msg-template='{msg_id}:{line:3d},{column}: {obj}: {msg}'"
 let g:ale_python_flake8_options = '--ignore=E111,E114,E501'
 let g:ale_python_pycodestyle_options = '--ignore=E111,E114,E501'
@@ -345,7 +385,7 @@ let g:ale_echo_msg_warning_str = 'W'
 autocmd FileType * let g:ale_echo_msg_format = '[%code%] %s'
 autocmd FileType python let g:ale_echo_msg_format = '[%linter%][%code%] %s'
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_enter = 0
 " let g:ale_echo_delay = 10000
 " let g:ale_echo_cursor = 0
 " if len(readfile(expand('%:p'))) > 1000
@@ -410,9 +450,9 @@ nnoremap <silent> <space>;       :Lines<CR>
 nnoremap <silent> <space>.       :BLines<CR>
 nnoremap <silent> <space>T       :Tags<CR>
 nnoremap <silent> <space>t       :BTags<CR>
-nnoremap <silent> <space>?       :History<CR>
-nnoremap <silent> <space>hs      :History/<CR>
-nnoremap <silent> <space>hc      :History:<CR>
+nnoremap <silent> <space>h       :History<CR>
+nnoremap <silent> <space>h/      :History/<CR>
+nnoremap <silent> <space>h:      :History:<CR>
 " nnoremap <silent> <space>/       :execute 'Agp ' . input('Ag/')<CR>
 nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
 nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
@@ -422,6 +462,7 @@ nnoremap <silent> <space>C       :Commits<CR>
 nnoremap <silent> <space>c       :BCommits<CR>
 nnoremap <silent> <space>m       :FZFMru<CR>
 nnoremap <silent> <space>M       :Marks<CR>
+nnoremap <silent> <space>?       :Helptags<CR>
 "nnoremap <silent> <space>ft :Filetypes<CR>
 
 imap <C-x><C-f> <plug>(fzf-complete-file-ag)
@@ -628,7 +669,7 @@ let g:HiCursorWords_delay = 400
 "  Ranger
 " -----------------------------------------------
 let g:ranger_map_keys = 0
-map <leader>f :Ranger<CR>.
+map <leader>R :Ranger<CR>.
 
 " -----------------------------------------------
 "  Auto Pairs
@@ -670,10 +711,10 @@ autocmd BufReadPost *
 " -----------------------------------------------
 " Easier split navigations
 " -----------------------------------------------
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" nnoremap <C-J> <C-W><C-J>
+" nnoremap <C-K> <C-W><C-K>
+" nnoremap <C-L> <C-W><C-L>
+" nnoremap <C-H> <C-W><C-H>
 
 " -----------------------------------------------
 "  Man Page
