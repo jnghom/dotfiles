@@ -214,9 +214,15 @@ call plug#end()
 " Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
-" Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-" Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
-" Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+Plug 'luochen1990/rainbow', { 'for': 'clojure' }
+Plug 'guns/vim-sexp', { 'for': 'clojure' }
+Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': 'clojure' }
+
+
 " Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
 " Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 " Plug 'ndmitchell/ghcid', { 'for': 'haskell', 'rtp': 'plugins/nvim' }
