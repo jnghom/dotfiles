@@ -222,6 +222,8 @@ Plug 'luochen1990/rainbow', { 'for': 'clojure' }
 Plug 'guns/vim-sexp', { 'for': 'clojure' }
 Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': 'clojure' }
 
+Plug 'leafgarland/typescript-vim'
+
 
 " Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
 " Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
