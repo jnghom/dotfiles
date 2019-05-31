@@ -386,7 +386,6 @@ usage() {
 export PATH=$HOME/.local/bin:$PATH
 # added by Anaconda3 installer
 # [ -d "$HOME/anaconda3/bin" ] && export PATH="$HOME/anaconda3/bin:$PATH"
-[ -d "$HOME/usr/install/node/node-v8.9.3-linux-x64/bin" ] && export PATH="$HOME/usr/install/node/node-v8.9.3-linux-x64/bin:$PATH"
 
 export GOPATH="$HOME/ws/go"
 export USER_INSTALL="$HOME/usr/install"
@@ -418,7 +417,7 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bin
 alias tmux="tmux -2"
 
 if command -v nvim >/dev/null ; then
-  alias vi="nvim"
+  alias vim="nvim"
   # alias vim="nvim"
 fi
 
@@ -438,27 +437,28 @@ mkdir -p $HOME/.colors
 [ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
-if [ ! -z $LOCAL_PROXY ]; then
-  echo local proxy $LOCAL_PROXY
-  export HTTP_PROXY=$LOCAL_PROXY
-  export HTTPS_PROXY=$LOCAL_PROXY
-  export FTP_PROXY=$LOCAL_PROXY
-  export SOCKS_PROXY=$LOCAL_PROXY
-  export ALL_PROXY=$LOCAL_PROXY
-  export http_proxy=$LOCAL_PROXY
-  export https_proxy=$LOCAL_PROXY
-  export ftp_proxy=$LOCAL_PROXY
-  export socks_proxy=$LOCAL_PROXY
-  export all_proxy=$LOCAL_PROXY
-fi
-if [ ! -z $LOCAL_AUTO_PROXY ]; then
-  echo local auto proxy $LOCAL_AUTO_PROXY
-  export AUTO_PROXY=$LOCAL_AUTO_PROXY
-  export auto_proxy=$LOCAL_AUTO_PROXY
-fi
+# if [ ! -z $LOCAL_PROXY ]; then
+#   echo local proxy $LOCAL_PROXY
+#   export HTTP_PROXY=$LOCAL_PROXY
+#   export HTTPS_PROXY=$LOCAL_PROXY
+#   export FTP_PROXY=$LOCAL_PROXY
+#   export SOCKS_PROXY=$LOCAL_PROXY
+#   export ALL_PROXY=$LOCAL_PROXY
+#   export http_proxy=$LOCAL_PROXY
+#   export https_proxy=$LOCAL_PROXY
+#   export ftp_proxy=$LOCAL_PROXY
+#   export socks_proxy=$LOCAL_PROXY
+#   export all_proxy=$LOCAL_PROXY
+# fi
+# if [ ! -z $LOCAL_AUTO_PROXY ]; then
+#   echo local auto proxy $LOCAL_AUTO_PROXY
+#   export AUTO_PROXY=$LOCAL_AUTO_PROXY
+#   export auto_proxy=$LOCAL_AUTO_PROXY
+# fi
 
 [ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
 [ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
+[ ! -z "$LOCAL_SSL_CRT " ] && git config --global http.sslCAInfo $LOCAL_SSL_CRT
 git config --global core.editor $EDITOR
 
 if [ -d ~/.bash_completion.d ]; then
@@ -475,4 +475,19 @@ fi
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
   # eval "$(pyenv virtualenv-init -)"
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+if [ -d "$HOME/.cargo" ]; then
+  export CARGO_BIN="$HOME/.cargo/bin"
+  export PATH="$CARGO_BIN:$PATH"
+fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
 fi

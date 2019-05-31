@@ -1,3 +1,4 @@
+bindkey -e
 
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
@@ -195,7 +196,8 @@ alias ls='ls --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias vi='nvim'
+alias vim='nvim'
+alias gs='git status'
 
 [ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
 [ -f $HOME/.rgignore ] && alias rg='rg --ignore-file $HOME/ws/.rgignore'
@@ -289,7 +291,7 @@ vg() {
 }
 
 # fd - cd to selected directory
-fd() {
+fdd() {
   DIR=`find ${1:-*} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf-tmux` \
     && cd "$DIR"
 }
@@ -412,3 +414,9 @@ if [ -n "$TMUX_PANE" ]; then
   # Bind CTRL-X-CTRL-T to tmuxwords.sh
   # bind '"\C-x\C-t": "$(fzf_tmux_words)\e\C-e"'
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+export PIPENV_IGNORE_VIRTUALENVS=1

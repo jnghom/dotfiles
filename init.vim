@@ -31,7 +31,8 @@ set expandtab
 set shiftwidth=4
 set tabstop=4
 set scrolloff=4
-set textwidth=100
+set textwidth=0
+set wrapmargin=0
 
 set encoding=utf-8
 set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono\ 11
@@ -109,7 +110,8 @@ Plug 'junegunn/seoul256.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'jiangmiao/auto-pairs'
+" Plug 'jiangmiao/auto-pairs'
+Plug 'tmsvg/pear-tree'
 Plug 'easymotion/vim-easymotion' " slow
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
@@ -124,11 +126,11 @@ Plug 'tpope/vim-dispatch'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
 if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 elseif v:version == 800
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
-  Plug 'Shougo/deoplete.nvim'
+  " Plug 'Shougo/deoplete.nvim'
 endif
 
 Plug 'honza/vim-snippets'
@@ -195,11 +197,16 @@ Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
 " Plug 'ncm2/ncm2-tmux'
 " Plug 'ncm2/ncm2-path'
 
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ 'frozen': 1
-    \ }
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+
+" Plug 'autozimu/LanguageClient-neovim', {
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh',
+"     \ 'frozen': 0
+"     \ }
+" Plug 'ambv/black'
 
 call plug#end()
 
@@ -300,7 +307,7 @@ hi Comment cterm=italic
 "     \ lt :call LanguageClient#textDocument_typeDefinition()<CR>'
 " aug END
 "
-let g:LanguageClient_autoStart = 1
+let g:LanguageClient_autoStart = 0
 let g:LanguageClient_serverCommands = {
     \ 'haskell': ['hie', '--lsp'],
     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
@@ -322,10 +329,44 @@ nnoremap <silent> <leader>c :call LanguageClient#clearDocumentHighlight()<CR>
 nnoremap <silent> <leader>s :call LanguageClient#textDocument_documentSymbol()<CR>
 nnoremap <silent> <leader>ws :call LanguageClient#workspace_symbol()<CR>
 nnoremap <silent> <leader>f :call LanguageClient#textDocument_formatting()<CR>
+autocmd FileType python nnoremap <buffer>
+  \ <leader>lf :call LanguageClient_textDocument_documentSymbol()<cr>
+
+" -----------------------------------------------
+" COC
+" -----------------------------------------------
+" Use `[c` and `]c` for navigate diagnostics
+" nmap <silent> [d <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+ nmap <silent> <leader>d <Plug>(coc-definition)
+ nnoremap <silent> K :call <SID>show_documentation()<CR><Paste>
+ nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
+
+ " Remap for rename current word
+ nmap <leader>rn <Plug>(coc-rename)
+
+ " Remap for format selected region
+ vmap <leader>f  <Plug>(coc-format-selected)
+ nmap <leader>f  <Plug>(coc-format-selected)
+
+ " Remap for do codeAction of current line
+ nmap <leader>ac  <Plug>(coc-codeaction)
+ " Fix autofix problem of current line
+ nmap <leader>qf  <Plug>(coc-fix-current)
+
+ function! s:show_documentation()
+   if &filetype == 'vim'
+     execute 'h '.expand('<cword>')
+   else
+     call CocAction('doHover')
+   endif
+ endfunction
+
+ autocmd CursorHold * silent call CocActionAsync('highlight')
+ hi CocHighlightText ctermbg=DarkBlue ctermfg=Yellow
 
 
-" autocmd FileType python nnoremap <buffer>
-"   \ <leader>lf :call LanguageClient_textDocument_documentSymbol()<cr>
 
 
 let g:haskell_indent_disable = 1
@@ -334,7 +375,7 @@ let g:haskell_indent_disable = 1
 " Deoplete
 " -----------------------------------------------
 
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
 let g:deoplete#auto_complete_start_length = 1
 
 " let g:deoplete#sources#jedi#python_path = '/home/mok/anaconda3/bin/python'
@@ -373,10 +414,13 @@ let g:ale_linters = {
       \  'css': ['csslint', 'prettier'],
       \  'sh': ['shellcheck'],
       \  'yaml': ['prettier'],
+      \  'python': ['pylint'],
       \}
 let g:ale_fixers = {
-      \  'javascript': ['eslint'],
+      \  '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \  'javascript': ['prettier', 'eslint'],
       \  'css': ['prettier'],
+      \  'html': ['prettier'],
       \  'python': ['black'],
       \  'yaml': ['prettier'],
       \}
@@ -412,6 +456,9 @@ nnoremap <Leader>gs :Gstatus<cr>
 nnoremap <Leader>gw :Gwrite<cr>
 " Quickly stage, commit, and push the current file. Useful for editing .vimrc
 nnoremap <Leader>gg :Gwrite<cr>:Gcommit -m 'update'<cr>:Git push<cr>
+
+
+
 
 " -----------------------------------------------
 " FZF
@@ -543,7 +590,7 @@ let g:lightline = {
       \ 'colorscheme': 'seoul256',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ]]
+      \   'left': [ [ 'mode', 'paste' ], ['cocstatus', 'fugitive', 'filename' ]]
       \ },
       \ 'component_expand': {
       \   'buffercurrent': 'lightline#buffer#buffercurrent',
@@ -567,6 +614,7 @@ let g:lightline = {
       \   'bufferbefore': 'lightline#buffer#bufferbefore',
       \   'bufferafter': 'lightline#buffer#bufferafter',
       \   'bufferinfo': 'lightline#buffer#bufferinfo',
+      \   'cocstatus': 'coc#status'
       \ },
       \ 'component': {
       \   'separator': '',
@@ -797,6 +845,8 @@ noremap cp yap<S-}>p
 
 autocmd FileType help noremap <buffer> q :q<cr>
 autocmd FileType man noremap <buffer> q :q<cr>
+
+autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " -----------------------------------------------
 " Expand region

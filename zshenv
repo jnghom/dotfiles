@@ -1,20 +1,20 @@
 [ -f $HOME/.localrc ] && source $HOME/.localrc
-if [ ! -z $LOCAL_PROXY ]; then
-  export HTTP_PROXY=$LOCAL_PROXY
-  export HTTPS_PROXY=$LOCAL_PROXY
-  export FTP_PROXY=$LOCAL_PROXY
-  export SOCKS_PROXY=$LOCAL_PROXY
-  export ALL_PROXY=$LOCAL_PROXY
-  export http_proxy=$LOCAL_PROXY
-  export https_proxy=$LOCAL_PROXY
-  export ftp_proxy=$LOCAL_PROXY
-  export socks_proxy=$LOCAL_PROXY
-  export all_proxy=$LOCAL_PROXY
-fi
-if [ ! -z $LOCAL_AUTO_PROXY ]; then
-  export AUTO_PROXY=$LOCAL_AUTO_PROXY
-  export auto_proxy=$LOCAL_AUTO_PROXY
-fi
+# if [ ! -z $LOCAL_PROXY ]; then
+#   export HTTP_PROXY=$LOCAL_PROXY
+#   export HTTPS_PROXY=$LOCAL_PROXY
+#   export FTP_PROXY=$LOCAL_PROXY
+#   export SOCKS_PROXY=$LOCAL_PROXY
+#   export ALL_PROXY=$LOCAL_PROXY
+#   export http_proxy=$LOCAL_PROXY
+#   export https_proxy=$LOCAL_PROXY
+#   export ftp_proxy=$LOCAL_PROXY
+#   export socks_proxy=$LOCAL_PROXY
+#   export all_proxy=$LOCAL_PROXY
+# fi
+# if [ ! -z $LOCAL_AUTO_PROXY ]; then
+#   export AUTO_PROXY=$LOCAL_AUTO_PROXY
+#   export auto_proxy=$LOCAL_AUTO_PROXY
+# fi
 
 if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
@@ -23,7 +23,7 @@ if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
   eval "$(pyenv virtualenv-init -)"
 fi
 
-if type cargo &> /dev/null ; then
+if [ -d "$HOME/.cargo" ]; then
   export CARGO_BIN="$HOME/.cargo/bin"
   export PATH="$CARGO_BIN:$PATH"
 fi
@@ -33,7 +33,7 @@ if type yarn &> /dev/null ; then
   export PATH="$YARN_BIN:$PATH"
 fi
 
-if [ -s "$NVM_DIR/nvm.sh" ]; then
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
   export NVM_DIR="$HOME/.nvm"
   \. "$NVM_DIR/nvm.sh"
 fi
