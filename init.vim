@@ -107,6 +107,38 @@ call plug#begin('~/.vim/plugged')
 endif
 
 Plug 'junegunn/seoul256.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'morhetz/gruvbox'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'NLKNguyen/papercolor-theme'
+let g:PaperColor_Theme_Options = {
+  \   'language': {
+  \     'python': {
+  \       'highlight_builtins' : 1
+  \     },
+  \     'cpp': {
+  \       'highlight_standard_library': 1
+  \     },
+  \     'c': {
+  \       'highlight_builtins' : 1
+  \     }
+  \   }
+  \ }
+
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default.dark': {
+  \       'allow_bold': 1,
+  \       'override' : {
+  \         'color00' : ['#303030', '236'],
+  \         'color07' : ['#303030', '250'],
+  \         'cursorline' : ['', '237']
+  \       }
+  \     }
+  \   }
+  \ }
+"  \         'cursorlinenr_bg' : ['#3a3a3a', '237']
+
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'ntpeters/vim-better-whitespace'
@@ -175,6 +207,12 @@ Plug 'elzr/vim-json', { 'for': 'json' }
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 
 Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'vim-python/python-syntax'
+let g:python_highlight_operators = 1
+let g:python_highlight_class_vars = 1
+let g:python_highlight_string_format = 1
+let g:python_highlight_builtins = 1
+Plug 'junegunn/rainbow_parentheses.vim'
 
 Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
 " Plug 'zchee/deoplete-jedi', Cond(vims ==# 'async', { 'for': 'python' })
@@ -198,8 +236,10 @@ Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
 " Plug 'ncm2/ncm2-path'
 
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+Plug 'liuchengxu/vista.vim'
+let g:vista_sidebar_width = 50
+" Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 
 " Plug 'autozimu/LanguageClient-neovim', {
 "     \ 'branch': 'next',
@@ -243,7 +283,7 @@ Plug 'leafgarland/typescript-vim'
 " Plug 'dracula/vim', {'as': 'dracula'}
 " Plug 'liuchengxu/space-vim-dark'
 " Plug 'mhinz/vim-galore'
-" Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot'
 " Plug 'ryanoasis/vim-devicons'
 " Plug 'ciaranm/detectindent'
 " Plug 'luochen1990/indent-detector.vim'
@@ -266,9 +306,12 @@ Plug 'leafgarland/typescript-vim'
 " Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 
 "
-colo seoul256
+" colo seoul256
+colo PaperColor
 " colo gruvbox
 " colo dracula
+" colo onehalfdark
+"
 " colo darktooth
 " colo space-vim-dark
 " colo nova
@@ -307,30 +350,30 @@ hi Comment cterm=italic
 "     \ lt :call LanguageClient#textDocument_typeDefinition()<CR>'
 " aug END
 "
-let g:LanguageClient_autoStart = 0
-let g:LanguageClient_serverCommands = {
-    \ 'haskell': ['hie', '--lsp'],
-    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio'],
-    \ 'python': ['pyls'],
-    \ }
+" let g:LanguageClient_autoStart = 0
+" let g:LanguageClient_serverCommands = {
+"     \ 'haskell': ['hie', '--lsp'],
+"     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+"     \ 'javascript': ['javascript-typescript-stdio'],
+"     \ 'python': ['pyls'],
+"     \ }
 
-let g:LanguageClient_diagnosticsEnable = 1
+" let g:LanguageClient_diagnosticsEnable = 1
 
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> <leader>d :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <leader>t :call LanguageClient#textDocument_typeDefinition()<CR>
-nnoremap <silent> <leader>i :call LanguageClient#textDocument_implementation()<CR>
-nnoremap <silent> <leader>n :call LanguageClient#textDocument_rename()<CR>
-nnoremap <silent> <leader>r :call LanguageClient#textDocument_references()<CR>
-nnoremap <silent> <leader>h :call LanguageClient#textDocument_documentHighlight()<CR>
-nnoremap <silent> <leader>c :call LanguageClient#clearDocumentHighlight()<CR>
-nnoremap <silent> <leader>s :call LanguageClient#textDocument_documentSymbol()<CR>
-nnoremap <silent> <leader>ws :call LanguageClient#workspace_symbol()<CR>
-nnoremap <silent> <leader>f :call LanguageClient#textDocument_formatting()<CR>
-autocmd FileType python nnoremap <buffer>
-  \ <leader>lf :call LanguageClient_textDocument_documentSymbol()<cr>
+" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+" nnoremap <silent> <leader>d :call LanguageClient#textDocument_definition()<CR>
+" nnoremap <silent> <leader>t :call LanguageClient#textDocument_typeDefinition()<CR>
+" nnoremap <silent> <leader>i :call LanguageClient#textDocument_implementation()<CR>
+" nnoremap <silent> <leader>n :call LanguageClient#textDocument_rename()<CR>
+" nnoremap <silent> <leader>r :call LanguageClient#textDocument_references()<CR>
+" nnoremap <silent> <leader>h :call LanguageClient#textDocument_documentHighlight()<CR>
+" nnoremap <silent> <leader>c :call LanguageClient#clearDocumentHighlight()<CR>
+" nnoremap <silent> <leader>s :call LanguageClient#textDocument_documentSymbol()<CR>
+" nnoremap <silent> <leader>ws :call LanguageClient#workspace_symbol()<CR>
+" nnoremap <silent> <leader>f :call LanguageClient#textDocument_formatting()<CR>
+" autocmd FileType python nnoremap <buffer>
+"   \ <leader>lf :call LanguageClient_textDocument_documentSymbol()<cr>
 
 " -----------------------------------------------
 " COC
@@ -339,9 +382,13 @@ autocmd FileType python nnoremap <buffer>
 " nmap <silent> [d <Plug>(coc-diagnostic-prev)
 " nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
- nmap <silent> <leader>d <Plug>(coc-definition)
- nnoremap <silent> K :call <SID>show_documentation()<CR><Paste>
- nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
+nmap <silent> <leader>d <Plug>(coc-definition)
+nmap <silent> <leader>y <Plug>(coc-type-definition)
+nmap <silent> <leader>i <Plug>(coc-implementation)
+nmap <silent> <leader>r <Plug>(coc-references)
+
+nnoremap <silent> K :call <SID>show_documentation()<CR><Paste>
+nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 
  " Remap for rename current word
  nmap <leader>rn <Plug>(coc-rename)
@@ -807,7 +854,8 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 nnoremap <F4> :%s/\s\+$//<cr>:let @/=''<CR>
 " nnoremap <F5> :%s/\r/\r/g<CR>
 nnoremap <F7> :%!python -m json.tool<CR>
-nnoremap <F8> :TagbarToggle<CR>
+" nnoremap <F8> :TagbarToggle<CR>
+nnoremap <F8> :Vista!!<CR>
 nnoremap <F9> :NERDTreeToggle<CR>
 
 nnoremap <leader><space> :noh<cr>
