@@ -1,0 +1,75 @@
+{
+    "workbench.colorTheme": "Material Theme",
+    "editor.fontSize": 11,
+    "workbench.iconTheme": "vscode-icons",
+    "editor.fontFamily": "'IBM Plex Mono Light', 'Droid Sans Mono', 'monospace',  'Droid Sans Fallback'",
+    "editor.minimap.enabled": false,
+    "editor.fontWeight": "500",
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.lineHeight": 1.2,
+    "editor.fontLigatures": true,
+    "workbench.colorCustomizations": {},
+        "vim.easymotion": true,
+    "vim.hlsearch": true,
+    "vim.leader": ",",
+    "vim.useCtrlKeys": false,
+    "python.jediEnabled": false,
+        "vim.handleKeys": {
+        "<C-d>": false
+    },
+        "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        "--ignore=E203"
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "d"],
+            "commands": [
+                "editor.action.revealDefinition"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "d"],
+            "commands": [
+                "editor.action.peekDefinition"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "i"],
+            "commands": [
+                "editor.action.peekImplmentation"
+            ]
+        },
+        {
+            "before": ["<leader>", "r"],
+            "commands": [
+                "references-view.find"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "r"],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": ["]", "c"],
+            "commands": [
+                "workbench.action.editor.nextChange"
+            ]
+        },
+        {
+            "before": [":"],
+            "commands": [
+                "workbench.action.showCommands",
+            ]
+        }
+    ],
+    "editor.renderWhitespace": "boundary",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.venv": true
+    },
+    "editor.largeFileOptimizations": false,
+}

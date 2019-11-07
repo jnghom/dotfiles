@@ -196,7 +196,7 @@ Plug 'rbgrouleff/bclose.vim'
   Plug 'francoiscabrol/ranger.vim', Cond(executable('ranger'))
 Plug 'tpope/vim-unimpaired' " slow
 Plug 'jceb/vim-orgmode'
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'Shougo/echodoc.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
@@ -226,6 +226,11 @@ let g:vista_sidebar_width = 50
 let g:vista_default_executive = 'coc'
 let g:vista_icon_indent = ["▸ ", ""]
 
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+Plug 'posva/vim-vue'
+Plug 'ekalinin/Dockerfile.vim'
+
 call plug#end()
 
 " Unused
@@ -240,8 +245,6 @@ call plug#end()
 " Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
 
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
 Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
 Plug 'luochen1990/rainbow', { 'for': 'clojure' }
 Plug 'guns/vim-sexp', { 'for': 'clojure' }
@@ -317,21 +320,27 @@ nmap <silent> <leader>r <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR><Paste>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 
- " Remap for rename current word
- nmap <leader>rn <Plug>(coc-rename)
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
 
- " Remap for format selected region
- vmap <leader>f  <Plug>(coc-format-selected)
- nmap <leader>f  <Plug>(coc-format-selected)
- nmap <leader>F  <Plug>(coc-format)
+" Remap for format selected region
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>F  <Plug>(coc-format)
 
- " Remap for do codeAction of current line
- nmap <leader>ac  <Plug>(coc-codeaction)
- " Fix autofix problem of current line
- nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>l  <Plug>(coc-codelens-action)
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+ " Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
  function! s:show_documentation()
-   if &filetype == 'vim'
+   if (index(['vim','help'], &filetype) >= 0)
      execute 'h '.expand('<cword>')
    else
      call CocAction('doHover')
@@ -341,6 +350,41 @@ nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
  autocmd CursorHold * silent call CocActionAsync('highlight')
  hi CocHighlightText ctermbg=DarkBlue ctermfg=Yellow
 
+
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+let g:coc_snippet_next = '<tab>'
+
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Or use `complete_info` if your vim support it, like:
+" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 let g:haskell_indent_disable = 1
 
@@ -434,7 +478,7 @@ nnoremap <silent> <space>h:      :History:<CR>
 nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
 nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
 nnoremap <silent> **             :call SearchWordWithRgW()<CR>
-vnoremap <silent> **             :call SearchVisualSelectionWithAg()<CR>
+vnoremap <silent> **             :call SearchVisualSelectionWithRg()<CR>
 nnoremap <silent> <space>C       :Commits<CR>
 nnoremap <silent> <space>c       :BCommits<CR>
 nnoremap <silent> <space>m       :FZFMru<CR>
@@ -449,7 +493,7 @@ function! SearchWordWithRgW()
   execute 'Rgw' expand('<cword>')
 endfunction
 
-function! SearchVisualSelectionWithAg() range
+function! SearchVisualSelectionWithRg() range
   let old_reg = getreg('"')
   let old_regtype = getregtype('"')
   let old_clipboard = &clipboard
@@ -605,7 +649,8 @@ let g:lightline_buffer_reservelen = 20
 " -----------------------------------------------
 " Ultisnips
 " -----------------------------------------------
-let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<c-y>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
@@ -694,8 +739,8 @@ nnoremap <F9> :NERDTreeToggle<CR>
 nnoremap <leader><space> :noh<cr>
 " nnoremap <tab> %
 " vnoremap <tab> %
-nnoremap <tab>   <c-w>w
-nnoremap <S-tab> <c-w>W
+" nnoremap <tab>   <c-w>w
+" nnoremap <S-tab> <c-w>W
 " noremap ; :
 
 " save when lost focus
