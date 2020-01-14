@@ -1,0 +1,116 @@
+{
+    "workbench.colorTheme": "Monokai ST3",
+    "workbench.iconTheme": "vscode-icons",
+    "editor.fontFamily": "'IBM Plex Mono', 'Source Code Pro', 'Droid Sans Mono', 'monospace',  'Droid Sans Fallback', 'Dejavu Sans Mono', 'Source Code Pro'",
+    "editor.minimap.enabled": false,
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.lineHeight": 1.2,
+    "editor.fontLigatures": true,
+    "workbench.colorCustomizations": {},
+        "vim.easymotion": true,
+    "vim.hlsearch": true,
+    "vim.leader": ",",
+    "vim.useCtrlKeys": false,
+    "python.jediEnabled": false,
+        "vim.handleKeys": {
+        "<C-d>": false
+    },
+        "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        "--ignore=E203,E501,E402"
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "d"],
+            "commands": [
+                "editor.action.revealDefinition"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "d"],
+            "commands": [
+                "editor.action.peekDefinition"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "i"],
+            "commands": [
+                "editor.action.peekImplmentation"
+            ]
+        },
+        {
+            "before": ["<leader>", "r"],
+            "commands": [
+                "references-view.find"
+            ]
+        },
+        {
+            "before": ["<leader>", "p", "r"],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": ["]", "c"],
+            "commands": [
+                "workbench.action.editor.nextChange"
+            ]
+        },
+        {
+            "before": [":"],
+            "commands": [
+                "workbench.action.showCommands",
+            ]
+        },
+        {
+            "before": ["<leader>", "m"],
+            "commands": [
+                "bookmarks.toggle"
+            ]
+        },
+        {
+            "before": ["<leader>", "b"],
+            "commands": [
+                "bookmarks.list"
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                ">"
+            ],
+            "commands": [
+                "editor.action.indentLines"
+            ]
+        },
+        {
+            "before": [
+                "<"
+            ],
+            "commands": [
+                "editor.action.outdentLines"
+            ]
+        },
+    ],
+    "editor.renderWhitespace": "boundary",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.venv": true
+    },
+    "editor.largeFileOptimizations": false,
+    "editor.fontSize": 11,
+    "editor.lineHeight": 17,
+    "vim.sneak": true,
+    "python.formatting.blackPath": "/home/mok/.pyenv/versions/dev-3.7.5/bin/black",
+    "sync.gist": "cba21dc712d48d519968c373800bc692",
+    "window.zoomLevel": 0,
+    "editor.smoothScrolling": true,
+    "editor.fontWeight": "400",
+    "python.analysis.logLevel": "Warning",
+    "python.linting.flake8Path": "/home/mok/.pyenv/versions/dev-3.7.5/bin/flake8",
+    "search.location": "panel",
+    "workbench.editor.showTabs": true,
+    "explorer.confirmDragAndDrop": false,
+}
