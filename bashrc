@@ -137,6 +137,11 @@ else
   PS1="$PS1\[\e[33m\]\w\[\e[1;31m\] > \[\e[0m\]"
 fi
 
+if [ -f "$HOME/.bash-git-prompt/gitprompt.sh" ]; then
+    # GIT_PROMPT_ONLY_IN_REPO=1
+    source $HOME/.bash-git-prompt/gitprompt.sh
+fi
+
 command -v blsd > /dev/null && export FZF_ALT_C_COMMAND='blsd'
 command -v tree > /dev/null && export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
@@ -383,43 +388,27 @@ usage() {
 [ -f $HOME/.rg/complete/rg.bash-completion ] && source $HOME/.rg/complete/rg.bash-completion
 
 
-export PATH=$HOME/.local/bin:$PATH
-# added by Anaconda3 installer
-# [ -d "$HOME/anaconda3/bin" ] && export PATH="$HOME/anaconda3/bin:$PATH"
+# export PATH=$HOME/.local/bin:$PATH
 
-export GOPATH="$HOME/ws/go"
-export USER_INSTALL="$HOME/usr/install"
-export USER_SRC="$HOME/usr/src"
-export USER_BIN="$HOME/usr/bin"
-export PATH=$USER_BIN:$PATH
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-if command -v nvim > /dev/null ; then
-  export EDITOR=nvim
-  export VISUAL=nvim
-  export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-elif command -v vim > /dev/null ; then
-  export EDITOR=vim
-  export VISUAL=vim
-  export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-fi
 
 if command -v ag > /dev/null ; then
   export FZF_DEFAULT_COMMAND='ag --hidden -p ~/.agignore --ignore .git -g ""'
   export FZF_CTRL_T_COMMAND='ag --hidden -p ~/.agignore --ignore .git -g ""'
 fi
+if command -v rg > /dev/null ; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+  export FZF_CTRL_T_COMMAND='rg --files'
+fi
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 
 
-alias tmux="tmux -2"
-
-if command -v nvim >/dev/null ; then
-  alias vim="nvim"
-  # alias vim="nvim"
+if command -v exa > /dev/null ; then
+  alias e='exa'
 fi
+
+alias tmux="tmux -2"
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -437,24 +426,6 @@ mkdir -p $HOME/.colors
 [ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
-# if [ ! -z $LOCAL_PROXY ]; then
-#   echo local proxy $LOCAL_PROXY
-#   export HTTP_PROXY=$LOCAL_PROXY
-#   export HTTPS_PROXY=$LOCAL_PROXY
-#   export FTP_PROXY=$LOCAL_PROXY
-#   export SOCKS_PROXY=$LOCAL_PROXY
-#   export ALL_PROXY=$LOCAL_PROXY
-#   export http_proxy=$LOCAL_PROXY
-#   export https_proxy=$LOCAL_PROXY
-#   export ftp_proxy=$LOCAL_PROXY
-#   export socks_proxy=$LOCAL_PROXY
-#   export all_proxy=$LOCAL_PROXY
-# fi
-# if [ ! -z $LOCAL_AUTO_PROXY ]; then
-#   echo local auto proxy $LOCAL_AUTO_PROXY
-#   export AUTO_PROXY=$LOCAL_AUTO_PROXY
-#   export auto_proxy=$LOCAL_AUTO_PROXY
-# fi
 
 [ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
 [ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
@@ -467,27 +438,5 @@ if [ -d ~/.bash_completion.d ]; then
   done
 fi
 
-if [ -d "$HOME/.pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  # eval "$(pyenv virtualenv-init -)"
-fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-if [ -d "$HOME/.cargo" ]; then
-  export CARGO_BIN="$HOME/.cargo/bin"
-  export PATH="$CARGO_BIN:$PATH"
-fi
-
-if [ -d "/usr/local/go/bin" ]; then
-  export GOROOT=/usr/local/go
-  export GOPATH=$HOME/go
-  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
-fi

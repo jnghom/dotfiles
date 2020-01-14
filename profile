@@ -1,0 +1,76 @@
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# custom
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+if [ -x "$HOME/scripts/ssh-add-all.sh" ]; then
+    bash $HOME/scripts/ssh-add-all.sh
+fi
+
+
+if [ -d "$HOME/.cargo" ]; then
+  export CARGO_BIN="$HOME/.cargo/bin"
+  export PATH="$CARGO_BIN:$PATH"
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+if [ -d "$HOME/.pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+  # eval "$(pyenv virtualenv-init -)"
+fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
+fi
+
+if [ -d "$HOME/usr/bin" ] ; then
+    export PATH="$HOME/usr/bin:$PATH"
+fi
+
+if command -v nvim > /dev/null ; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+  alias vim="nvim"
+  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+elif command -v vim > /dev/null ; then
+  export EDITOR=vim
+  export VISUAL=vim
+  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+fi
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
