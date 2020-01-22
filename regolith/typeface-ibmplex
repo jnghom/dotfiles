@@ -1,0 +1,18 @@
+! Typeface: IBM Plex Mono
+#define typeface_bar_glyph  IBM Plex Mono Medium 11
+#define typeface_bar        pango:IBM Plex Mono Medium 11, FontAwesome 11
+#define typeface_rofi       IBM Plex Mono Medium 11
+#define typeface_terminal   IBM Plex Mono:pixelsize=11:antialias=true:autohint=true
+
+#define typeface_bar_glyph_wifi 
+#define typeface_bar_glyph_cpu 
+#define typeface_bar_glyph_battery_100 
+#define typeface_bar_glyph_battery_80 
+#define typeface_bar_glyph_battery_50 
+#define typeface_bar_glyph_battery_20 
+#define typeface_bar_glyph_battery_0 
+#define typeface_bar_glyph_battery_charging 
+#define typeface_bar_glyph_battery_ac 
+#define typeface_bar_glyph_battery_unknown 
+#define typeface_bar_glyph_time 
+#define typeface_bar_glyph_workspace 
