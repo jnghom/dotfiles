@@ -1,15 +1,13 @@
 {
-    "workbench.colorTheme": "Material Theme",
-    "editor.fontSize": 11,
+    "workbench.colorTheme": "Monokai Pro",
     "workbench.iconTheme": "vscode-icons",
-    "editor.fontFamily": "'IBM Plex Mono Light', 'Droid Sans Mono', 'monospace',  'Droid Sans Fallback'",
+    "editor.fontFamily": "'IBM Plex Mono', 'Source Code Pro', 'Droid Sans Mono', 'monospace',  'Droid Sans Fallback', 'Dejavu Sans Mono', 'Source Code Pro'",
     "editor.minimap.enabled": false,
-    "editor.fontWeight": "500",
     "terminal.integrated.fontSize": 12,
     "terminal.integrated.lineHeight": 1.2,
     "editor.fontLigatures": true,
     "workbench.colorCustomizations": {},
-        "vim.easymotion": true,
+    "vim.easymotion": true,
     "vim.hlsearch": true,
     "vim.leader": ",",
     "vim.useCtrlKeys": false,
@@ -17,10 +15,10 @@
         "vim.handleKeys": {
         "<C-d>": false
     },
-        "python.linting.flake8Enabled": true,
+    "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
         "--max-line-length=100",
-        "--ignore=E203"
+        "--ignore=E203,E501,E402"
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
@@ -64,7 +62,37 @@
             "commands": [
                 "workbench.action.showCommands",
             ]
+        },
+        {
+            "before": ["<leader>", "m"],
+            "commands": [
+                "bookmarks.toggle"
+            ]
+        },
+        {
+            "before": ["<leader>", "b"],
+            "commands": [
+                "bookmarks.list"
+            ]
         }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                ">"
+            ],
+            "commands": [
+                "editor.action.indentLines"
+            ]
+        },
+        {
+            "before": [
+                "<"
+            ],
+            "commands": [
+                "editor.action.outdentLines"
+            ]
+        },
     ],
     "editor.renderWhitespace": "boundary",
     "files.exclude": {
@@ -72,4 +100,24 @@
         "**/.venv": true
     },
     "editor.largeFileOptimizations": false,
+    "editor.fontSize": 11,
+    "editor.lineHeight": 17,
+    "vim.sneak": true,
+    "python.formatting.blackPath": "/home/mok/.pyenv/versions/dev/bin/black",
+    "sync.gist": "cba21dc712d48d519968c373800bc692",
+    "window.zoomLevel": 0,
+    "editor.smoothScrolling": true,
+    "editor.fontWeight": "400",
+    "python.analysis.logLevel": "Warning",
+    "python.linting.flake8Path": "/home/mok/.pyenv/versions/dev/bin/flake8",
+    "search.location": "panel",
+    "workbench.editor.showTabs": true,
+    "explorer.confirmDragAndDrop": false,
+    "editor.tabCompletion": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+
 }

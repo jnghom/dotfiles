@@ -74,7 +74,7 @@ endfunction
 " python
 if executable('pyenv')
   let pyenv_root = system('pyenv root')
-  let g:python3_host_prog = ChompedSystem('pyenv root') . '/versions/my/bin/python'
+  let g:python3_host_prog = ChompedSystem('pyenv root') . '/versions/dev/bin/python'
 endif
 " =======================================================================
 " Check vim version

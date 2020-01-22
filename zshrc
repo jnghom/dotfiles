@@ -333,3 +333,5 @@ export PIPENV_IGNORE_VIRTUALENVS=1
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[[ -f ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh ]] && source ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh
