@@ -10,47 +10,47 @@ bindkey -e
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
 
-### Added by Zplugin's installer
-source "$HOME/.zplugin/bin/zplugin.zsh"
-autoload -Uz _zplugin
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
-### End of Zplugin's installer chunk
-zplugin ice wait'!0'
-zplugin light junegunn/fzf-bin
-zplugin ice wait'!0'
-zplugin light zsh-users/zsh-history-substring-search
-zplugin ice wait'!0'
-zplugin light zsh-users/zsh-syntax-highlighting
-zplugin ice wait'!0'
-zplugin light zsh-users/zsh-completions
-zplugin ice wait'!0'
-zplugin light zsh-users/zsh-autosuggestions
-zplugin ice wait'!3'
-zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
-zplugin ice wait'!1'
-zplugin snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
-zplugin ice wait'!1'
-zplugin light chrissicool/zsh-256color
-# zplugin ice wait'!1'
-zplugin light mafredri/zsh-async
-zplugin ice wait'!2'
-zplugin light supercrabtree/k
-zplugin ice wait'!2'
-zplugin light marzocchi/zsh-notify
-zplugin ice wait'!2'
-zplugin light clvv/fasd
-# zplugin ice wait'!1'
-# zplugin light junegunn/fzf/shell/key-bindings.zsh
-zplugin snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
-# zplugin light plugins/shrink-path, from:oh-my-zsh, as:plugin
-# zplugin light b4b4r07/enhancd, use:init.sh
-zplugin ice wait'!2'
-zplugin light urbainvaes/fzf-marks
-# zplugin ice wait'!1' atload"setupsolarized dircolors.256dark"
-zplugin ice wait'!0'
-zplugin light joel-porquet/zsh-dircolors-solarized
-# zplugin ice wait'!1'
-# zplugin light denysdovhan/spaceship-prompt
+### Added by Zinit's installer
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
+zinit ice wait'!0'
+zinit light junegunn/fzf-bin
+zinit ice wait'!0'
+zinit light zsh-users/zsh-history-substring-search
+zinit ice wait'!0'
+zinit light zsh-users/zsh-syntax-highlighting
+zinit ice wait'!0'
+zinit light zsh-users/zsh-completions
+zinit ice wait'!0'
+zinit light zsh-users/zsh-autosuggestions
+zinit ice wait'!3'
+zinit snippet OMZ::plugins/extract/extract.plugin.zsh
+zinit ice wait'!1'
+zinit snippet OMZ::plugins/command-not-found/command-not-found.plugin.zsh
+zinit ice wait'!1'
+zinit light chrissicool/zsh-256color
+# zinit ice wait'!1'
+zinit light mafredri/zsh-async
+zinit ice wait'!2'
+zinit light supercrabtree/k
+zinit ice wait'!2'
+zinit light marzocchi/zsh-notify
+zinit ice wait'!2'
+zinit light clvv/fasd
+# zinit ice wait'!1'
+# zinit light junegunn/fzf/shell/key-bindings.zsh
+zinit snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
+# zinit light plugins/shrink-path, from:oh-my-zsh, as:plugin
+# zinit light b4b4r07/enhancd, use:init.sh
+zinit ice wait'!2'
+zinit light urbainvaes/fzf-marks
+# zinit ice wait'!1' atload"setupsolarized dircolors.256dark"
+zinit ice wait'!0'
+zinit light joel-porquet/zsh-dircolors-solarized
+# zinit ice wait'!1'
+# zinit light denysdovhan/spaceship-prompt
 
 # zplug "zsh-users/zsh-history-substring-search"
 # zplug "zsh-users/zsh-syntax-highlighting"
@@ -72,7 +72,7 @@ zplugin light joel-porquet/zsh-dircolors-solarized
 # zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 export ENHANCD_COMMAND=c
 
-zplugin ice depth=1; zplugin light romkatv/powerlevel10k
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # setopt share_history
 

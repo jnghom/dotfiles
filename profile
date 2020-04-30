@@ -10,8 +10,8 @@
 
 # custom
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# export LANG=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8
 
 if [ -x "$HOME/scripts/ssh-add-all.sh" ]; then
     bash $HOME/scripts/ssh-add-all.sh
@@ -26,9 +26,6 @@ if [ -d "$HOME/.cargo" ]; then
   export PATH="$CARGO_BIN:$PATH"
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
 if type yarn &> /dev/null ; then
   export YARN_BIN="$HOME/.yarn/bin"
   export PATH="$YARN_BIN:$PATH"
@@ -37,14 +34,12 @@ fi
 if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
 fi
 
 
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
-  # eval "$(pyenv virtualenv-init -)"
+  eval "$(pyenv virtualenv-init -)"
 fi
 
 if [ -d "/usr/local/go/bin" ]; then
