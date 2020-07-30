@@ -1,0 +1,14 @@
+{
+    "python.jediEnabled": false,
+    "python.formatting.blackPath": "/home/mok/.pyenv/versions/dev/bin/black",
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        "--ignore=E203,E501,E402"
+    ],
+    "python.pipenvPath": "pipenv",
+    "python.linting.flake8Path": "/home/mok/.pyenv/versions/dev/bin/flake8",
+    "codeLens.enable": true,
+    "diagnostic.displayByAle": true,
+    "suggest.floatEnable": true
+}
