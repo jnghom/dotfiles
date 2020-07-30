@@ -101,9 +101,9 @@ endfunction
 
 
 if has('nvim')
-call plug#begin('~/.local/share/nvim/plugged')
+  call plug#begin('~/.local/share/nvim/plugged')
 else
-call plug#begin('~/.vim/plugged')
+  call plug#begin('~/.vim/plugged')
 endif
 
 " Plug 'junegunn/seoul256.vim'
@@ -137,14 +137,18 @@ let g:PaperColor_Theme_Options = {
   \     }
   \   }
   \ }
-"  \         'cursorlinenr_bg' : ['#3a3a3a', '237']
 
+
+" =======================================================================
+" Essential Light Plugins
+" =======================================================================
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-Plug 'ntpeters/vim-better-whitespace'
 " Plug 'jiangmiao/auto-pairs'
 Plug 'tmsvg/pear-tree'
-Plug 'easymotion/vim-easymotion' " slow
+Plug 'easymotion/vim-easymotion'
+Plug 'ntpeters/vim-better-whitespace'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
 " Plug 'majutsushi/tagbar', Cond(executable('ctags'))
@@ -152,22 +156,17 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/vim-peekaboo'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " Plug 'Yggdroot/vim-mark'
-Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-dispatch'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim', Cond(executable('fzf'))
-" if has('nvim')
-  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" elseif v:version == 800
-  " Plug 'roxma/nvim-yarp'
-  " Plug 'roxma/vim-hug-neovim-rpc'
-  " Plug 'Shougo/deoplete.nvim'
-" endif
 
-Plug 'honza/vim-snippets'
+
+Plug 'liuchengxu/vim-which-key'
+" Plug 'honza/vim-snippets'
 Plug 'kshenoy/vim-signature'
-Plug 'mhinz/vim-signify'
+Plug 'airblade/vim-gitgutter'
+" Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-sleuth'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
@@ -178,13 +177,13 @@ Plug 'mhinz/vim-startify'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'junegunn/gv.vim'
 
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 Plug 'itchyny/lightline.vim'
 Plug 'ludovicchabant/vim-gutentags'   " slow vim close
 Plug 'jreybert/vimagit'
 Plug 'taohexxx/lightline-buffer'
 Plug 'kana/vim-textobj-user'
-  Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
+  "Plug 'kana/vim-textobj-function'               " af/if : function,           aF/iF : extensible
   Plug 'sgur/vim-textobj-parameter'              " a,/i, : argument
   Plug 'kana/vim-textobj-indent'                 " ai/ii : similarly indent,   aI/iI : same indent block
   Plug 'Julian/vim-textobj-variable-segment'     " av/iv : _ or camelCase
@@ -226,8 +225,6 @@ let g:vista_sidebar_width = 50
 let g:vista_default_executive = 'coc'
 let g:vista_icon_indent = ["▸ ", ""]
 
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
 Plug 'posva/vim-vue'
 Plug 'ekalinin/Dockerfile.vim'
 
@@ -245,12 +242,14 @@ call plug#end()
 " Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 " Plug 'nbouscal/vim-stylish-haskell', { 'for': 'haskell' }
 
-Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
-Plug 'luochen1990/rainbow', { 'for': 'clojure' }
-Plug 'guns/vim-sexp', { 'for': 'clojure' }
-Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': 'clojure' }
+" Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+" Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+" Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+" Plug 'luochen1990/rainbow', { 'for': 'clojure' }
+" Plug 'guns/vim-sexp', { 'for': 'clojure' }
+" Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': 'clojure' }
 
-Plug 'leafgarland/typescript-vim'
+" Plug 'leafgarland/typescript-vim'
 
 
 " Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
@@ -304,6 +303,11 @@ hi Comment cterm=italic
 " Plugin Setting
 " =======================================================================
 
+" -----------------------------------------------
+" WhichKey
+" -----------------------------------------------
+" nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
+" nnoremap <silent> <localleader> :<c-u>WhichKey  '<Space>'<CR>
 
 " -----------------------------------------------
 " COC
@@ -321,9 +325,10 @@ nnoremap <silent> K :call <SID>show_documentation()<CR><Paste>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 
 " Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>n <Plug>(coc-rename)
 
 " Remap for format selected region
+xmap <leader>f  <Plug>(coc-format-selected)
 vmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>F  <Plug>(coc-format)
@@ -339,16 +344,28 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
- function! s:show_documentation()
-   if (index(['vim','help'], &filetype) >= 0)
-     execute 'h '.expand('<cword>')
-   else
-     call CocAction('doHover')
-   endif
- endfunction
 
- autocmd CursorHold * silent call CocActionAsync('highlight')
- hi CocHighlightText ctermbg=DarkBlue ctermfg=Yellow
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+hi CocHighlightText ctermbg=DarkBlue ctermfg=Yellow
 
 
 
@@ -383,11 +400,19 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " Or use `complete_info` if your vim support it, like:
 " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
 
 let g:haskell_indent_disable = 1
-
 
 " -----------------------------------------------
 " ALE
@@ -402,7 +427,7 @@ let g:ale_linters = {
       \  'css': ['csslint', 'prettier'],
       \  'sh': ['shellcheck'],
       \  'yaml': ['prettier'],
-      \  'python': ['pylint'],
+      \  'python': ['flake8', 'pylint'],
       \}
 
 let g:ale_fixers = {
@@ -410,7 +435,7 @@ let g:ale_fixers = {
       \  'javascript': ['prettier', 'eslint'],
       \  'css': ['prettier'],
       \  'html': ['prettier'],
-      \  'python': ['black', 'isort'],
+      \  'python': ['autopep8', 'isort'],
       \  'yaml': ['prettier'],
       \}
 
@@ -421,7 +446,7 @@ let g:ale_completion_enabled = 0
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
+let g:ale_lint_on_enter = 1
 
 autocmd FileType * let g:ale_echo_msg_format = '[%code%] %s'
 autocmd FileType python let g:ale_echo_msg_format = '[%linter%][%code%] %s'
@@ -443,19 +468,24 @@ nnoremap <Leader>gg :Gwrite<cr>:Gcommit -m 'update'<cr>:Git push<cr>
 " FZF
 " -----------------------------------------------
 
-command! -bang -nargs=* GGrep
-  \ call fzf#vim#grep('git grep --line-number '.shellescape(<q-args>),
-  \                   0,
-  \                   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                   <bang>0)
+" command! -bang -nargs=* GGrep
+"   \ call fzf#vim#grep('git grep --line-number '.shellescape(<q-args>),
+"   \                   0,
+"   \                   <bang>0 ? fzf#vim#with_preview('up:60%')
+"   \                           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"   \                   <bang>0)
 
-command! -bang -nargs=* Rg
+command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
+  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+" command! -bang -nargs=* Rg
+"   \ call fzf#vim#grep(
+"   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+"   \   <bang>0 ? fzf#vim#with_preview('up:60%')
+"   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"   \   <bang>0)
 
 command! -bang -nargs=* Rgw
   \ call fzf#vim#grep(
@@ -464,7 +494,10 @@ command! -bang -nargs=* Rgw
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
+
+" nnoremap <silent> <expr> <space><space> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
 nnoremap <silent> <space><space> :Files<CR>
+nnoremap <silent> <space>g       :GFiles<CR>
 nnoremap <silent> <space>a       :Buffers<CR>
 nnoremap <silent> <space>A       :Windows<CR>
 nnoremap <silent> <space>;       :Lines<CR>
@@ -475,7 +508,8 @@ nnoremap <silent> <space>h       :History<CR>
 nnoremap <silent> <space>h/      :History/<CR>
 nnoremap <silent> <space>h:      :History:<CR>
 " nnoremap <silent> <space>/       :execute 'Agp ' . input('Ag/')<CR>
-nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
+nnoremap <silent> <space>/       :Rg<CR>
+" nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
 nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
 nnoremap <silent> **             :call SearchWordWithRgW()<CR>
 vnoremap <silent> **             :call SearchVisualSelectionWithRg()<CR>
@@ -486,8 +520,15 @@ nnoremap <silent> <space>M       :Marks<CR>
 nnoremap <silent> <space>?       :Helptags<CR>
 "nnoremap <silent> <space>ft :Filetypes<CR>
 
-imap <C-x><C-f> <plug>(fzf-complete-file-ag)
-imap <C-x><C-l> <plug>(fzf-complete-line)
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
 
 function! SearchWordWithRgW()
   execute 'Rgw' expand('<cword>')
@@ -701,7 +742,7 @@ autocmd BufReadPost *
 " -----------------------------------------------
 "  Man Page
 " -----------------------------------------------
-nnoremap M :Man<CR>
+" nnoremap M :Man<CR>
 
 " -----------------------------------------------
 "  Git Root
