@@ -126,10 +126,10 @@ if [ "$PLATFORM" = Linux ]; then
   PS1="$PS1\[\e[0;38m\]\w\[\e[1;35m\]> \[\e[0m\]"
 else
   ### git-prompt
-  __git_ps1() { :;}
-  if [ -e ~/.git-prompt.sh ]; then
-    source ~/.git-prompt.sh
-  fi
+  # __git_ps1() { :;}
+  # if [ -e ~/.git-prompt.sh ]; then
+  #   source ~/.git-prompt.sh
+  # fi
 
   PROMPT_COMMAND='history -a; printf "\[\e[38;5;59m\]%$(($COLUMNS - 4))s\r" "$(__git_ps1) ($(date +%m/%d\ %H:%M:%S))"'
   PS1="\[\e[36m\]\u\[\e[38;5;238m\]@\[\e[38;5;210m\]\h \[\e[0;33m\]"
@@ -442,3 +442,14 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+
+if command -v nvim > /dev/null ; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+  alias vim="nvim"
+  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+elif command -v vim > /dev/null ; then
+  export EDITOR=vim
+  export VISUAL=vim
+  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+fi

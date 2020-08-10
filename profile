@@ -52,17 +52,6 @@ if [ -d "$HOME/usr/bin" ] ; then
     export PATH="$HOME/usr/bin:$PATH"
 fi
 
-if command -v nvim > /dev/null ; then
-  export EDITOR=nvim
-  export VISUAL=nvim
-  alias vim="nvim"
-  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-elif command -v vim > /dev/null ; then
-  export EDITOR=vim
-  export VISUAL=vim
-  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-fi
-
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
