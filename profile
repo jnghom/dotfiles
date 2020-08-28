@@ -31,17 +31,6 @@ if type yarn &> /dev/null ; then
   export PATH="$YARN_BIN:$PATH"
 fi
 
-if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-
-
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
-fi
-
 if [ -d "/usr/local/go/bin" ]; then
   export GOROOT=/usr/local/go
   export GOPATH=$HOME/go
