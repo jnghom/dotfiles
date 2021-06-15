@@ -461,8 +461,45 @@ if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
 fi
 
 
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+# if command -v pyenv 1>/dev/null 2>&1; then
+#   eval "$(pyenv init -)"
+#   eval "$(pyenv virtualenv-init -)"
+# fi
+
+if [ -f $HOME/.rsyncignore ]; then
+  alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
 fi
 
+
+[ -f /usr/local/bin/aws_completer ] && complete -C '/usr/local/bin/aws_completer' aws
+
+# add Pulumi to the PATH
+export PATH=$PATH:$HOME/.pulumi/bin
+export PATH=$PATH:$HOME/usr/flutter/bin
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
+fi
+. "$HOME/.cargo/env"
+
+if [ -d "$HOME/.cargo" ]; then
+  export CARGO_BIN="$HOME/.cargo/bin"
+  export PATH="$CARGO_BIN:$PATH"
+fi
+
+if type yarn &> /dev/null ; then
+  export YARN_BIN="$HOME/.yarn/bin"
+  export PATH="$YARN_BIN:$PATH"
+fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
+fi
+
+if [ -d "$HOME/usr/bin" ] ; then
+    export PATH="$HOME/usr/bin:$PATH"
+fi

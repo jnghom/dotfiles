@@ -219,7 +219,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'w0rp/ale', Cond(vims ==# 'async') " slow
 
 
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'liuchengxu/vista.vim'
 let g:vista_sidebar_width = 50
 let g:vista_default_executive = 'coc'

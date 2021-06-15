@@ -111,7 +111,7 @@ alias vim='nvim'
 alias gs='git status'
 
 [ -f $HOME/.agignore ] && alias ag='ag --path-to-ignore ~/.agignore'
-[ -f $HOME/.rgignore ] && alias rg='rg --ignore-file $HOME/ws/.rgignore'
+[ -f $HOME/.rgignore ] && alias rg='rg --ignore-file $HOME/.rgignore'
 
 is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
@@ -341,8 +341,8 @@ export PIPENV_IGNORE_VIRTUALENVS=1
 if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+  # eval "$(pyenv init -)"
+  # eval "$(pyenv virtualenv-init -)"
 fi
 
 if [ -d "$HOME/.cargo" ]; then
@@ -365,6 +365,8 @@ if [ -d "$HOME/usr/bin" ]; then
   export PATH=$USER_BIN:$PATH
 fi
 
+export PATH=$HOME/.local/bin:$PATH
+
 if [ -d "/usr/local/go/bin" ]; then
   export GOROOT=/usr/local/go
   export GOPATH=$HOME/go
@@ -374,3 +376,13 @@ fi
 if type hub &> /dev/null ; then
   eval "$(hub alias -s)"
 fi
+
+if [ -f $HOME/.rsyncignore ]; then
+  alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
+fi
+export PATH=$PATH:$HOME/.pulumi/bin
+export PATH=$PATH:$HOME/usr/flutter/bin
+
+# tabtab source for packages
+# uninstall by removing these lines
+[ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
