@@ -13,33 +13,14 @@
 # export LANG=en_US.UTF-8
 # export LC_ALL=en_US.UTF-8
 
-if [ -x "$HOME/scripts/ssh-add-all.sh" ]; then
-    bash $HOME/scripts/ssh-add-all.sh
-fi
+# if [ -x "$HOME/scripts/ssh-add-all.sh" ]; then
+#     bash $HOME/scripts/ssh-add-all.sh
+# fi
 
 if type hub &> /dev/null ; then
   eval "$(hub alias -s)"
 fi
 
-if [ -d "$HOME/.cargo" ]; then
-  export CARGO_BIN="$HOME/.cargo/bin"
-  export PATH="$CARGO_BIN:$PATH"
-fi
-
-if type yarn &> /dev/null ; then
-  export YARN_BIN="$HOME/.yarn/bin"
-  export PATH="$YARN_BIN:$PATH"
-fi
-
-if [ -d "/usr/local/go/bin" ]; then
-  export GOROOT=/usr/local/go
-  export GOPATH=$HOME/go
-  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
-fi
-
-if [ -d "$HOME/usr/bin" ] ; then
-    export PATH="$HOME/usr/bin:$PATH"
-fi
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
@@ -58,3 +39,12 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+if [ -d "$HOME/flutter/bin" ] ; then
+    PATH="$HOME/flutter/bin:$PATH"
+fi
+. "$HOME/.cargo/env"
+
+# [ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
+# [ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
+# [ ! -z "$LOCAL_SSL_CRT " ] && git config --global http.sslCAInfo $LOCAL_SSL_CRT
+# git config --global core.editor $EDITOR

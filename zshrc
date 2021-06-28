@@ -1,3 +1,4 @@
+echo zshrc start
 if [ $TILIX_ID ] || [ $VTE_VERSION ] ; then source /etc/profile.d/vte.sh; fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -73,7 +74,10 @@ zinit light joel-porquet/zsh-dircolors-solarized
 # zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 export ENHANCD_COMMAND=c
 
+# POWERLEVEL9K_DIR_HOME_FOREGROUND=184
+# POWERLEVEL9K_TIME_FOREGROUND='184'
 zinit ice depth=1; zinit light romkatv/powerlevel10k
+
 
 # setopt share_history
 
@@ -172,6 +176,36 @@ gr() {
   fzf-down --tac \
     --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
   cut -d$'\t' -f1
+}
+
+cf() {
+  local file
+
+  # file="$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1)"
+  file="$(locate -Ai -0 / | grep -z -vE '~$' | fzf --read0 -0 -1)"
+
+  if [[ -n $file ]]
+  then
+     if [[ -d $file ]]
+     then
+        cd -- $file
+     else
+        cd -- ${file:h}
+     fi
+  fi
+
+}
+
+v() {
+    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && ${EDITOR} "${file}" || return 1
+}
+
+z() {
+    [ $# -gt 0 ] && fasd_cd -d "$*" && return
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
 
 # vf - fuzzy open with vim from anywhere
@@ -328,7 +362,6 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 export PIPENV_IGNORE_VIRTUALENVS=1
 
@@ -338,40 +371,6 @@ export PIPENV_IGNORE_VIRTUALENVS=1
 [[ -f ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh ]] && source ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh
 ### End of Zinit's installer chunk
 
-if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  # eval "$(pyenv init -)"
-  # eval "$(pyenv virtualenv-init -)"
-fi
-
-if [ -d "$HOME/.cargo" ]; then
-  export CARGO_BIN="$HOME/.cargo/bin"
-  export PATH="$CARGO_BIN:$PATH"
-fi
-
-if type yarn &> /dev/null ; then
-  export YARN_BIN="$HOME/.yarn/bin"
-  export PATH="$YARN_BIN:$PATH"
-fi
-
-if [ -s "$HOME/.nvm/nvm.sh" ]; then
-  export NVM_DIR="$HOME/.nvm"
-  \. "$NVM_DIR/nvm.sh"
-fi
-
-if [ -d "$HOME/usr/bin" ]; then
-  export USER_BIN="$HOME/usr/bin"
-  export PATH=$USER_BIN:$PATH
-fi
-
-export PATH=$HOME/.local/bin:$PATH
-
-if [ -d "/usr/local/go/bin" ]; then
-  export GOROOT=/usr/local/go
-  export GOPATH=$HOME/go
-  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
-fi
 
 if type hub &> /dev/null ; then
   eval "$(hub alias -s)"
@@ -380,9 +379,7 @@ fi
 if [ -f $HOME/.rsyncignore ]; then
   alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
 fi
-export PATH=$PATH:$HOME/.pulumi/bin
-export PATH=$PATH:$HOME/usr/flutter/bin
 
 # tabtab source for packages
 # uninstall by removing these lines
-[ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
+# [ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true

@@ -353,6 +353,24 @@ cf() {
         cd -- ${file:h}
      fi
   fi
+
+}
+
+v() {
+    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && ${EDITOR} "${file}" || return 1
+}
+
+z() {
+    [ $# -gt 0 ] && fasd_cd -d "$*" && return
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+fif() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
 bind '"\er": redraw-current-line'
@@ -421,16 +439,12 @@ alias gl='git ld'
 
 alias bd=". bd -si"
 
-eval "$(fasd --init auto)"
+# eval "$(fasd --init auto)"
 mkdir -p $HOME/.colors
 [ -f $HOME/.colors/dircolors.256dark ] && eval `dircolors $HOME/.colors/dircolors.256dark`
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
 
-[ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
-[ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
-[ ! -z "$LOCAL_SSL_CRT " ] && git config --global http.sslCAInfo $LOCAL_SSL_CRT
-git config --global core.editor $EDITOR
 
 if [ -d ~/.bash_completion.d ]; then
   for file in ~/.bash_completion.d/*; do
@@ -441,18 +455,6 @@ fi
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
-if command -v nvim > /dev/null ; then
-  export EDITOR=nvim
-  export VISUAL=nvim
-  alias vim="nvim"
-  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-elif command -v vim > /dev/null ; then
-  export EDITOR=vim
-  export VISUAL=vim
-  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
-fi
 
 
 if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
@@ -502,4 +504,15 @@ fi
 
 if [ -d "$HOME/usr/bin" ] ; then
     export PATH="$HOME/usr/bin:$PATH"
+fi
+
+if command -v nvim > /dev/null ; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+  alias vim="nvim"
+  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+elif command -v vim > /dev/null ; then
+  export EDITOR=vim
+  export VISUAL=vim
+  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
 fi
