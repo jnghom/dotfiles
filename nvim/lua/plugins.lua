@@ -31,8 +31,18 @@ return require('packer').startup(function()
   use 'tpope/vim-fugitive'
   use 'junegunn/vim-peekaboo'
   use {'scrooloose/nerdtree', opt = true, cmd = 'NERDTreeToggle' }
-  use {'liuchengxu/vim-which-key', cmd = 'WhichKey'}
+  -- make it easier to know the available key bindings
+  use {
+    'liuchengxu/vim-which-key', cmd = 'WhichKey',
+    config = function()
+      vim.cmd([[
+        nnoremap <silent> <leader>      :<c-u>WhichKey '<leader>'<CR>
+        vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<leader>'<CR>
+      ]])
+    end
+  }
   -- nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+  use {'farmergreg/vim-lastplace'}
 
   use {
     'lewis6991/gitsigns.nvim',
@@ -63,18 +73,163 @@ return require('packer').startup(function()
   -- Load on specific commands
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
 
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  -- use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'}
   use 'justinmk/vim-sneak'
 
-  use { 'neovim/nvim-lspconfig' }
+  use {'ray-x/lsp_signature.nvim'}
+  use {
+    -- automatically highlighting other uses of the current word under the cursor
+    'RRethy/vim-illuminate',
+    config = function()
+      vim.api.nvim_command [[ hi def link LspReferenceText CursorLine ]]
+      vim.api.nvim_command [[ hi def link LspReferenceWrite CursorLine ]]
+      vim.api.nvim_command [[ hi def link LspReferenceRead CursorLine ]]
+
+      vim.api.nvim_set_keymap('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<a-p>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
+
+    end
+  }
+
+  use {
+    'neovim/nvim-lspconfig',
+    config = function()
+      -- require'lspconfig'.pyright.setup{}
+      local nvim_lsp = require('lspconfig')
+
+      -- Use an on_attach function to only map the following keys
+      -- after the language server attaches to the current buffer
+      local on_attach = function(client, bufnr)
+        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+        --Enable completion triggered by <c-x><c-o>
+        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+        -- Mappings.
+        local opts = { noremap=true, silent=true }
+
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+        buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+        buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+        buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+        buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+        buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+        buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+        -- Set some keybinds conditional on server capabilities
+        if client.resolved_capabilities.document_formatting then
+            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        elseif client.resolved_capabilities.document_range_formatting then
+            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        end
+
+        -- Set autocommands conditional on server_capabilities
+        if client.resolved_capabilities.document_highlight then
+            -- require('lspconfig').util.nvim_multiline_command [[
+            vim.cmd [[
+            :hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+            :hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+            :hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+            augroup lsp_document_highlight
+                autocmd!
+                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+            augroup END
+            ]]
+        end
+
+
+        require 'lsp_signature'.on_attach()
+        require 'illuminate'.on_attach(client)
+
+      end
+
+      -- Use a loop to conveniently call 'setup' on multiple servers and
+      -- map buffer local keybindings when the language server attaches
+      local servers = { 'pyright', 'rust_analyzer', 'tsserver' }
+      for _, lsp in ipairs(servers) do
+        nvim_lsp[lsp].setup {
+          on_attach = on_attach,
+          flags = {
+            debounce_text_changes = 150,
+          }
+        }
+      end
+    end
+  }
+
+  -- Debug Adapter Protocol client implementation for Neovim
+  use 'mfussenegger/nvim-dap'
+  -- use 'nvim-telescope/telescope-dap.nvim'
+  -- use 'mfussenegger/nvim-dap-python'
+  -- pip install debugpy
+  --
+  -- Debug Adapter Protocol client implementation for Neovim
+
+
+
   -- use { 'nvim-lua/completion-nvim' }
 
   -- glepnir/lspsaga.nvim
 
   use {
-    '/hrsh7th/nvim-compe',
+    'hrsh7th/vim-vsnip',
+    -- https://marketplace.visualstudio.com/search?term=snippets&target=VSCode&category=All%20categories&sortBy=Relevance
+    requires = {
+      'hrsh7th/vim-vsnip-integ',
+      'ylcnfrht/vscode-python-snippet-pack'
+    },
+    config = function ()
+      vim.cmd([[
+      " NOTE: You can use other key to expand snippet.
+
+      " Expand
+      imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+      smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+      " Expand or jump
+      imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+      smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+      " Jump forward or backward
+      " imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+      " smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+      " imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+      " smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+      " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+      " See https://github.com/hrsh7th/vim-vsnip/pull/50
+      nmap        s   <Plug>(vsnip-select-text)
+      xmap        s   <Plug>(vsnip-select-text)
+      nmap        S   <Plug>(vsnip-cut-text)
+      xmap        S   <Plug>(vsnip-cut-text)
+
+      " If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
+      let g:vsnip_filetypes = {}
+      let g:vsnip_filetypes.javascriptreact = ['javascript']
+      let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+      ]])
+    end
+  }
+  use { 'cstrap/python-snippets' }
+
+  use {
+    'hrsh7th/nvim-compe',
     config = function()
       require'compe'.setup {
         enabled = true;
@@ -108,8 +263,91 @@ return require('packer').startup(function()
           luasnip = true;
         };
       }
+      local t = function(str)
+	      return vim.api.nvim_replace_termcodes(str, true, true, true)
+      end
+
+      local check_back_space = function()
+	      local col = vim.fn.col('.') - 1
+	      return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+      end
+
+      -- Use (s-)tab to:
+      --- move to prev/next item in completion menuone
+      --- jump to prev/next snippet's placeholder
+      _G.tab_complete = function()
+	      if vim.fn.pumvisible() == 1 then
+		      return t "<C-n>"
+	      elseif vim.fn['vsnip#available'](1) == 1 then
+		      return t "<Plug>(vsnip-expand-or-jump)"
+	      elseif check_back_space() then
+		      return t "<Tab>"
+	      else
+		      return vim.fn['compe#complete']()
+	      end
+      end
+      _G.s_tab_complete = function()
+	      if vim.fn.pumvisible() == 1 then
+		      return t "<C-p>"
+	      elseif vim.fn['vsnip#jumpable'](-1) == 1 then
+		      return t "<Plug>(vsnip-jump-prev)"
+	      else
+		      -- If <S-Tab> is not working in your terminal, change it to <C-h>
+		      return t "<S-Tab>"
+	      end
+      end
+
+      vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap('i', '<cr>', 'compe#confirm("<cr>")', { expr = true })
+      vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
     end
   }
+
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = { {'nvim-lua/plenary.nvim'} },
+    config = function()
+      vim.cmd [[
+      " Find files using Telescope command-line sugar.
+      nnoremap <leader>ff <cmd>Telescope find_files<cr>
+      nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+      nnoremap <leader>fb <cmd>Telescope buffers<cr>
+      nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+      " Using Lua functions
+      nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+      nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+      nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+      nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+      ]]
+    end
+  }
+
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
+    config = function()
+      require'nvim-treesitter.configs'.setup {
+        ensure_installed = "maintained",
+        highlight = {
+          enable = true
+      }
+    }
+    end
+  }
+
+  -- github
+  -- use 'pwntester/octo.nvim'
+  --
+  -- A File Explorer For Neovim Written In Lua
+  -- kyazdani42/nvim-tree.lua
+  --
+  -- A lua fork of vim-devicons. This plugin provides the same icons as well as colors for each icon.
+  -- kyazdani42/nvim-web-devicons
+
   -- terryma/vim-multiple-cursors
   -- hrsh7th/vim-vsnip
 
@@ -129,5 +367,8 @@ return require('packer').startup(function()
   -- nerdtree
   -- expand object
   -- restore last position
+  --
+  -- ojroques/vim-oscyank
+  -- copy text to the system clipboard from anywhere using the ANSI OSC52 sequence.
 end)
 

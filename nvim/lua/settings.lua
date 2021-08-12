@@ -16,6 +16,8 @@ o.number = true
 
 o.completeopt = "menuone,noselect"
 
+g.mapleader = ','
+
 -- https://github.com/LunarVim/LunarVim/blob/rolling/lua/settings.lua
 local default_options = {
   backup = false, -- creates a backup file
