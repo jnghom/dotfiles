@@ -25,7 +25,14 @@ return require('packer').startup(function()
   use 'easymotion/vim-easymotion'
   -- auto-pair
   -- use 'tmsvg/pear-tree'
-  use 'windwp/nvim-autopairs'
+  use {
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup{
+        disable_filetype = { "TelescopePrompt" , "vim" }
+      }
+    end
+  }
   use 'ntpeters/vim-better-whitespace'
   use 'nathanaelkane/vim-indent-guides'
   use 'tpope/vim-fugitive'
@@ -61,19 +68,29 @@ return require('packer').startup(function()
   use {
     'hoob3rt/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
-    config = function() require('lualine').setup() end
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = 'tokyonight'
+        }
+      }
+    end
   }
 
   -- Simple plugins can be specified as strings
   -- use '9mm/vim-closer'
   use 'NLKNguyen/papercolor-theme'
-  vim.g.colors_name = 'PaperColor'
+  -- vim.g.colors_name = 'PaperColor'
+  use 'folke/tokyonight.nvim'
+  vim.g.colors_name = 'tokyonight'
+  vim.g.tokyonight_style = "day" -- storm, night, day
+
+  -- https://github.com/nvim-treesitter/nvim-treesitter/wiki/Colorschemes
+  -- shaunsingh/seoul256.nvim
 
   -- Lazy loading:
   -- Load on specific commands
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
-
-  -- use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'}
   use 'justinmk/vim-sneak'
@@ -129,6 +146,8 @@ return require('packer').startup(function()
         buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
         buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
         buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+        -- vim.lsp.buf.document_symbol()
+        -- vim.lsp.buf.workspace_symbol()
 
         -- Set some keybinds conditional on server capabilities
         if client.resolved_capabilities.document_formatting then
@@ -140,10 +159,14 @@ return require('packer').startup(function()
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_highlight then
             -- require('lspconfig').util.nvim_multiline_command [[
+            -- :hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+            -- :hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+            -- :hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+            --
+            -- :hi default LspReferenceRead cterm=bold gui=Bold ctermbg=yellow guifg=yellow guibg=purple4 |
+            -- :hi default LspReferenceText cterm=bold gui=Bold ctermbg=red guifg=SlateBlue guibg=MidnightBlue |
+            -- :hi default LspReferenceWrite cterm=bold gui=Bold,Italic ctermbg=red guifg=DarkSlateBlue guibg=MistyRose
             vim.cmd [[
-            :hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-            :hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-            :hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
             augroup lsp_document_highlight
                 autocmd!
                 autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
@@ -160,7 +183,11 @@ return require('packer').startup(function()
 
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      local servers = { 'pyright', 'rust_analyzer', 'tsserver' }
+      local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls' }
+      -- pyright : npm i -g pyright
+      -- bashls  : npm i -g bash-language-server
+      -- vimls   : npm install -g vim-language-server
+      -- yamlls  : yarn global add yaml-language-server
       for _, lsp in ipairs(servers) do
         nvim_lsp[lsp].setup {
           on_attach = on_attach,
@@ -171,6 +198,9 @@ return require('packer').startup(function()
       end
     end
   }
+
+  -- simrat39/symbols-outline.nvim
+  -- :SymbolsOutline
 
   -- Debug Adapter Protocol client implementation for Neovim
   use 'mfussenegger/nvim-dap'
@@ -185,6 +215,21 @@ return require('packer').startup(function()
   -- use { 'nvim-lua/completion-nvim' }
 
   -- glepnir/lspsaga.nvim
+  use {
+    'glepnir/lspsaga.nvim',
+    config = function ()
+      local saga = require 'lspsaga'
+      saga.init_lsp_saga()
+      -- nnoremap <silent> gh :Lspsaga lsp_finder<CR>
+      -- nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
+      -- vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
+      -- nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
+      vim.cmd [[
+      nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
+      nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
+      ]]
+    end
+  }
 
   use {
     'hrsh7th/vim-vsnip',
@@ -339,6 +384,101 @@ return require('packer').startup(function()
     end
   }
 
+  use {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    config = function()
+      require'nvim-treesitter.configs'.setup {
+        textobjects = {
+          select = {
+            enable = true,
+
+            -- Automatically jump forward to textobj, similar to targets.vim
+            lookahead = true,
+
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+
+              -- Or you can define your own textobjects like this
+              ["iF"] = {
+                python = "(function_definition) @function",
+                cpp = "(function_definition) @function",
+                c = "(function_definition) @function",
+                java = "(method_declaration) @function",
+              },
+            },
+          },
+        },
+      }
+    end
+  }
+
+  use {'junegunn/fzf'}
+
+  use {
+    'junegunn/fzf.vim',
+    config = function()
+      vim.api.nvim_exec(
+      [[
+
+      " nnoremap <silent> <expr> <space><space> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+      nnoremap <silent> <space><space> :Files<CR>
+      nnoremap <silent> <space>g       :GFiles<CR>
+      nnoremap <silent> <space>a       :Buffers<CR>
+      nnoremap <silent> <space>A       :Windows<CR>
+      nnoremap <silent> <space>;       :Lines<CR>
+      nnoremap <silent> <space>.       :BLines<CR>
+      nnoremap <silent> <space>T       :Tags<CR>
+      nnoremap <silent> <space>t       :BTags<CR>
+      nnoremap <silent> <space>h       :History<CR>
+      nnoremap <silent> <space>h/      :History/<CR>
+      nnoremap <silent> <space>h:      :History:<CR>
+      nnoremap <silent> <space>/       :Rg<CR>
+      " nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
+      nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
+      nnoremap <silent> **             :call SearchWordWithRgW()<CR>
+      vnoremap <silent> **             :call SearchVisualSelectionWithRg()<CR>
+      nnoremap <silent> <space>C       :Commits<CR>
+      nnoremap <silent> <space>c       :BCommits<CR>
+      nnoremap <silent> <space>m       :FZFMru<CR>
+      nnoremap <silent> <space>M       :Marks<CR>
+      nnoremap <silent> <space>?       :Helptags<CR>
+      "nnoremap <silent> <space>ft :Filetypes<CR>
+
+      " Mapping selecting mappings
+      nmap <leader><tab> <plug>(fzf-maps-n)
+      xmap <leader><tab> <plug>(fzf-maps-x)
+      omap <leader><tab> <plug>(fzf-maps-o)
+
+      " Insert mode completion
+      imap <c-x><c-k> <plug>(fzf-complete-word)
+      imap <c-x><c-f> <plug>(fzf-complete-path)
+      imap <c-x><c-l> <plug>(fzf-complete-line)
+
+      function! SearchWordWithRgW()
+        execute 'Rgw' expand('<cword>')
+      endfunction
+
+      function! SearchVisualSelectionWithRg() range
+        let old_reg = getreg('"')
+        let old_regtype = getregtype('"')
+        let old_clipboard = &clipboard
+        set clipboard&
+        normal! ""gvy
+        let selection = getreg('"')
+        call setreg('"', old_reg, old_regtype)
+        let &clipboard = old_clipboard
+        execute 'Rg' selection
+      endfunction
+
+      ]],
+      true)
+    end
+  }
+
   -- github
   -- use 'pwntester/octo.nvim'
   --
@@ -370,5 +510,8 @@ return require('packer').startup(function()
   --
   -- ojroques/vim-oscyank
   -- copy text to the system clipboard from anywhere using the ANSI OSC52 sequence.
+  --
+  -- jump list
+  -- bookmark
 end)
 

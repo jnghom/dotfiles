@@ -13,6 +13,7 @@ b.shiftwidth = 4        -- shift 4 spaces when tab
 b.tabstop = 4           -- 1 tab == 4 spaces
 b.smartindent = true    -- autoindent new lines
 o.number = true
+o.belloff = 'all'
 
 o.completeopt = "menuone,noselect"
 
