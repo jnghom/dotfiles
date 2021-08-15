@@ -39,16 +39,28 @@ return require('packer').startup(function()
   use 'junegunn/vim-peekaboo'
   use {'scrooloose/nerdtree', opt = true, cmd = 'NERDTreeToggle' }
   -- make it easier to know the available key bindings
+  -- use {
+  --   'liuchengxu/vim-which-key', cmd = 'WhichKey',
+  --   config = function()
+  --     vim.cmd([[
+  --       nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
+  --       vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<leader>'<CR>
+  --     ]])
+  --   end
+  -- }
+
+  -- Lua
   use {
-    'liuchengxu/vim-which-key', cmd = 'WhichKey',
+    "folke/which-key.nvim",
     config = function()
-      vim.cmd([[
-        nnoremap <silent> <leader>      :<c-u>WhichKey '<leader>'<CR>
-        vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<leader>'<CR>
-      ]])
+      require("which-key").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
     end
   }
-  -- nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
   use {'farmergreg/vim-lastplace'}
 
   use {
@@ -79,11 +91,30 @@ return require('packer').startup(function()
 
   -- Simple plugins can be specified as strings
   -- use '9mm/vim-closer'
-  use 'NLKNguyen/papercolor-theme'
+  -- use 'NLKNguyen/papercolor-theme'
   -- vim.g.colors_name = 'PaperColor'
-  use 'folke/tokyonight.nvim'
+  vim.g.tokyonight_colors = { fg = '#cfd3e3' }
+  vim.g.tokyonight_style = "storm" -- storm, night, day
+  use {
+    'folke/tokyonight.nvim',
+    config = function()
+      if vim.g.tokyonight_style == "storm" then
+        print('tokyonight_style storm')
+        vim.cmd [[
+        hi CursorLine    ctermbg=236 guibg=#444444 cterm=none gui=none
+        hi LspReferenceRead cterm=bold ctermbg=red guibg=DarkSlateBlue
+        hi LspReferenceText cterm=bold ctermbg=red guibg=#823838
+        hi LspReferenceWrite cterm=bold ctermbg=red guibg=MediumPurple3
+        ]]
+      else
+        print('tokyonight_style day')
+      end
+    end
+  }
   vim.g.colors_name = 'tokyonight'
-  vim.g.tokyonight_style = "day" -- storm, night, day
+
+  -- use 'mhartington/oceanic-next'
+  -- vim.g.colors_name = 'OceanicNext'
 
   -- https://github.com/nvim-treesitter/nvim-treesitter/wiki/Colorschemes
   -- shaunsingh/seoul256.nvim
@@ -157,23 +188,15 @@ return require('packer').startup(function()
         end
 
         -- Set autocommands conditional on server_capabilities
-        if client.resolved_capabilities.document_highlight then
-            -- require('lspconfig').util.nvim_multiline_command [[
-            -- :hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-            -- :hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-            -- :hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-            --
-            -- :hi default LspReferenceRead cterm=bold gui=Bold ctermbg=yellow guifg=yellow guibg=purple4 |
-            -- :hi default LspReferenceText cterm=bold gui=Bold ctermbg=red guifg=SlateBlue guibg=MidnightBlue |
-            -- :hi default LspReferenceWrite cterm=bold gui=Bold,Italic ctermbg=red guifg=DarkSlateBlue guibg=MistyRose
-            vim.cmd [[
-            augroup lsp_document_highlight
-                autocmd!
-                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-            augroup END
-            ]]
-        end
+        -- if client.resolved_capabilities.document_highlight then
+        --     vim.cmd [[
+        --     augroup lsp_document_highlight
+        --         autocmd!
+        --         autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        --         autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+        --     augroup END
+        --     ]]
+        -- end
 
 
         require 'lsp_signature'.on_attach()
@@ -370,6 +393,9 @@ return require('packer').startup(function()
       ]]
     end
   }
+  -- nvim-telescope/telescope-frecency.nvim
+  -- Using an implementation of Mozilla's Frecency algorithm (used in Firefox's address bar),
+  -- files edited frecently are given higher precedence in the list index.
 
   use {
     'nvim-treesitter/nvim-treesitter',
@@ -417,14 +443,14 @@ return require('packer').startup(function()
   }
 
   use {'junegunn/fzf'}
+  -- https://github.com/ibhagwan/fzf-lua
+  -- https://github.com/liuchengxu/vim-clap
 
   use {
     'junegunn/fzf.vim',
     config = function()
       vim.api.nvim_exec(
       [[
-
-      " nnoremap <silent> <expr> <space><space> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
       nnoremap <silent> <space><space> :Files<CR>
       nnoremap <silent> <space>g       :GFiles<CR>
       nnoremap <silent> <space>a       :Buffers<CR>
@@ -437,7 +463,6 @@ return require('packer').startup(function()
       nnoremap <silent> <space>h/      :History/<CR>
       nnoremap <silent> <space>h:      :History:<CR>
       nnoremap <silent> <space>/       :Rg<CR>
-      " nnoremap <silent> <space>/       :execute 'Rg ' . input('Rg/')<CR>
       nnoremap <silent> <space>//      :execute 'GGrep ' . input('GGrep/')<CR>
       nnoremap <silent> **             :call SearchWordWithRgW()<CR>
       vnoremap <silent> **             :call SearchVisualSelectionWithRg()<CR>
@@ -446,7 +471,6 @@ return require('packer').startup(function()
       nnoremap <silent> <space>m       :FZFMru<CR>
       nnoremap <silent> <space>M       :Marks<CR>
       nnoremap <silent> <space>?       :Helptags<CR>
-      "nnoremap <silent> <space>ft :Filetypes<CR>
 
       " Mapping selecting mappings
       nmap <leader><tab> <plug>(fzf-maps-n)
@@ -457,6 +481,9 @@ return require('packer').startup(function()
       imap <c-x><c-k> <plug>(fzf-complete-word)
       imap <c-x><c-f> <plug>(fzf-complete-path)
       imap <c-x><c-l> <plug>(fzf-complete-line)
+
+      command! -bang -nargs=* GGrep call fzf#vim#grep( 'git grep --line-number -- '.shellescape(<q-args>), 0, fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+      command! -bang -nargs=* Rgw call fzf#vim#grep( 'rg -w --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1, <bang>0 ? fzf#vim#with_preview('up:60%') : fzf#vim#with_preview('right:50%:hidden', '?'), <bang>0)
 
       function! SearchWordWithRgW()
         execute 'Rgw' expand('<cword>')
@@ -479,27 +506,36 @@ return require('packer').startup(function()
     end
   }
 
+  -- ojroques/nvim-lspfuzzy
+
   -- github
   -- use 'pwntester/octo.nvim'
   --
   -- A File Explorer For Neovim Written In Lua
-  -- kyazdani42/nvim-tree.lua
+  use {
+    'kyazdani42/nvim-tree.lua',
+    requires = 'kyazdani42/nvim-web-devicons'
+  }
+  -- NvimTreeToggle
   --
-  -- A lua fork of vim-devicons. This plugin provides the same icons as well as colors for each icon.
-  -- kyazdani42/nvim-web-devicons
 
-  -- terryma/vim-multiple-cursors
-  -- hrsh7th/vim-vsnip
+  use {
+    'terryma/vim-smooth-scroll',
+    config = function()
+      vim.cmd [[
+      noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+      noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+      "noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+      "noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+      ]]
+    end
+  }
 
-  -- telescope, lsp, treesitter
+
+  -- mg979/vim-visual-multi
 
   -- need lua alternative
-  -- textobj
-  -- highlight cursor words
   -- magit
-  -- fzf
-  -- coc
-  -- lightline
   --
   -- inline expression
   --
