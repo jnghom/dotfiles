@@ -162,21 +162,24 @@ return require('packer').startup(function()
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
         buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-        buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
         buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+        buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+        buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+        buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
         buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
         buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-        buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+        buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+        buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+        buf_set_keymap('n', '<leader>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
         -- vim.lsp.buf.document_symbol()
         -- vim.lsp.buf.workspace_symbol()
 
@@ -221,6 +224,18 @@ return require('packer').startup(function()
       end
     end
   }
+
+  use {
+    'ojroques/nvim-lspfuzzy',
+    config = function()
+      require('lspfuzzy').setup {}
+    end,
+    requires = {
+      {'junegunn/fzf'},
+      {'junegunn/fzf.vim'},  -- to enable preview (optional)
+    },
+  }
+
 
   -- simrat39/symbols-outline.nvim
   -- :SymbolsOutline
@@ -380,16 +395,17 @@ return require('packer').startup(function()
     config = function()
       vim.cmd [[
       " Find files using Telescope command-line sugar.
-      nnoremap <leader>ff <cmd>Telescope find_files<cr>
-      nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-      nnoremap <leader>fb <cmd>Telescope buffers<cr>
-      nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+      " nnoremap <leader>ff <cmd>Telescope find_files<cr>
+      " nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+      " nnoremap <leader>fb <cmd>Telescope buffers<cr>
+      " nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
       " Using Lua functions
-      nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-      nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-      nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-      nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+      nnoremap <leader>tf  <cmd>lua require('telescope.builtin').find_files()<cr>
+      nnoremap <leader>tg  <cmd>lua require('telescope.builtin').live_grep()<cr>
+      nnoremap <leader>tb  <cmd>lua require('telescope.builtin').buffers()<cr>
+      nnoremap <leader>th  <cmd>lua require('telescope.builtin').help_tags()<cr>
+      nnoremap <leader>tds <cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>
       ]]
     end
   }
@@ -530,6 +546,18 @@ return require('packer').startup(function()
       ]]
     end
   }
+
+  -- Lua
+  use {
+    "ahmedkhalf/project.nvim",
+    require = {'nvim-telescope/telescope.nvim'},
+    config = function()
+      require("project_nvim").setup {
+      }
+      require('telescope').load_extension('projects')
+    end
+  }
+
 
 
   -- mg979/vim-visual-multi
