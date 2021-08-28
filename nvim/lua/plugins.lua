@@ -207,9 +207,19 @@ return require('packer').startup(function()
 
       end
 
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      capabilities.textDocument.completion.completionItem.resolveSupport = {
+        properties = {
+          'documentation',
+          'detail',
+          'additionalTextEdits',
+        }
+      }
+
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls' }
+      local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
       -- pyright : npm i -g pyright
       -- bashls  : npm i -g bash-language-server
       -- vimls   : npm install -g vim-language-server
@@ -217,6 +227,7 @@ return require('packer').startup(function()
       for _, lsp in ipairs(servers) do
         nvim_lsp[lsp].setup {
           on_attach = on_attach,
+          capabilities = capabilities,
           flags = {
             debounce_text_changes = 150,
           }
@@ -341,7 +352,7 @@ return require('packer').startup(function()
           calc = true;
           nvim_lsp = true;
           nvim_lua = true;
-          vsnip = true;
+          vsnip = false;
           ultisnips = true;
           luasnip = true;
         };
@@ -361,8 +372,8 @@ return require('packer').startup(function()
       _G.tab_complete = function()
 	      if vim.fn.pumvisible() == 1 then
 		      return t "<C-n>"
-	      elseif vim.fn['vsnip#available'](1) == 1 then
-		      return t "<Plug>(vsnip-expand-or-jump)"
+	      -- elseif vim.fn['vsnip#available'](1) == 1 then
+		      -- return t "<Plug>(vsnip-expand-or-jump)"
 	      elseif check_back_space() then
 		      return t "<Tab>"
 	      else
@@ -372,8 +383,8 @@ return require('packer').startup(function()
       _G.s_tab_complete = function()
 	      if vim.fn.pumvisible() == 1 then
 		      return t "<C-p>"
-	      elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-		      return t "<Plug>(vsnip-jump-prev)"
+	      -- elseif vim.fn['vsnip#jumpable'](-1) == 1 then
+		      -- return t "<Plug>(vsnip-jump-prev)"
 	      else
 		      -- If <S-Tab> is not working in your terminal, change it to <C-h>
 		      return t "<S-Tab>"
@@ -530,7 +541,12 @@ return require('packer').startup(function()
   -- A File Explorer For Neovim Written In Lua
   use {
     'kyazdani42/nvim-tree.lua',
-    requires = 'kyazdani42/nvim-web-devicons'
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      vim.cmd [[
+      nnoremap <F8> :NvimTreeToggle<CR>
+      ]]
+    end
   }
   -- NvimTreeToggle
   --
@@ -557,6 +573,33 @@ return require('packer').startup(function()
       require('telescope').load_extension('projects')
     end
   }
+
+  -- use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
+  use {
+    'romgrk/barbar.nvim',
+    requires = {'kyazdani42/nvim-web-devicons'},
+    config = function()
+      vim.cmd [[
+      " Move to previous/next
+      nnoremap <silent>    [b :BufferPrevious<CR>
+      nnoremap <silent>    ]b :BufferNext<CR>
+      " Re-order to previous/next
+      nnoremap <silent>    <A-<> :BufferMovePrevious<CR>
+      nnoremap <silent>    <A->> :BufferMoveNext<CR>
+      " Goto buffer in position...
+      nnoremap <silent>    <A-1> :BufferGoto 1<CR>
+      nnoremap <silent>    <A-2> :BufferGoto 2<CR>
+      nnoremap <silent>    <A-3> :BufferGoto 3<CR>
+      nnoremap <silent>    <A-4> :BufferGoto 4<CR>
+      nnoremap <silent>    <A-5> :BufferGoto 5<CR>
+      nnoremap <silent>    <A-6> :BufferGoto 6<CR>
+      nnoremap <silent>    <A-7> :BufferGoto 7<CR>
+      nnoremap <silent>    <A-8> :BufferGoto 8<CR>
+      nnoremap <silent>    <A-9> :BufferLast<CR>
+      ]]
+    end
+  }
+
 
 
 
