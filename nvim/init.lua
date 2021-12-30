@@ -20,3 +20,4 @@ require('plugins')
 
 vim.cmd([[autocmd BufWritePost plugins.lua source <afile> | PackerCompile]])
 -- vim.cmd([[highlight CursorLine    ctermbg=236 guibg=#444444 cterm=none gui=none]])
+--
