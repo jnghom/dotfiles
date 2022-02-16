@@ -161,7 +161,7 @@ gt() {
     --preview 'git show --color=always {} | head -'$LINES
 }
 
-gh() {
+ghh() {
   is_in_git_repo || return
   git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
   fzf-full --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
@@ -379,6 +379,13 @@ fi
 if [ -f $HOME/.rsyncignore ]; then
   alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
 fi
+
+export PATH=$HOME/.poetry/bin:$PATH
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # tabtab source for packages
 # uninstall by removing these lines

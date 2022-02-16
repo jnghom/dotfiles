@@ -18,6 +18,14 @@ end
 return require('packer').startup(function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+
+  -- use {
+  --   "lazytanuki/nvim-mapper",
+  --   config = function() require("nvim-mapper").setup{} end,
+  --   before = "telescope.nvim"
+  -- }
+
+
   use 'tpope/vim-commentary'
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
@@ -237,16 +245,16 @@ return require('packer').startup(function()
     end
   }
 
-  use {
-    'ojroques/nvim-lspfuzzy',
-    config = function()
-      require('lspfuzzy').setup {}
-    end,
-    requires = {
-      {'junegunn/fzf'},
-      {'junegunn/fzf.vim'},  -- to enable preview (optional)
-    },
-  }
+  -- use {
+  --   'ojroques/nvim-lspfuzzy',
+  --   config = function()
+  --     require('lspfuzzy').setup {}
+  --   end,
+  --   requires = {
+  --     {'junegunn/fzf'},
+  --     {'junegunn/fzf.vim'},  -- to enable preview (optional)
+  --   },
+  -- }
 
 
   -- simrat39/symbols-outline.nvim
@@ -498,12 +506,12 @@ return require('packer').startup(function()
               ["ic"] = "@class.inner",
 
               -- Or you can define your own textobjects like this
-              ["iF"] = {
-                python = "(function_definition) @function",
-                cpp = "(function_definition) @function",
-                c = "(function_definition) @function",
-                java = "(method_declaration) @function",
-              },
+              -- ["iF"] = {
+              --   python = "(function_definition) @function",
+              --   cpp = "(function_definition) @function",
+              --   c = "(function_definition) @function",
+              --   java = "(method_declaration) @function",
+              -- },
             },
           },
         },
