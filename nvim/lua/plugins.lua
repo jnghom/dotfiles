@@ -1,10 +1,3 @@
--- This file can be loaded by calling `lua require('plugins')` from your init.vim
-
--- Only required if you have packer configured as `opt`
--- vim.cmd [[packadd packer.nvim]]
--- Only if your version of Neovim doesn't have https://github.com/neovim/neovim/pull/12632 merged
--- vim._update_package_paths()
---
 local execute = vim.api.nvim_command
 local fn = vim.fn
 
@@ -16,23 +9,19 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 return require('packer').startup(function()
-  -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- use {
-  --   "lazytanuki/nvim-mapper",
-  --   config = function() require("nvim-mapper").setup{} end,
-  --   before = "telescope.nvim"
-  -- }
-
-
+  use {
+    "lazytanuki/nvim-mapper",
+    disable = true,
+    config = function() require("nvim-mapper").setup{} end,
+    before = "telescope.nvim"
+  }
   use 'tpope/vim-commentary'
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
   use 'christoomey/vim-tmux-navigator'
   use 'easymotion/vim-easymotion'
-  -- auto-pair
-  -- use 'tmsvg/pear-tree'
   use {
     'windwp/nvim-autopairs',
     config = function()
@@ -46,26 +35,11 @@ return require('packer').startup(function()
   use 'tpope/vim-fugitive'
   use 'junegunn/vim-peekaboo'
   use {'scrooloose/nerdtree', opt = true, cmd = 'NERDTreeToggle' }
-  -- make it easier to know the available key bindings
-  -- use {
-  --   'liuchengxu/vim-which-key', cmd = 'WhichKey',
-  --   config = function()
-  --     vim.cmd([[
-  --       nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
-  --       vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<leader>'<CR>
-  --     ]])
-  --   end
-  -- }
 
-  -- Lua
   use {
     "folke/which-key.nvim",
     config = function()
-      require("which-key").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
+      require("which-key").setup {}
     end
   }
 
@@ -77,59 +51,33 @@ return require('packer').startup(function()
     config = function() require('gitsigns').setup() end
   }
 
-
-  -- use {
-  --   'glepnir/galaxyline.nvim',
-  --   branch = 'main',
-  --   -- some optional icons
-  --   requires = {'kyazdani42/nvim-web-devicons', opt = true}
-  -- }
-
   use {
-    'hoob3rt/lualine.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
+    'feline-nvim/feline.nvim',
+    tag = 'v1.0.0',
     config = function()
-      require('lualine').setup {
-        options = {
-          theme = 'tokyonight'
-        }
-      }
+      require('feline').setup()
     end
   }
 
-  -- Simple plugins can be specified as strings
-  -- use '9mm/vim-closer'
-  -- use 'NLKNguyen/papercolor-theme'
-  -- vim.g.colors_name = 'PaperColor'
-  vim.g.tokyonight_colors = { fg = '#cfd3e3' }
-  vim.g.tokyonight_style = "storm" -- storm, night, day
   use {
     'folke/tokyonight.nvim',
+    setup = function()
+      vim.g.tokyonight_colors = { fg = '#cfd3e3' }
+      vim.g.tokyonight_style = "storm" -- storm, night, day
+    end,
     config = function()
       if vim.g.tokyonight_style == "storm" then
-        print('tokyonight_style storm')
         vim.cmd [[
         hi CursorLine    ctermbg=236 guibg=#444444 cterm=none gui=none
         hi LspReferenceRead cterm=bold ctermbg=red guibg=DarkSlateBlue
         hi LspReferenceText cterm=bold ctermbg=red guibg=#823838
         hi LspReferenceWrite cterm=bold ctermbg=red guibg=MediumPurple3
         ]]
-      else
-        print('tokyonight_style day')
       end
+      vim.cmd('colorscheme tokyonight')
     end
   }
-  vim.g.colors_name = 'tokyonight'
-  vim.cmd('colorscheme tokyonight')
 
-  -- use 'mhartington/oceanic-next'
-  -- vim.g.colors_name = 'OceanicNext'
-
-  -- https://github.com/nvim-treesitter/nvim-treesitter/wiki/Colorschemes
-  -- shaunsingh/seoul256.nvim
-
-  -- Lazy loading:
-  -- Load on specific commands
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
 
   use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'}
@@ -152,8 +100,11 @@ return require('packer').startup(function()
 
   use {
     'neovim/nvim-lspconfig',
+    requires = {
+      {'RRethy/vim-illuminate'},
+      {'ray-x/lsp_signature.nvim'}
+    },
     config = function()
-      -- require'lspconfig'.pyright.setup{}
       local nvim_lsp = require('lspconfig')
 
       -- Use an on_attach function to only map the following keys
@@ -164,8 +115,6 @@ return require('packer').startup(function()
 
         --Enable completion triggered by <c-x><c-o>
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-        -- Mappings.
         local opts = { noremap=true, silent=true }
 
         -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -199,21 +148,8 @@ return require('packer').startup(function()
             buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
         end
 
-        -- Set autocommands conditional on server_capabilities
-        -- if client.resolved_capabilities.document_highlight then
-        --     vim.cmd [[
-        --     augroup lsp_document_highlight
-        --         autocmd!
-        --         autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        --         autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-        --     augroup END
-        --     ]]
-        -- end
-
-
         require 'lsp_signature'.on_attach()
         require 'illuminate'.on_attach(client)
-
       end
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -226,8 +162,6 @@ return require('packer').startup(function()
         }
       }
 
-      -- Use a loop to conveniently call 'setup' on multiple servers and
-      -- map buffer local keybindings when the language server attaches
       local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
       -- pyright : npm i -g pyright
       -- bashls  : npm i -g bash-language-server
@@ -245,18 +179,6 @@ return require('packer').startup(function()
     end
   }
 
-  -- use {
-  --   'ojroques/nvim-lspfuzzy',
-  --   config = function()
-  --     require('lspfuzzy').setup {}
-  --   end,
-  --   requires = {
-  --     {'junegunn/fzf'},
-  --     {'junegunn/fzf.vim'},  -- to enable preview (optional)
-  --   },
-  -- }
-
-
   -- simrat39/symbols-outline.nvim
   -- :SymbolsOutline
 
@@ -267,8 +189,6 @@ return require('packer').startup(function()
   -- pip install debugpy
   --
   -- Debug Adapter Protocol client implementation for Neovim
-
-
 
   -- use { 'nvim-lua/completion-nvim' }
 
@@ -331,84 +251,6 @@ return require('packer').startup(function()
   -- }
   -- use { 'cstrap/python-snippets' }
 
-  -- use {
-  --   'hrsh7th/nvim-compe',
-  --   config = function()
-  --     require'compe'.setup {
-  --       enabled = true;
-  --       autocomplete = true;
-  --       debug = false;
-  --       min_length = 1;
-  --       preselect = 'enable';
-  --       throttle_time = 80;
-  --       source_timeout = 200;
-  --       resolve_timeout = 800;
-  --       incomplete_delay = 400;
-  --       max_abbr_width = 100;
-  --       max_kind_width = 100;
-  --       max_menu_width = 100;
-  --       documentation = {
-  --         border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-  --         winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-  --         max_width = 120,
-  --         min_width = 60,
-  --         max_height = math.floor(vim.o.lines * 0.3),
-  --         min_height = 1,
-  --       },
-  --       source = {
-  --         path = true;
-  --         buffer = true;
-  --         calc = true;
-  --         nvim_lsp = true;
-  --         nvim_lua = true;
-  --         vsnip = false;
-  --         ultisnips = true;
-  --         luasnip = true;
-  --       };
-  --     }
-  --     local t = function(str)
-	      -- return vim.api.nvim_replace_termcodes(str, true, true, true)
-  --     end
-
-  --     local check_back_space = function()
-	      -- local col = vim.fn.col('.') - 1
-	      -- return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-  --     end
-
-  --     -- Use (s-)tab to:
-  --     --- move to prev/next item in completion menuone
-  --     --- jump to prev/next snippet's placeholder
-  --     _G.tab_complete = function()
-	      -- if vim.fn.pumvisible() == 1 then
-		      -- return t "<C-n>"
-	      -- -- elseif vim.fn['vsnip#available'](1) == 1 then
-		      -- -- return t "<Plug>(vsnip-expand-or-jump)"
-	      -- elseif check_back_space() then
-		      -- return t "<Tab>"
-	      -- else
-		      -- return vim.fn['compe#complete']()
-	      -- end
-  --     end
-  --     _G.s_tab_complete = function()
-	      -- if vim.fn.pumvisible() == 1 then
-		      -- return t "<C-p>"
-	      -- -- elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-		      -- -- return t "<Plug>(vsnip-jump-prev)"
-	      -- else
-		      -- -- If <S-Tab> is not working in your terminal, change it to <C-h>
-		      -- return t "<S-Tab>"
-	      -- end
-  --     end
-
-  --     vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-  --     vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-  --     vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-  --     vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-  --     vim.api.nvim_set_keymap('i', '<cr>', 'compe#confirm("<cr>")', { expr = true })
-  --     vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
-  --   end
-  -- }
-
   -- Install nvim-cmp, and buffer source as a dependency
   use {
     "hrsh7th/nvim-cmp",
@@ -449,27 +291,33 @@ return require('packer').startup(function()
     end
   }
 
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   use {
     'nvim-telescope/telescope.nvim',
-    requires = { {'nvim-lua/plenary.nvim'} },
+    requires = {
+      {'nvim-lua/plenary.nvim'}
+    },
     config = function()
       vim.cmd [[
       " Find files using Telescope command-line sugar.
-      " nnoremap <leader>ff <cmd>Telescope find_files<cr>
-      " nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-      " nnoremap <leader>fb <cmd>Telescope buffers<cr>
-      " nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-
-      " Using Lua functions
-      nnoremap <leader>tf  <cmd>lua require('telescope.builtin').find_files()<cr>
-      nnoremap <leader>tg  <cmd>lua require('telescope.builtin').live_grep()<cr>
-      nnoremap <leader>tb  <cmd>lua require('telescope.builtin').buffers()<cr>
-      nnoremap <leader>th  <cmd>lua require('telescope.builtin').help_tags()<cr>
-      nnoremap <leader>tds <cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>
+      nnoremap <leader>ff  <cmd>Telescope find_files<cr>
+      nnoremap <leader>fg  <cmd>Telescope live_grep<cr>
+      nnoremap <leader>fb  <cmd>Telescope buffers<cr>
+      nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
+      nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
+      nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
+      nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
       ]]
-    end
+    end,
+    extensions = {
+      fzf = {
+        fuzzy = true
+      }
+    }
   }
+
+  require('telescope').load_extension('fzf')
   -- nvim-telescope/telescope-frecency.nvim
   -- Using an implementation of Mozilla's Frecency algorithm (used in Firefox's address bar),
   -- files edited frecently are given higher precedence in the list index.
@@ -494,24 +342,14 @@ return require('packer').startup(function()
         textobjects = {
           select = {
             enable = true,
-
             -- Automatically jump forward to textobj, similar to targets.vim
             lookahead = true,
-
             keymaps = {
               -- You can use the capture groups defined in textobjects.scm
               ["af"] = "@function.outer",
               ["if"] = "@function.inner",
               ["ac"] = "@class.outer",
               ["ic"] = "@class.inner",
-
-              -- Or you can define your own textobjects like this
-              -- ["iF"] = {
-              --   python = "(function_definition) @function",
-              --   cpp = "(function_definition) @function",
-              --   c = "(function_definition) @function",
-              --   java = "(method_declaration) @function",
-              -- },
             },
           },
         },
@@ -520,9 +358,6 @@ return require('packer').startup(function()
   }
 
   use {'junegunn/fzf'}
-  -- https://github.com/ibhagwan/fzf-lua
-  -- https://github.com/liuchengxu/vim-clap
-
   use {
     'junegunn/fzf.vim',
     config = function()
@@ -587,6 +422,8 @@ return require('packer').startup(function()
 
   -- github
   -- use 'pwntester/octo.nvim'
+  -- sindrets/diffview.nvim
+  -- kevinhwang91/nvim-bqf
   --
   -- A File Explorer For Neovim Written In Lua
   use {
