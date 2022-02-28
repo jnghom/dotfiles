@@ -20,16 +20,19 @@ return require('packer').startup(function()
   use 'tpope/vim-commentary'
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
+  -- use 'machakann/vim-sandwich'
   use 'christoomey/vim-tmux-navigator'
-  use 'easymotion/vim-easymotion'
-  use {
-    'windwp/nvim-autopairs',
-    config = function()
-      require('nvim-autopairs').setup{
-        disable_filetype = { "TelescopePrompt" , "vim" }
-      }
-    end
-  }
+  -- use 'easymotion/vim-easymotion'
+  use 'Raimondi/delimitMate'
+  -- use {
+  --   'windwp/nvim-autopairs',
+  --   config = function()
+  --     require('nvim-autopairs').setup{
+  --       disable_filetype = { "TelescopePrompt" , "vim" }
+  --     }
+  --   end
+  -- }
+
   use 'ntpeters/vim-better-whitespace'
   use 'nathanaelkane/vim-indent-guides'
   use 'tpope/vim-fugitive'
@@ -81,7 +84,7 @@ return require('packer').startup(function()
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
 
   use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'}
-  use 'justinmk/vim-sneak'
+  -- use 'justinmk/vim-sneak'
 
   use {'ray-x/lsp_signature.nvim'}
   use {
@@ -130,10 +133,10 @@ return require('packer').startup(function()
         buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
         buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
         buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
+        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+        buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
         buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
         buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
@@ -275,14 +278,14 @@ return require('packer').startup(function()
             i = cmp.mapping.abort(),
             c = cmp.mapping.close(),
           }),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
           ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
         },
 
         -- You should specify your *installed* sources.
         sources = {
           { name = 'nvim_lsp' },
-          -- { name = 'buffer' },
+          { name = 'buffer' },
           { name = 'nvim_lua' },
           { name = 'path' },
           -- { name = 'vsnip' },
@@ -306,6 +309,7 @@ return require('packer').startup(function()
       nnoremap <leader>fb  <cmd>Telescope buffers<cr>
       nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
       nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
+      nnoremap <leader>fws <cmd>Telescope lsp_document_symbols<cr>
       nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
       nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
       ]]
@@ -327,7 +331,10 @@ return require('packer').startup(function()
     run = ':TSUpdate',
     config = function()
       require'nvim-treesitter.configs'.setup {
-        ensure_installed = "maintained",
+        ensure_installed = {
+          'python', 'bash', 'javascript', 'vim', 'yaml', 'json', 'lua', 'css', 'html',
+          'clojure', 'dart', 'go', 'java', 'c_sharp', 'rust', 'typescript'
+        },
         highlight = {
           enable = true
       }
@@ -337,6 +344,7 @@ return require('packer').startup(function()
 
   use {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    requires = {'nvim-treesitter/nvim-treesitter'},
     config = function()
       require'nvim-treesitter.configs'.setup {
         textobjects = {
@@ -357,7 +365,12 @@ return require('packer').startup(function()
     end
   }
 
-  use {'junegunn/fzf'}
+  use {
+    'junegunn/fzf',
+    run = function()
+      vim.fn['fzf#install']()
+    end
+  }
   use {
     'junegunn/fzf.vim',
     config = function()
@@ -435,24 +448,6 @@ return require('packer').startup(function()
       ]]
     end
   }
-  -- NvimTreeToggle
-  --
-
-  -- use {
-  --   'psliwka/vim-smoothie'
-  -- }
-
-  -- use {
-  --   'terryma/vim-smooth-scroll',
-  --   config = function()
-  --     vim.cmd [[
-  --     noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-  --     noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-  --     "noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-  --     "noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
-  --     ]]
-  --   end
-  -- }
 
   -- Lua
   use {
@@ -491,34 +486,49 @@ return require('packer').startup(function()
     end
   }
 
-  -- packer
-  -- let g:coq_settings = { 'auto_start': v:true } or let g:coq_settings = { 'auto_start': 'shut-up' }
+  -- quickfix window better
+  use {'kevinhwang91/nvim-bqf'}
+  -- better glance at matched information, seamlessly jump between matched instances
+  use {
+    'kevinhwang91/nvim-hlslens',
+    config = function()
+      vim.api.nvim_set_keymap(
+        "n",
+        "n",
+        "<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>",
+        { noremap = true, silent = true }
+      )
+      vim.api.nvim_set_keymap(
+        "n",
+        "N",
+        "<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>",
+        { noremap = true, silent = true }
+      )
+      vim.api.nvim_set_keymap("n", "*", "*<Cmd>lua require('hlslens').start()<CR>", { noremap = true })
+      vim.api.nvim_set_keymap("n", "#", "#<Cmd>lua require('hlslens').start()<CR>", { noremap = true })
+      vim.api.nvim_set_keymap("n", "g*", "g*<Cmd>lua require('hlslens').start()<CR>", { noremap = true })
+      vim.api.nvim_set_keymap("n", "g#", "g#<Cmd>lua require('hlslens').start()<CR>", { noremap = true })
+
+      vim.api.nvim_set_keymap("n", "<leader>l", ":noh<CR>", { noremap = true, silent = true })
+    end
+  }
+
+  use 'ggandor/lightspeed.nvim'
   -- use {
-  --   'ms-jpq/coq_nvim',
-  --   branch = 'coq',
-  --   require = {{'ms-jpq/coq.artifacts'}, branch = 'artifacts'},
+  --   'phaazon/hop.nvim',
+  --   branch = 'v1', -- optional but strongly recommended
   --   config = function()
-  --     vim.cmd [[
-  --     " Set recommended to false
-  --     let g:coq_settings = { "keymap.recommended": v:false }
-
-  --     " Keybindings
-  --     ino <silent><expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
-  --     ino <silent><expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
-  --     ino <silent><expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
-  --     ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
-  --     ino <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-  --     ino <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
-  --     ]]
-  --     require("coq").COQnow("--shut-up")
-  --     -- vim.cmd('COQnow')
+  --     -- you can configure Hop the way you like here; see :h hop-config
+  --     require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+  --     -- place this in one of your configuration file(s)
+  --     vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR })<cr>", {})
+  --     vim.api.nvim_set_keymap('n', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR})<cr>", {})
+  --     vim.api.nvim_set_keymap('o', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, inclusive_jump = true })<cr>", {})
+  --     vim.api.nvim_set_keymap('o', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, inclusive_jump = true })<cr>", {})
+  --     vim.api.nvim_set_keymap('', 't', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR})<cr>", {})
+  --     vim.api.nvim_set_keymap('', 'T', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR})<cr>", {})
   --   end
-  -- } -- main one
-  -- use { 'ms-jpq/coq.artifacts', branch= 'artifacts'} -- 9000+ Snippets
-
-
-
-
+  -- }
 
   -- mg979/vim-visual-multi
 
