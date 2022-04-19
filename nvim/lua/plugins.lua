@@ -294,34 +294,34 @@ return require('packer').startup(function()
     end
   }
 
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  -- use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-  use {
-    'nvim-telescope/telescope.nvim',
-    requires = {
-      {'nvim-lua/plenary.nvim'}
-    },
-    config = function()
-      vim.cmd [[
-      " Find files using Telescope command-line sugar.
-      nnoremap <leader>ff  <cmd>Telescope find_files<cr>
-      nnoremap <leader>fg  <cmd>Telescope live_grep<cr>
-      nnoremap <leader>fb  <cmd>Telescope buffers<cr>
-      nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
-      nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
-      nnoremap <leader>fws <cmd>Telescope lsp_document_symbols<cr>
-      nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
-      nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
-      ]]
-    end,
-    extensions = {
-      fzf = {
-        fuzzy = true
-      }
-    }
-  }
+  -- use {
+  --   'nvim-telescope/telescope.nvim',
+  --   requires = {
+  --     {'nvim-lua/plenary.nvim'}
+  --   },
+  --   config = function()
+  --     vim.cmd [[
+  --     " Find files using Telescope command-line sugar.
+  --     nnoremap <leader>ff  <cmd>Telescope find_files<cr>
+  --     nnoremap <leader>fg  <cmd>Telescope live_grep<cr>
+  --     nnoremap <leader>fb  <cmd>Telescope buffers<cr>
+  --     nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
+  --     nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
+  --     nnoremap <leader>fws <cmd>Telescope lsp_document_symbols<cr>
+  --     nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
+  --     nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
+  --     ]]
+  --   end,
+  --   extensions = {
+  --     fzf = {
+  --       fuzzy = true
+  --     }
+  --   }
+  -- }
 
-  require('telescope').load_extension('fzf')
+  -- require('telescope').load_extension('fzf')
   -- nvim-telescope/telescope-frecency.nvim
   -- Using an implementation of Mozilla's Frecency algorithm (used in Firefox's address bar),
   -- files edited frecently are given higher precedence in the list index.
@@ -373,6 +373,7 @@ return require('packer').startup(function()
   }
   use {
     'junegunn/fzf.vim',
+    disable = true,
     config = function()
       vim.api.nvim_exec(
       [[
@@ -429,6 +430,21 @@ return require('packer').startup(function()
       ]],
       true)
     end
+  }
+
+  use {
+    'ibhagwan/fzf-lua',
+    config = function()
+      vim.api.nvim_exec(
+      [[
+      nnoremap <silent> <c-p> :FzfLua files<CR>
+      nnoremap <silent> <space><space> :FzfLua builtin<CR>
+      nnoremap <silent> <space>b       :FzfLua buffers<CR>
+      nnoremap <silent> <space>.       :FzfLua blines<CR>
+      ]],
+      true)
+    end,
+    requires = { 'kyazdani42/nvim-web-devicons' }
   }
 
   -- ojroques/nvim-lspfuzzy
