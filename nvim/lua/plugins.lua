@@ -37,7 +37,7 @@ return require('packer').startup(function()
   use 'nathanaelkane/vim-indent-guides'
   use 'tpope/vim-fugitive'
   use 'junegunn/vim-peekaboo'
-  use {'scrooloose/nerdtree', opt = true, cmd = 'NERDTreeToggle' }
+  -- use {'scrooloose/nerdtree', opt = true, cmd = 'NERDTreeToggle' }
 
   use {
     "folke/which-key.nvim",
@@ -65,10 +65,11 @@ return require('packer').startup(function()
   use {
     'folke/tokyonight.nvim',
     setup = function()
-      vim.g.tokyonight_colors = { fg = '#cfd3e3' }
+      -- vim.g.tokyonight_colors = { fg = '#cfd3e3' }
       vim.g.tokyonight_style = "storm" -- storm, night, day
     end,
     config = function()
+      vim.cmd('colorscheme tokyonight')
       if vim.g.tokyonight_style == "storm" then
         vim.cmd [[
         hi CursorLine    ctermbg=236 guibg=#444444 cterm=none gui=none
@@ -77,9 +78,22 @@ return require('packer').startup(function()
         hi LspReferenceWrite cterm=bold ctermbg=red guibg=MediumPurple3
         ]]
       end
-      vim.cmd('colorscheme tokyonight')
     end
   }
+
+  -- use {
+  --   "EdenEast/nightfox.nvim",
+  --   config = function()
+  --     vim.cmd('colorscheme nightfox')
+  -- --   end
+  -- }
+
+  -- use {
+  --   "ful1e5/onedark.nvim",
+  --   config = function()
+  --     vim.cmd('colorscheme onedark')
+  --   end
+  -- }
 
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
 
@@ -87,6 +101,19 @@ return require('packer').startup(function()
   -- use 'justinmk/vim-sneak'
 
   use {'ray-x/lsp_signature.nvim'}
+
+
+  use {
+    'ray-x/navigator.lua',
+    requires = {
+      'ray-x/guihua.lua',
+      run = 'cd lua/fzy && make'
+    },
+    config = function ()
+      require'navigator'.setup()
+    end
+  }
+
   use {
     -- automatically highlighting other uses of the current word under the cursor
     'RRethy/vim-illuminate',
@@ -100,87 +127,90 @@ return require('packer').startup(function()
 
     end
   }
-
   use {
-    'neovim/nvim-lspconfig',
-    requires = {
-      {'RRethy/vim-illuminate'},
-      {'ray-x/lsp_signature.nvim'}
-    },
-    config = function()
-      local nvim_lsp = require('lspconfig')
-
-      -- Use an on_attach function to only map the following keys
-      -- after the language server attaches to the current buffer
-      local on_attach = function(client, bufnr)
-        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-        --Enable completion triggered by <c-x><c-o>
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-        local opts = { noremap=true, silent=true }
-
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-        buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-        buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-        buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
-        buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
-        buf_set_keymap('n', '<leader>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
-        -- vim.lsp.buf.document_symbol()
-        -- vim.lsp.buf.workspace_symbol()
-
-        -- Set some keybinds conditional on server capabilities
-        if client.resolved_capabilities.document_formatting then
-            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        elseif client.resolved_capabilities.document_range_formatting then
-            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        end
-
-        require 'lsp_signature'.on_attach()
-        require 'illuminate'.on_attach(client)
-      end
-
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
-      capabilities.textDocument.completion.completionItem.resolveSupport = {
-        properties = {
-          'documentation',
-          'detail',
-          'additionalTextEdits',
-        }
-      }
-
-      local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
-      -- pyright : npm i -g pyright
-      -- bashls  : npm i -g bash-language-server
-      -- vimls   : npm install -g vim-language-server
-      -- yamlls  : yarn global add yaml-language-server
-      for _, lsp in ipairs(servers) do
-        nvim_lsp[lsp].setup {
-          on_attach = on_attach,
-          capabilities = capabilities,
-          flags = {
-            debounce_text_changes = 150,
-          }
-        }
-      end
-    end
+    'neovim/nvim-lspconfig'
   }
+
+  --use {
+  --  'neovim/nvim-lspconfig',
+  --  requires = {
+  --    {'RRethy/vim-illuminate'},
+  --    {'ray-x/lsp_signature.nvim'}
+  --  },
+  --  config = function()
+  --    local nvim_lsp = require('lspconfig')
+
+  --    -- Use an on_attach function to only map the following keys
+  --    -- after the language server attaches to the current buffer
+  --    local on_attach = function(client, bufnr)
+  --      local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  --      local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  --      --Enable completion triggered by <c-x><c-o>
+  --      buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  --      local opts = { noremap=true, silent=true }
+
+  --      -- See `:help vim.lsp.*` for documentation on any of the below functions
+  --      buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  --      buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  --      buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  --      buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  --      buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  --      buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  --      buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
+  --      buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  --      buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+  --      buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+  --      buf_set_keymap('n', '<leader>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
+  --      -- vim.lsp.buf.document_symbol()
+  --      -- vim.lsp.buf.workspace_symbol()
+
+  --      -- Set some keybinds conditional on server capabilities
+  --      if client.resolved_capabilities.document_formatting then
+  --          buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  --      elseif client.resolved_capabilities.document_range_formatting then
+  --          buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  --      end
+
+  --      require 'lsp_signature'.on_attach()
+  --      require 'illuminate'.on_attach(client)
+  --    end
+
+  --    local capabilities = vim.lsp.protocol.make_client_capabilities()
+  --    capabilities.textDocument.completion.completionItem.snippetSupport = true
+  --    capabilities.textDocument.completion.completionItem.resolveSupport = {
+  --      properties = {
+  --        'documentation',
+  --        'detail',
+  --        'additionalTextEdits',
+  --      }
+  --    }
+
+  --    local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
+  --    -- pyright : npm i -g pyright
+  --    -- bashls  : npm i -g bash-language-server
+  --    -- vimls   : npm install -g vim-language-server
+  --    -- yamlls  : yarn global add yaml-language-server
+  --    for _, lsp in ipairs(servers) do
+  --      nvim_lsp[lsp].setup {
+  --        on_attach = on_attach,
+  --        capabilities = capabilities,
+  --        flags = {
+  --          debounce_text_changes = 150,
+  --        }
+  --      }
+  --    end
+  --  end
+  --}
 
   -- simrat39/symbols-outline.nvim
   -- :SymbolsOutline
@@ -196,21 +226,21 @@ return require('packer').startup(function()
   -- use { 'nvim-lua/completion-nvim' }
 
   -- glepnir/lspsaga.nvim
-  use {
-    'glepnir/lspsaga.nvim',
-    config = function ()
-      local saga = require 'lspsaga'
-      saga.init_lsp_saga()
-      -- nnoremap <silent> gh :Lspsaga lsp_finder<CR>
-      -- nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
-      -- vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
-      -- nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
-      vim.cmd [[
-      nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
-      nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-      ]]
-    end
-  }
+  -- use {
+  --   'glepnir/lspsaga.nvim',
+  --   config = function ()
+  --     local saga = require 'lspsaga'
+  --     saga.init_lsp_saga()
+  --     -- nnoremap <silent> gh :Lspsaga lsp_finder<CR>
+  --     -- nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
+  --     -- vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
+  --     -- nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
+  --     vim.cmd [[
+  --     nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
+  --     nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
+  --     ]]
+  --   end
+  -- }
 
   -- use {
   --   'hrsh7th/vim-vsnip',
@@ -294,34 +324,34 @@ return require('packer').startup(function()
     end
   }
 
-  -- use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-  -- use {
-  --   'nvim-telescope/telescope.nvim',
-  --   requires = {
-  --     {'nvim-lua/plenary.nvim'}
-  --   },
-  --   config = function()
-  --     vim.cmd [[
-  --     " Find files using Telescope command-line sugar.
-  --     nnoremap <leader>ff  <cmd>Telescope find_files<cr>
-  --     nnoremap <leader>fg  <cmd>Telescope live_grep<cr>
-  --     nnoremap <leader>fb  <cmd>Telescope buffers<cr>
-  --     nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
-  --     nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
-  --     nnoremap <leader>fws <cmd>Telescope lsp_document_symbols<cr>
-  --     nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
-  --     nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
-  --     ]]
-  --   end,
-  --   extensions = {
-  --     fzf = {
-  --       fuzzy = true
-  --     }
-  --   }
-  -- }
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      {'nvim-lua/plenary.nvim'}
+    },
+    config = function()
+      vim.cmd [[
+      " Find files using Telescope command-line sugar.
+      nnoremap <leader>ff  <cmd>Telescope find_files<cr>
+      nnoremap <leader>fg  <cmd>Telescope live_grep<cr>
+      nnoremap <leader>fb  <cmd>Telescope buffers<cr>
+      nnoremap <leader>fh  <cmd>Telescope help_tags<cr>
+      nnoremap <leader>fds <cmd>Telescope lsp_document_symbols<cr>
+      nnoremap <leader>fws <cmd>Telescope lsp_document_symbols<cr>
+      nnoremap <leader>fca <cmd>Telescope lsp_code_actions<cr>
+      nnoremap <leader>fdi <cmd>Telescope diagnostics<cr>
+      ]]
+    end,
+    extensions = {
+      fzf = {
+        fuzzy = true
+      }
+    }
+  }
 
-  -- require('telescope').load_extension('fzf')
+  require('telescope').load_extension('fzf')
   -- nvim-telescope/telescope-frecency.nvim
   -- Using an implementation of Mozilla's Frecency algorithm (used in Firefox's address bar),
   -- files edited frecently are given higher precedence in the list index.
@@ -438,9 +468,22 @@ return require('packer').startup(function()
       vim.api.nvim_exec(
       [[
       nnoremap <silent> <c-p> :FzfLua files<CR>
+      nnoremap <silent> <space>g       :FzfLua git_files<CR>
+
       nnoremap <silent> <space><space> :FzfLua builtin<CR>
       nnoremap <silent> <space>b       :FzfLua buffers<CR>
       nnoremap <silent> <space>.       :FzfLua blines<CR>
+      nnoremap <silent> <space>m       :FzfLua marks<CR>
+
+      nnoremap <silent> <space>/       :FzfLua grep_project<CR>
+      nnoremap <silent> <space>w       :FzfLua grep_cword<CR>
+
+      nnoremap <silent> <space>c       :FzfLua commands<CR>
+
+      nnoremap <silent> <space>j       :FzfLua jumps<CR>
+      nnoremap <silent> <space>hf      :FzfLua oldfiles<CR>
+      nnoremap <silent> <space>hc      :FzfLua command_history<CR>
+      nnoremap <silent> <space>hs      :FzfLua search_history<CR>
       ]],
       true)
     end,
@@ -459,6 +502,7 @@ return require('packer').startup(function()
     'kyazdani42/nvim-tree.lua',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function()
+      require('nvim-tree').setup()
       vim.cmd [[
       nnoremap <F8> :NvimTreeToggle<CR>
       ]]
