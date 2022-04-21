@@ -103,16 +103,21 @@ return require('packer').startup(function()
   use {'ray-x/lsp_signature.nvim'}
 
 
-  use {
-    'ray-x/navigator.lua',
-    requires = {
-      'ray-x/guihua.lua',
-      run = 'cd lua/fzy && make'
-    },
-    config = function ()
-      require'navigator'.setup()
-    end
-  }
+  -- use {
+  --   'ray-x/navigator.lua',
+  --   requires = {
+  --     'ray-x/guihua.lua',
+  --     run = 'cd lua/fzy && make'
+  --   },
+  --   config = function ()
+  --     require'navigator'.setup({
+  --       lsp_installer = true,
+  --       lsp = {
+  --         servers = {'pyright'}
+  --       }
+  --     })
+  --   end
+  -- }
 
   use {
     -- automatically highlighting other uses of the current word under the cursor
@@ -127,90 +132,117 @@ return require('packer').startup(function()
 
     end
   }
+  -- use {
+  --   'neovim/nvim-lspconfig'
+  -- }
+
   use {
-    'neovim/nvim-lspconfig'
+    'neovim/nvim-lspconfig',
+    requires = {
+      {'RRethy/vim-illuminate'},
+      {'ray-x/lsp_signature.nvim'}
+    },
+    config = function()
+      local nvim_lsp = require('lspconfig')
+
+      -- Use an on_attach function to only map the following keys
+      -- after the language server attaches to the current buffer
+      local on_attach = function(client, bufnr)
+        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+        --Enable completion triggered by <c-x><c-o>
+        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+        local opts = { noremap=true, silent=true }
+
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+        buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+        buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+        buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+        buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+        buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+        buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
+        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+        buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+        buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+        buf_set_keymap('n', '<leader>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
+        -- vim.lsp.buf.document_symbol()
+        -- vim.lsp.buf.workspace_symbol()
+
+        -- Set some keybinds conditional on server capabilities
+        if client.resolved_capabilities.document_formatting then
+            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        elseif client.resolved_capabilities.document_range_formatting then
+            buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        end
+
+        require 'lsp_signature'.on_attach()
+        require 'illuminate'.on_attach(client)
+      end
+
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      capabilities.textDocument.completion.completionItem.resolveSupport = {
+        properties = {
+          'documentation',
+          'detail',
+          'additionalTextEdits',
+        }
+      }
+
+      local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
+      -- pyright : npm i -g pyright
+      -- bashls  : npm i -g bash-language-server
+      -- vimls   : npm install -g vim-language-server
+      -- yamlls  : yarn global add yaml-language-server
+      --
+      for _, lsp in ipairs(servers) do
+        nvim_lsp[lsp].setup {
+          on_attach = on_attach,
+          capabilities = capabilities,
+          flags = {
+            debounce_text_changes = 150,
+          }
+        }
+      end
+    end
   }
 
-  --use {
-  --  'neovim/nvim-lspconfig',
-  --  requires = {
-  --    {'RRethy/vim-illuminate'},
-  --    {'ray-x/lsp_signature.nvim'}
-  --  },
-  --  config = function()
-  --    local nvim_lsp = require('lspconfig')
+  use {
+    'williamboman/nvim-lsp-installer',
+    config = function()
+      local lsp_installer = require "nvim-lsp-installer"
+      local servers = {
+        "bashls",
+        "pyright",
+        "vuels",
+        "yamlls",
+      }
 
-  --    -- Use an on_attach function to only map the following keys
-  --    -- after the language server attaches to the current buffer
-  --    local on_attach = function(client, bufnr)
-  --      local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  --      local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+      for _, name in pairs(servers) do
+        local server_is_found, server = lsp_installer.get_server(name)
+        if server_is_found and not server:is_installed() then
+          print("Installing " .. name)
+          server:install()
+        end
+        lsp_installer.on_server_ready(function(name)
+          local opts = {}
+          server:setup(opts)
+        end)
+      end
 
-  --      --Enable completion triggered by <c-x><c-o>
-  --      buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-  --      local opts = { noremap=true, silent=true }
-
-  --      -- See `:help vim.lsp.*` for documentation on any of the below functions
-  --      buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  --      buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  --      buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  --      buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  --      buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  --      buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  --      buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-  --      buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  --      buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
-  --      buf_set_keymap('n', '<leader>ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
-  --      buf_set_keymap('n', '<leader>ws', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
-  --      -- vim.lsp.buf.document_symbol()
-  --      -- vim.lsp.buf.workspace_symbol()
-
-  --      -- Set some keybinds conditional on server capabilities
-  --      if client.resolved_capabilities.document_formatting then
-  --          buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  --      elseif client.resolved_capabilities.document_range_formatting then
-  --          buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  --      end
-
-  --      require 'lsp_signature'.on_attach()
-  --      require 'illuminate'.on_attach(client)
-  --    end
-
-  --    local capabilities = vim.lsp.protocol.make_client_capabilities()
-  --    capabilities.textDocument.completion.completionItem.snippetSupport = true
-  --    capabilities.textDocument.completion.completionItem.resolveSupport = {
-  --      properties = {
-  --        'documentation',
-  --        'detail',
-  --        'additionalTextEdits',
-  --      }
-  --    }
-
-  --    local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'bashls', 'vimls', 'cssls', 'html' }
-  --    -- pyright : npm i -g pyright
-  --    -- bashls  : npm i -g bash-language-server
-  --    -- vimls   : npm install -g vim-language-server
-  --    -- yamlls  : yarn global add yaml-language-server
-  --    for _, lsp in ipairs(servers) do
-  --      nvim_lsp[lsp].setup {
-  --        on_attach = on_attach,
-  --        capabilities = capabilities,
-  --        flags = {
-  --          debounce_text_changes = 150,
-  --        }
-  --      }
-  --    end
-  --  end
-  --}
+    end
+  }
 
   -- simrat39/symbols-outline.nvim
   -- :SymbolsOutline
@@ -283,6 +315,14 @@ return require('packer').startup(function()
   --   end
   -- }
   -- use { 'cstrap/python-snippets' }
+  use "rafamadriz/friendly-snippets"
+  use {
+    'L3MON4D3/LuaSnip',
+    config = function()
+      require("luasnip.loaders.from_vscode").lazy_load()
+    end
+  }
+  use { 'saadparwaiz1/cmp_luasnip' }
 
   -- Install nvim-cmp, and buffer source as a dependency
   use {
@@ -291,12 +331,19 @@ return require('packer').startup(function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
-      -- "hrsh7th/cmp-vsnip",
-      "hrsh7th/cmp-nvim-lua"
+      "saadparwaiz1/cmp_luasnip" ,
+      "hrsh7th/cmp-nvim-lua",
+      'L3MON4D3/LuaSnip',
     },
     config = function()
+      local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+      end
       local cmp = require('cmp')
+      local luasnip = require('luasnip')
       cmp.setup {
+
         -- You can set mappings if you want
         mapping = {
           ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -309,7 +356,34 @@ return require('packer').startup(function()
             c = cmp.mapping.close(),
           }),
           ['<CR>'] = cmp.mapping.confirm({ select = false }),
-          ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
+          -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            elseif has_words_before() then
+              cmp.complete()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" })
+        },
+
+        snippet = {
+          expand = function(args)
+            require'luasnip'.lsp_expand(args.body)
+          end
         },
 
         -- You should specify your *installed* sources.
@@ -318,6 +392,7 @@ return require('packer').startup(function()
           { name = 'buffer' },
           { name = 'nvim_lua' },
           { name = 'path' },
+          { name = 'luasnip' }
           -- { name = 'vsnip' },
         },
       }
