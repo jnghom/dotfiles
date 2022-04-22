@@ -76,3 +76,10 @@ vim.cmd("autocmd FileType lua setlocal shiftwidth=2 tabstop=2")
 vim.cmd("autocmd FileType css setlocal shiftwidth=2 tabstop=2")
 vim.cmd("autocmd FileType help wincmd L")
 
+vim.cmd(
+[[
+if !has('gui_running') && &term =~ '^\%(screen\|tmux\)'
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
+]])
