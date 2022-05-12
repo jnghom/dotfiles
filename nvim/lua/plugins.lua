@@ -303,8 +303,8 @@ return require('packer').startup(function(use)
       null_ls = require('null-ls')
       null_ls.setup({
         sources = {
-          null_ls.builtins.diagnostics.pylint,
-          null_ls.builtins.diagnostics.flake8,
+          -- null_ls.builtins.diagnostics.pylint,
+          -- null_ls.builtins.diagnostics.flake8,
           null_ls.builtins.formatting.autopep8,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.json_tool,
@@ -312,7 +312,7 @@ return require('packer').startup(function(use)
           null_ls.builtins.code_actions.eslint,
           null_ls.builtins.diagnostics.eslint,
           null_ls.builtins.diagnostics.eslint,
-          null_ls.builtins.diagnostics.pydocstyle,
+          -- null_ls.builtins.diagnostics.pydocstyle,
           null_ls.builtins.diagnostics.standardjs,
           null_ls.builtins.diagnostics.tidy,
           null_ls.builtins.diagnostics.yamllint
@@ -335,6 +335,7 @@ return require('packer').startup(function(use)
   -- Lua
   use {
     "ahmedkhalf/project.nvim",
+    disable = true,
     require = {'nvim-telescope/telescope.nvim'},
     config = function()
       require("project_nvim").setup {
@@ -397,6 +398,8 @@ return require('packer').startup(function(use)
   }
 
   use 'ggandor/lightspeed.nvim'
+
+  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
 end)
 
 
