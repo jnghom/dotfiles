@@ -99,7 +99,7 @@ local config = {
       {
         "folke/tokyonight.nvim",
         as = "tokyonight",
-        config = function() 
+        config = function()
           vim.cmd [[
           hi LspReferenceRead cterm=bold ctermbg=red guibg=DarkSlateBlue
           hi LspReferenceText cterm=bold ctermbg=red guibg=#823838
@@ -138,8 +138,68 @@ local config = {
           }
         end
       },
+      { "Vimjas/vim-python-pep8-indent" },
       { "farmergreg/vim-lastplace" },
       { "christoomey/vim-tmux-navigator" },
+      {
+        "ahmedkhalf/project.nvim",
+        config = function()
+          require("project_nvim").setup {
+            manual_mode = true
+          }
+        end
+      },
+      -- {
+      --   "nvim-telescope/telescope-project.nvim",
+      --   requires = 'nvim-telescope/telescope.nvim',
+      --   config = function()
+      --     require'telescope'.load_extension('project')
+      --   end
+      -- },
+      {
+        'kosayoda/nvim-lightbulb',
+        requires = 'antoinemadec/FixCursorHold.nvim',
+        config = function()
+          require("nvim-lightbulb").setup({autocmd = {enabled = true}})
+        end
+      },
+      -- {
+      --   "glepnir/lspsaga.nvim",
+      --   branch = "main",
+      --   config = function()
+      --     local saga = require("lspsaga")
+      --
+      --     -- lsp finder to find the cursor word definition and reference
+      --     vim.keymap.set("n", "gh", require("lspsaga.finder").lsp_finder, { silent = true,noremap = true })
+      --     -- or use command LspSagaFinder
+      --     -- vim.keymap.set("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true,noremap = true})
+      --
+      --     -- show hover doc
+      --     vim.keymap.set("n", "K", require("lspsaga.hover").render_hover_doc, { silent = true })
+      --     -- or use command
+      --     -- vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
+      --
+      --     -- local action = require("lspsaga.action")
+      --     -- -- scroll down hover doc or scroll in definition preview
+      --     -- vim.keymap.set("n", "<C-f>", function()
+      --     --   action.smart_scroll_with_saga(1)
+      --     -- end, { silent = true })
+      --     -- -- scroll up hover doc
+      --     -- vim.keymap.set("n", "<C-b>", function()
+      --     --   action.smart_scroll_with_saga(-1)
+      --     -- end, { silent = true })
+      --
+      --     -- preview definition
+      --     vim.keymap.set("n", "gp", require("lspsaga.definition").preview_definition, { silent = true,noremap = true })
+      --     -- or use command
+      --     -- vim.keymap.set("n", "gd", "<cmd>Lspsaga preview_definition<CR>", { silent = true })
+      --
+      --     saga.init_lsp_saga({
+      --       -- your configuration
+      --       max_preview_lines = 20
+      --     })
+      --   end,
+      -- },
       {
         "ibhagwan/fzf-lua",
         requires = { 'kyazdani42/nvim-web-devicons' },
@@ -180,7 +240,7 @@ local config = {
         -- null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.formatting.autopep8,
         null_ls.builtins.formatting.isort,
-        null_ls.builtins.code_actions.refactoring,
+        -- null_ls.builtins.code_actions.refactoring,
 
         null_ls.builtins.formatting.json_tool,
 
@@ -210,14 +270,26 @@ local config = {
     end,
     treesitter = {
       ensure_installed = { "python", "bash", "javascript", "html", "css", "lua", "json" },
+      indent = {enabled = true}
     },
 
-    ["nvim-lsp-installer"] = {
-      ensure_installed = { "sumneko_lua" },
+    ["mason-lspconfig"] = {
+      -- ensure_installed = { "sumneko_lua", "pyright" },
+      ensure_installed = { "sumneko_lua", "pylsp" },
+    },
+    -- use mason-tool-installer to configure DAP/Formatters/Linter installation
+    ["mason-tool-installer"] = { -- overrides `require("mason-tool-installer").setup(...)`
+      ensure_installed = { "prettier", "stylua" },
     },
     packer = {
       compile_path = vim.fn.stdpath "data" .. "/packer_compiled.lua",
     },
+
+    telescope = {
+      extensions = {
+        "project"
+      }
+    }
   },
 
   -- LuaSnip Options
@@ -310,6 +382,9 @@ local config = {
     -- server_registration = function(server, opts)
     --   require("lspconfig")[server].setup(opts)
     -- end,
+    -- skip_setup = {
+    --   {"pyright"}
+    -- },
 
     -- Add overrides for LSP server settings, the keys are the name of the server
     ["server-settings"] = {
@@ -330,7 +405,7 @@ local config = {
 
   -- Diagnostics configuration (for vim.diagnostics.config({}))
   diagnostics = {
-    virtual_text = true,
+    virtual_text = false,
     underline = true,
   },
 
