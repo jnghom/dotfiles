@@ -149,13 +149,14 @@ local config = {
           }
         end
       },
-      -- {
-      --   "nvim-telescope/telescope-project.nvim",
-      --   requires = 'nvim-telescope/telescope.nvim',
-      --   config = function()
-      --     require'telescope'.load_extension('project')
-      --   end
-      -- },
+      {
+        "nvim-telescope/telescope-project.nvim",
+        requires = 'nvim-telescope/telescope.nvim',
+        after = "telescope.nvim",
+        config = function()
+          require'telescope'.load_extension('project')
+        end
+      },
       {
         'kosayoda/nvim-lightbulb',
         requires = 'antoinemadec/FixCursorHold.nvim',
@@ -228,6 +229,12 @@ local config = {
       }
 
     },
+    {
+      "simrat39/symbols-outline.nvim",
+      config = function()
+        require("symbols-outline").setup()
+      end
+    },
 
     -- All other entries override the setup() call for default plugins
     ["null-ls"] = function(config)
@@ -284,6 +291,15 @@ local config = {
     packer = {
       compile_path = vim.fn.stdpath "data" .. "/packer_compiled.lua",
     },
+
+
+    -- telescope = function(config)
+    --   config.extensions = {"project"}
+    --   require'telescope'.load_extension('project')
+    --   return config
+    -- end,
+
+
 
     telescope = {
       extensions = {
