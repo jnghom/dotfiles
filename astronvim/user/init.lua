@@ -107,7 +107,18 @@ local config = {
           ]]
         end
       },
+      {
+        "glepnir/lspsaga.nvim",
+        branch = "main",
+        config = function()
+          local saga = require("lspsaga")
 
+          saga.init_lsp_saga({
+            -- -- lsp finder to find the cursor word definition and reference
+            -- vim.keymap.set("n", "gh", require("lspsaga.finder").lsp_finder, { silent = true,noremap = true })
+          })
+        end,
+      },
       {
         "ray-x/lsp_signature.nvim",
         event = "BufRead",
@@ -141,6 +152,13 @@ local config = {
       { "Vimjas/vim-python-pep8-indent" },
       { "farmergreg/vim-lastplace" },
       { "christoomey/vim-tmux-navigator" },
+      {
+        "ThePrimeagen/refactoring.nvim",
+        requires = {
+          {"nvim-lua/plenary.nvim"},
+          {"nvim-treesitter/nvim-treesitter"}
+        }
+      },
       {
         "ahmedkhalf/project.nvim",
         config = function()
@@ -247,7 +265,7 @@ local config = {
         -- null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.formatting.autopep8,
         null_ls.builtins.formatting.isort,
-        -- null_ls.builtins.code_actions.refactoring,
+        null_ls.builtins.code_actions.refactoring,
 
         null_ls.builtins.formatting.json_tool,
 
@@ -282,7 +300,7 @@ local config = {
 
     ["mason-lspconfig"] = {
       -- ensure_installed = { "sumneko_lua", "pyright" },
-      ensure_installed = { "sumneko_lua", "pylsp" },
+      ensure_installed = { "sumneko_lua", "pyright", "tsserver" },
     },
     -- use mason-tool-installer to configure DAP/Formatters/Linter installation
     ["mason-tool-installer"] = { -- overrides `require("mason-tool-installer").setup(...)`
@@ -303,7 +321,16 @@ local config = {
 
     telescope = {
       extensions = {
-        "project"
+        project = {
+          base_dirs = {
+            '~/ws',
+            -- {'~/dev/src3', max_depth = 4},
+            -- {path = '~/dev/src5', max_depth = 2},
+          },
+          hidden_files = false, -- default: false
+          -- theme = "dropdown",
+          order_by = "recent"
+        }
       }
     }
   },
@@ -325,12 +352,29 @@ local config = {
       -- first key is the mode, n == normal mode
       n = {
         -- second key is the prefix, <leader> prefixes
-        -- ["<leader>"] = {
+        ["<leader>"] = {
+          ["<leader>"] = { "<cmd>FzfLua git_files<cr>",    "fzf git_files" },
+          ["o"] = { "<cmd>Telescope oldfiles<cr>",      "Telescope oldfiles" },
+          -- ["<leader>"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
+          ["f"] = {
+            ["c"] = { "<cmd>Telescope grep_string<cr>", "grep_string" },
+            ["C"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
+            ["p"] = { "<cmd>Telescope project<cr>", "project" },
+          }
+        },
         ["]"] = {
           ["h"] = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
+          ["b"] = { "<cmd>bnext<cr>", "Next buffer" },
         },
         ["["] = {
           ["h"] = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
+          ["b"] = { "<cmd>bprev<cr>", "Prev buffer" },
+        },
+        ["g"] = {
+          ["h"] = { "<cmd>Lspsaga lsp_finder<CR>", "Lspsaga lsp_finder" },
+          ["p"] = { "<cmd>Lspsaga peek_definition<CR>", "Lspsaga peek_definition" },
+          ["r"] = { "<cmd>Telescope lsp_references<CR>", "Telescope lsp_references" },
+          -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", "FzfLua lsp_references" },
         },
         [","] = {
           [","] = { "<cmd>FzfLua builtin<cr>",      "fzf builtin" },
@@ -388,6 +432,7 @@ local config = {
     mappings = {
       n = {
         -- ["<leader>lf"] = false -- disable formatting keymap
+        ["gr"] = false
       },
     },
     -- add to the server on_attach function
