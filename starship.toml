@@ -1,0 +1,66 @@
+# example ~/.config/starship.toml
+
+add_newline = false
+
+# format = "$all"
+
+# Which is equivalent to
+format = """
+$username\
+$hostname\
+$localip\
+$directory\
+$shell\
+$sudo\
+$character"""
+
+right_format = """
+$time
+$git_branch
+$cmd_duration
+$python
+$git_status
+""""
+
+
+[directory]
+truncation_length = 6
+style = "yellow"
+repo_root_style = "yellow bold"
+
+[git_branch]
+symbol = "🌱 "
+format = "[$symbol$branch(:$remote_branch)]($style) "
+style = 'orange'
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+style = 'blue'
+
+# format = """
+# $username\
+# $hostname\
+# $localip\
+# $shlvl\
+# $singularity\
+# $kubernetes\
+# $directory\
+# $vcsh\
+# $git_branch\
+# $git_status\
+# $docker_context\
+# $python\
+# $sudo\
+# $cmd_duration\
+# $line_break\
+# $jobs\
+# $battery\
+# $time\
+# $status\
+# $container\
+# $shell\
+# $character"""
+
+# [python]
+# format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
