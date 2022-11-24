@@ -2,9 +2,9 @@ if [ $TILIX_ID ] || [ $VTE_VERSION ] ; then source /etc/profile.d/vte.sh; fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 bindkey -e
 
@@ -12,7 +12,9 @@ bindkey -e
 [ -f "$HOME/.bind-key.zsh" ] && source "$HOME/.bind-key.zsh"
 
 ### Added by Zinit's installer
-source "$HOME/.zinit/bin/zinit.zsh"
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+source "${ZINIT_HOME}/zinit.zsh"
+#source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
@@ -39,7 +41,6 @@ zinit light supercrabtree/k
 zinit ice wait'!2'
 # zinit light marzocchi/zsh-notify
 zinit ice wait'!2'
-zinit light clvv/fasd
 # zinit ice wait'!1'
 # zinit light junegunn/fzf/shell/key-bindings.zsh
 zinit snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
@@ -50,8 +51,21 @@ zinit light urbainvaes/fzf-marks
 # zinit ice wait'!1' atload"setupsolarized dircolors.256dark"
 zinit ice wait'!0'
 zinit light joel-porquet/zsh-dircolors-solarized
+
+zinit ice as"completion"
+zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
+
+
 # zinit ice wait'!1'
 # zinit light denysdovhan/spaceship-prompt
+#
+# zinit pack for pyenv
+
+# Load starship theme
+# zinit ice as"command" from"gh-r" \
+#           atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+#           atpull"%atclone" src"init.zsh"
+# zinit light starship/starship
 
 # zplug "zsh-users/zsh-history-substring-search"
 # zplug "zsh-users/zsh-syntax-highlighting"
@@ -65,7 +79,6 @@ zinit light joel-porquet/zsh-dircolors-solarized
 # zplug "mafredri/zsh-async"
 # zplug "supercrabtree/k"
 # zplug "marzocchi/zsh-notify"
-# zplug "clvv/fasd", as:command
 # zplug "junegunn/fzf", use:shell/key-bindings.zsh
 # zplug "plugins/shrink-path", from:oh-my-zsh, as:plugin
 # zplug "b4b4r07/enhancd", use:init.sh
@@ -75,7 +88,7 @@ export ENHANCD_COMMAND=c
 
 # POWERLEVEL9K_DIR_HOME_FOREGROUND=184
 # POWERLEVEL9K_TIME_FOREGROUND='184'
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 
 # setopt share_history
@@ -85,8 +98,8 @@ if [ -z "$HISTFILE" ]; then
     HISTFILE=$HOME/.zsh_history
 fi
 
-HISTSIZE=10000000
-SAVEHIST=10000000
+HISTSIZE=10000
+SAVEHIST=10000
 
 # Show history
 case $HIST_STAMPS in
@@ -144,14 +157,14 @@ gf() {
   cut -c4- | sed 's/.* -> //'
 }
 
-gb() {
-  is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
-  fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
-}
+# gb() {
+#   is_in_git_repo || return
+#   git branch -a --color=always | grep -v '/HEAD\s' | sort |
+#   fzf-down --ansi --multi --tac --preview-window right:70% \
+#     --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
+#   sed 's/^..//' | cut -d' ' -f1 |
+#   sed 's#^remotes/##'
+# }
 
 gt() {
   is_in_git_repo || return
@@ -195,18 +208,6 @@ cf() {
 
 }
 
-v() {
-    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
-    local file
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && ${EDITOR} "${file}" || return 1
-}
-
-z() {
-    [ $# -gt 0 ] && fasd_cd -d "$*" && return
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
-
 # vf - fuzzy open with vim from anywhere
 # ex: vf word1 word2 ... (even part of a file name)
 # zsh autoload function
@@ -226,7 +227,7 @@ vf() {
 vg() {
   local file
 
-  file="$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1 " +" $2}')"
+  file="$(rg --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1 " +" $2}')"
 
   if [[ -n $file ]]
   then
@@ -287,16 +288,6 @@ fshow() {
               xargs -I % sh -c 'vim fugitive://\$(git rev-parse --show-toplevel)/.git//% < /dev/tty'"
 }
 
-# ftags - search ctags
-ftags() {
-  local line
-  [ -e tags ] &&
-  line=$(
-    awk 'BEGIN { FS="\t" } !/^!/ {print toupper($4)"\t"$1"\t"$2"\t"$3}' tags |
-    cut -c1-$COLUMNS | fzf --nth=2 --tiebreak=begin
-  ) && $EDITOR $(cut -f3 <<< "$line") -c "set nocst" \
-                                      -c "silent tag $(cut -f2 <<< "$line")"
-}
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
 #   - Bypass fuzzy finder if there's only one match (--select-1)
@@ -365,11 +356,43 @@ fi
 export PIPENV_IGNORE_VIRTUALENVS=1
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [[ -f ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh ]] && source ~/.pyenv/versions/dev/bin/aws_zsh_completer.sh
 ### End of Zinit's installer chunk
+#
 
+echo zshrc pyenv $PYENV_ROOT
+if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  # eval "$(pyenv init -)"
+  # eval "$(pyenv virtualenv-init -)"
+fi
+
+
+if [ -d "$HOME/.cargo" ]; then
+  export CARGO_BIN="$HOME/.cargo/bin"
+  export PATH="$CARGO_BIN:$PATH"
+fi
+
+if type yarn &> /dev/null ; then
+  export YARN_BIN="$HOME/.yarn/bin"
+  export PATH="$YARN_BIN:$PATH"
+fi
+
+if [ -d "$HOME/usr/bin" ]; then
+  export USER_BIN="$HOME/usr/bin"
+  export PATH=$USER_BIN:$PATH
+fi
+
+export PATH=$HOME/.local/bin:$PATH
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT=/usr/local/go
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH:$GOROOT/bin
+fi
 
 if type hub &> /dev/null ; then
   eval "$(hub alias -s)"
@@ -378,6 +401,9 @@ fi
 if [ -f $HOME/.rsyncignore ]; then
   alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
 fi
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 
 export PATH=$HOME/.poetry/bin:$PATH
 
@@ -389,3 +415,31 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 # tabtab source for packages
 # uninstall by removing these lines
 # [ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
+
+export PATH=$PATH:$HOME/.pulumi/bin
+export PATH=$PATH:$HOME/usr/flutter/bin
+
+
+[[ -f /usr/local/bin/aws_completer ]] && complete -C '/usr/local/bin/aws_completer' aws
+
+if command -v nvim > /dev/null ; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+  alias vim="nvim"
+elif command -v vim > /dev/null ; then
+  export EDITOR=vim
+  export VISUAL=vim
+fi
+
+alias kssh="kitty +kitten ssh"
+
+eval "$(starship init zsh)"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+command -v zoxide > /dev/null && eval "$(zoxide init zsh)"
+
+if type lazygit &> /dev/null ; then
+  alias lg="lazygit"
+fi

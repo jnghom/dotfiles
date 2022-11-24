@@ -41,7 +41,7 @@ local config = {
     },
     g = {
       mapleader = " ", -- sets vim.g.mapleader
-      tokyonight_style = "storm"
+      tokyonight_style = "storm",
     },
   },
 
@@ -86,6 +86,7 @@ local config = {
       -- You can disable default plugins as follows:
       -- ["goolord/alpha-nvim"] = { disable = true },
       ["declancm/cinnamon.nvim"] = { disable = true },
+      ["Darazaki/indent-o-matic"] = { disable = true },
 
       -- You can also add new plugins here as well:
       -- { "andweeb/presence.nvim" },
@@ -105,33 +106,32 @@ local config = {
           hi LspReferenceText cterm=bold ctermbg=red guibg=#823838
           hi LspReferenceWrite cterm=bold ctermbg=red guibg=MediumPurple3
           ]]
-        end
+        end,
       },
       {
         "glepnir/lspsaga.nvim",
         branch = "main",
         config = function()
-          local saga = require("lspsaga")
+          local saga = require "lspsaga"
 
-          saga.init_lsp_saga({
+          saga.init_lsp_saga {
             -- -- lsp finder to find the cursor word definition and reference
             -- vim.keymap.set("n", "gh", require("lspsaga.finder").lsp_finder, { silent = true,noremap = true })
-          })
+          }
         end,
       },
       {
         "ray-x/lsp_signature.nvim",
         event = "BufRead",
-        config = function()
-          require("lsp_signature").setup()
-        end,
+        config = function() require("lsp_signature").setup() end,
       },
 
       {
-        'nvim-treesitter/nvim-treesitter-textobjects',
-        requires = {'nvim-treesitter/nvim-treesitter'},
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        requires = { "nvim-treesitter/nvim-treesitter" },
+        after = "nvim-treesitter",
         config = function()
-          require'nvim-treesitter.configs'.setup {
+          require("nvim-treesitter.configs").setup {
             textobjects = {
               select = {
                 enable = true,
@@ -147,7 +147,7 @@ local config = {
               },
             },
           }
-        end
+        end,
       },
       { "Vimjas/vim-python-pep8-indent" },
       { "farmergreg/vim-lastplace" },
@@ -155,32 +155,28 @@ local config = {
       {
         "ThePrimeagen/refactoring.nvim",
         requires = {
-          {"nvim-lua/plenary.nvim"},
-          {"nvim-treesitter/nvim-treesitter"}
-        }
+          { "nvim-lua/plenary.nvim" },
+          { "nvim-treesitter/nvim-treesitter" },
+        },
       },
       {
         "ahmedkhalf/project.nvim",
         config = function()
           require("project_nvim").setup {
-            manual_mode = true
+            manual_mode = true,
           }
-        end
+        end,
       },
       {
         "nvim-telescope/telescope-project.nvim",
-        requires = 'nvim-telescope/telescope.nvim',
+        requires = "nvim-telescope/telescope.nvim",
         after = "telescope.nvim",
-        config = function()
-          require'telescope'.load_extension('project')
-        end
+        config = function() require("telescope").load_extension "project" end,
       },
       {
-        'kosayoda/nvim-lightbulb',
-        requires = 'antoinemadec/FixCursorHold.nvim',
-        config = function()
-          require("nvim-lightbulb").setup({autocmd = {enabled = true}})
-        end
+        "kosayoda/nvim-lightbulb",
+        requires = "antoinemadec/FixCursorHold.nvim",
+        config = function() require("nvim-lightbulb").setup { autocmd = { enabled = true } } end,
       },
       -- {
       --   "glepnir/lspsaga.nvim",
@@ -221,7 +217,7 @@ local config = {
       -- },
       {
         "ibhagwan/fzf-lua",
-        requires = { 'kyazdani42/nvim-web-devicons' },
+        requires = { "kyazdani42/nvim-web-devicons" },
         -- config = function()
         --   vim.api.nvim_exec(
         --   [[
@@ -244,14 +240,20 @@ local config = {
         --   ]],
         --   true)
         -- end
-      }
-
-    },
-    {
-      "simrat39/symbols-outline.nvim",
-      config = function()
-        require("symbols-outline").setup()
-      end
+      },
+      {
+        "simrat39/symbols-outline.nvim",
+        config = function() require("symbols-outline").setup() end,
+      },
+      {
+        "pwntester/octo.nvim",
+        requires = {
+          "nvim-lua/plenary.nvim",
+          "nvim-telescope/telescope.nvim",
+          "kyazdani43/nvim-web-devicons",
+        },
+        config = function() require("octo").setup() end,
+      },
     },
 
     -- All other entries override the setup() call for default plugins
@@ -269,7 +271,7 @@ local config = {
 
         null_ls.builtins.formatting.json_tool,
 
-        null_ls.builtins.formatting.lua_format,
+        -- null_ls.builtins.formatting.lua_format,
 
         null_ls.builtins.code_actions.eslint,
         null_ls.builtins.diagnostics.eslint,
@@ -282,34 +284,44 @@ local config = {
       }
       -- set up null-ls's on_attach function
       -- config.on_attach = function(client)
-        -- NOTE: You can remove this on attach function to disable format on save
-        -- if client.resolved_capabilities.document_formatting then
-        --   vim.api.nvim_create_autocmd("BufWritePre", {
-        --     desc = "Auto format before save",
-        --     pattern = "<buffer>",
-        --     callback = vim.lsp.buf.formatting_sync,
-        --   })
-        -- end
+      -- NOTE: You can remove this on attach function to disable format on save
+      -- if client.resolved_capabilities.document_formatting then
+      --   vim.api.nvim_create_autocmd("BufWritePre", {
+      --     desc = "Auto format before save",
+      --     pattern = "<buffer>",
+      --     callback = vim.lsp.buf.formatting_sync,
+      --   })
+      -- end
       -- end
       return config -- return final config table
     end,
     treesitter = {
       ensure_installed = { "python", "bash", "javascript", "html", "css", "lua", "json" },
-      indent = {enabled = true}
+      indent = { enabled = true },
     },
 
     ["mason-lspconfig"] = {
       -- ensure_installed = { "sumneko_lua", "pyright" },
-      ensure_installed = { "sumneko_lua", "pyright", "tsserver" },
+      ensure_installed = {
+        "sumneko_lua",
+        "pyright",
+        "tsserver",
+      },
     },
     -- use mason-tool-installer to configure DAP/Formatters/Linter installation
-    ["mason-tool-installer"] = { -- overrides `require("mason-tool-installer").setup(...)`
-      ensure_installed = { "prettier", "stylua" },
+    ["mason-null-ls"] = { -- overrides `require("mason-tool-installer").setup(...)`
+      ensure_installed = {
+        "prettier",
+        "stylua",
+        "isort",
+        -- "pylint",
+        "flake8",
+        "autopep8",
+      },
     },
     packer = {
       compile_path = vim.fn.stdpath "data" .. "/packer_compiled.lua",
     },
-
 
     -- telescope = function(config)
     --   config.extensions = {"project"}
@@ -317,22 +329,20 @@ local config = {
     --   return config
     -- end,
 
-
-
     telescope = {
       extensions = {
         project = {
           base_dirs = {
-            '~/ws',
+            "~/ws",
             -- {'~/dev/src3', max_depth = 4},
             -- {path = '~/dev/src5', max_depth = 2},
           },
           hidden_files = false, -- default: false
           -- theme = "dropdown",
-          order_by = "recent"
-        }
-      }
-    }
+          order_by = "recent",
+        },
+      },
+    },
   },
 
   -- LuaSnip Options
@@ -345,6 +355,70 @@ local config = {
     },
   },
 
+  -- -- Modify which-key registration
+  -- ["which-key"] = {
+  --   -- Add bindings
+  --   register_mappings = {
+  --     -- first key is the mode, n == normal mode
+  --     n = {
+  --       -- second key is the prefix, <leader> prefixes
+  --       ["<leader>"] = {
+  --         ["<leader>"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
+  --         ["o"] = { "<cmd>Telescope oldfiles<cr>", "Telescope oldfiles" },
+  --         -- ["<leader>"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
+  --         ["f"] = {
+  --           ["c"] = { "<cmd>Telescope grep_string<cr>", "grep_string" },
+  --           ["C"] = {
+  --             "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
+  --             "grep_string word_match",
+  --           },
+  --           ["p"] = { "<cmd>Telescope project<cr>", "project" },
+  --         },
+  --       },
+  --       ["]"] = {
+  --         ["h"] = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
+  --         ["b"] = { "<cmd>bnext<cr>", "Next buffer" },
+  --       },
+  --       ["["] = {
+  --         ["h"] = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
+  --         ["b"] = { "<cmd>bprev<cr>", "Prev buffer" },
+  --       },
+  --       ["g"] = {
+  --         ["h"] = { "<cmd>Lspsaga lsp_finder<CR>", "Lspsaga lsp_finder" },
+  --         ["p"] = { "<cmd>Lspsaga peek_definition<CR>", "Lspsaga peek_definition" },
+  --         ["r"] = { "<cmd>Telescope lsp_references<CR>", "Telescope lsp_references" },
+  --         -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", "FzfLua lsp_references" },
+  --       },
+  --       [","] = {
+  --         [","] = { "<cmd>FzfLua builtin<cr>", "fzf builtin" },
+  --         ["g"] = {},
+  --         ["f"] = {
+  --           ["f"] = { "<cmd>FzfLua files<cr>", "fzf files" },
+  --           ["F"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
+  --           ["b"] = { "<cmd>FzfLua buffers<cr>", "fzf buffers" },
+  --           ["h"] = { "<cmd>FzfLua help_tags<cr>", "fzf help_tags" },
+  --           ["m"] = { "<cmd>FzfLua marks<cr>", "fzf marks" },
+  --           ["o"] = { "<cmd>FzfLua oldfiles<cr>", "fzf oldfiles" },
+  --           ["c"] = { "<cmd>FzfLua grep_cword<cr>", "fzf grep_cword" },
+  --           ["C"] = { "<cmd>FzfLua grep_cWORD<cr>", "fzf grep_cWORD" },
+  --         },
+  --         ["s"] = {
+  --           ["m"] = { "<cmd>FzfLua man_pages<cr>", "fzf man_pages" },
+  --           ["k"] = { "<cmd>FzfLua keymaps<cr>", "fzf keymaps" },
+  --           ["c"] = { "<cmd>FzfLua commands<cr>", "fzf commands" },
+  --         },
+  --         ["l"] = {
+  --           ["i"] = { "<cmd>LspInfo<cr>", "lsp info" },
+  --           ["s"] = { "<cmd>FzfLua lsp_document_symbols<cr>", "fzf lsp_document_symbols" },
+  --           ["S"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", "fzf lsp_workspace_symbols" },
+  --           ["d"] = { "<cmd>FzfLua diagnostics_document<cr>", "fzf diagnostics_document" },
+  --           ["D"] = { "<cmd>FzfLua diagnostics_workspace<cr>", "fzf diagnostics_workspace" },
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
+
   -- Modify which-key registration
   ["which-key"] = {
     -- Add bindings
@@ -353,14 +427,17 @@ local config = {
       n = {
         -- second key is the prefix, <leader> prefixes
         ["<leader>"] = {
-          ["<leader>"] = { "<cmd>FzfLua git_files<cr>",    "fzf git_files" },
-          ["o"] = { "<cmd>Telescope oldfiles<cr>",      "Telescope oldfiles" },
+          ["<leader>"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
+          ["o"] = { "<cmd>Telescope oldfiles<cr>", "Telescope oldfiles" },
           -- ["<leader>"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
           ["f"] = {
             ["c"] = { "<cmd>Telescope grep_string<cr>", "grep_string" },
-            ["C"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
+            ["C"] = {
+              "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
+              "grep_string word_match",
+            },
             ["p"] = { "<cmd>Telescope project<cr>", "project" },
-          }
+          },
         },
         ["]"] = {
           ["h"] = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
@@ -377,32 +454,15 @@ local config = {
           -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", "FzfLua lsp_references" },
         },
         [","] = {
-          [","] = { "<cmd>FzfLua builtin<cr>",      "fzf builtin" },
-          ["g"] = {
-          },
-          ["f"] = {
-            ["f"] = { "<cmd>FzfLua files<cr>",    "fzf files" },
-            ["F"] = { "<cmd>FzfLua git_files<cr>",    "fzf git_files" },
-            ["b"] = { "<cmd>FzfLua buffers<cr>",      "fzf buffers" },
-            ["h"] = { "<cmd>FzfLua help_tags<cr>",      "fzf help_tags" },
-            ["m"] = { "<cmd>FzfLua marks<cr>",      "fzf marks" },
-            ["o"] = { "<cmd>FzfLua oldfiles<cr>",      "fzf oldfiles" },
-            ["c"] = { "<cmd>FzfLua grep_cword<cr>",      "fzf grep_cword" },
-            ["C"] = { "<cmd>FzfLua grep_cWORD<cr>",      "fzf grep_cWORD" },
-          },
+          name = "FzfLua",
+          ["f"] = { desc = "find" },
           ["s"] = {
-            ["m"] = { "<cmd>FzfLua man_pages<cr>",      "fzf man_pages" },
-            ["k"] = { "<cmd>FzfLua keymaps<cr>",      "fzf keymaps" },
-            ["c"] = { "<cmd>FzfLua commands<cr>",      "fzf commands" },
+            name = "search",
           },
           ["l"] = {
-            ["i"] = { "<cmd>LspInfo<cr>",      "lsp info" },
-            ["s"] = { "<cmd>FzfLua lsp_document_symbols<cr>",      "fzf lsp_document_symbols" },
-            ["S"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>",      "fzf lsp_workspace_symbols" },
-            ["d"] = { "<cmd>FzfLua diagnostics_document<cr>",      "fzf diagnostics_document" },
-            ["D"] = { "<cmd>FzfLua diagnostics_workspace<cr>",      "fzf diagnostics_workspace" },
-          }
-        }
+            name = "lsp",
+          },
+        },
       },
     },
   },
@@ -432,7 +492,7 @@ local config = {
     mappings = {
       n = {
         -- ["<leader>lf"] = false -- disable formatting keymap
-        ["gr"] = false
+        ["gr"] = false,
       },
     },
     -- add to the server on_attach function
@@ -474,7 +534,45 @@ local config = {
     -- first key is the mode
     n = {
       -- second key is the lefthand side of the map
+      ["<leader><leader>"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
+      ["<leader>o"] = { "<cmd>Telescope oldfiles<cr>", desc = "Telescope oldfiles" },
+      ["<leader>fc"] = { "<cmd>Telescope grep_string<cr>", desc = "grep_string" },
+      ["<leader>fC"] = {
+        "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
+        desc = "grep_string word_match",
+      },
+      ["<leader>fp"] = { "<cmd>Telescope project<cr>", desc = "project" },
       ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
+      ["]h"] = { "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
+      ["]b"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
+
+      ["[h"] = { "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev Hunk" },
+      ["[b"] = { "<cmd>bprev<cr>", desc = "Prev buffer" },
+      ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>", desc = "Lspsaga lsp_finder" },
+      ["gp"] = { "<cmd>Lspsaga peek_definition<CR>", desc = "Lspsaga peek_definition" },
+      ["gr"] = { "<cmd>Telescope lsp_references<CR>", desc = "Telescope lsp_references" },
+      -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", desc = "FzfLua lsp_references" },
+
+      [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
+
+      [",ff"] = { "<cmd>FzfLua files<cr>", desc = "fzf files" },
+      [",fF"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
+      [",fb"] = { "<cmd>FzfLua buffers<cr>", desc = "fzf buffers" },
+      [",fh"] = { "<cmd>FzfLua help_tags<cr>", desc = "fzf help_tags" },
+      [",fm"] = { "<cmd>FzfLua marks<cr>", desc = "fzf marks" },
+      [",fo"] = { "<cmd>FzfLua oldfiles<cr>", desc = "fzf oldfiles" },
+      [",fc"] = { "<cmd>FzfLua grep_cword<cr>", desc = "fzf grep_cword" },
+      [",fC"] = { "<cmd>FzfLua grep_cWORD<cr>", desc = "fzf grep_cWORD" },
+
+      [",sm"] = { "<cmd>FzfLua man_pages<cr>", desc = "fzf man_pages" },
+      [",sk"] = { "<cmd>FzfLua keymaps<cr>", desc = "fzf keymaps" },
+      [",sc"] = { "<cmd>FzfLua commands<cr>", desc = "fzf commands" },
+
+      [",li"] = { "<cmd>LspInfo<cr>", desc = "lsp info" },
+      [",ls"] = { "<cmd>FzfLua lsp_document_symbols<cr>", desc = "fzf lsp_document_symbols" },
+      [",lS"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "fzf lsp_workspace_symbols" },
+      [",ld"] = { "<cmd>FzfLua diagnostics_document<cr>", desc = "fzf diagnostics_document" },
+      [",lD"] = { "<cmd>FzfLua diagnostics_workspace<cr>", desc = "fzf diagnostics_workspace" },
     },
     t = {
       -- setting a mapping to false will disable it

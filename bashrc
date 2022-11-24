@@ -146,10 +146,10 @@ command -v blsd > /dev/null && export FZF_ALT_C_COMMAND='blsd'
 command -v tree > /dev/null && export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 # fd - cd to selected directory
-fd() {
-  DIR=`find ${1:-*} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf-tmux` \
-    && cd "$DIR"
-}
+# fd() {
+#   DIR=`find ${1:-*} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf-tmux` \
+#     && cd "$DIR"
+# }
 
 # fda - including hidden directories
 fda() {
@@ -321,14 +321,14 @@ gt() {
     --preview 'git show --color=always {} | head -'$LINES
 }
 
-gh() {
-  is_in_git_repo || return
-  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
-  fzf-full --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
-    --header 'Press CTRL-S to toggle sort' \
-    --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
-  grep -o "[a-f0-9]\{7,\}"
-}
+# gh() {
+#   is_in_git_repo || return
+#   git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
+#   fzf-full --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+#     --header 'Press CTRL-S to toggle sort' \
+#     --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
+#   grep -o "[a-f0-9]\{7,\}"
+# }
 
 gr() {
   is_in_git_repo || return
@@ -353,24 +353,6 @@ cf() {
         cd -- ${file:h}
      fi
   fi
-
-}
-
-v() {
-    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
-    local file
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && ${EDITOR} "${file}" || return 1
-}
-
-z() {
-    [ $# -gt 0 ] && fasd_cd -d "$*" && return
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
-
-fif() {
-  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
 bind '"\er": redraw-current-line'
@@ -445,6 +427,10 @@ mkdir -p $HOME/.colors
 
 [ -f $HOME/.localrc ] && source $HOME/.localrc
 
+[ ! -z "$LOCAL_GIT_NAME" ] && git config --global user.name $LOCAL_GIT_NAME
+[ ! -z "$LOCAL_GIT_EMAIL" ] && git config --global user.email $LOCAL_GIT_EMAIL
+[ ! -z "$LOCAL_SSL_CRT " ] && git config --global http.sslCAInfo $LOCAL_SSL_CRT
+git config --global core.editor $EDITOR
 
 if [ -d ~/.bash_completion.d ]; then
   for file in ~/.bash_completion.d/*; do
@@ -452,9 +438,11 @@ if [ -d ~/.bash_completion.d ]; then
   done
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
 
 
 if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
@@ -463,10 +451,11 @@ if [ -x "$HOME/.pyenv/bin/pyenv" ]; then
 fi
 
 
-# if command -v pyenv 1>/dev/null 2>&1; then
-#   eval "$(pyenv init -)"
-#   eval "$(pyenv virtualenv-init -)"
-# fi
+if command -v pyenv 1>/dev/null 2>&1; then
+  echo pyenv init
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi
 
 if [ -f $HOME/.rsyncignore ]; then
   alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
@@ -506,16 +495,26 @@ if [ -d "$HOME/usr/bin" ] ; then
     export PATH="$HOME/usr/bin:$PATH"
 fi
 
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+alias vim='nvim'
 if command -v nvim > /dev/null ; then
+  echo editor nvim
   export EDITOR=nvim
   export VISUAL=nvim
   alias vim="nvim"
-  # export MANPAGER="/bin/sh -c \"col -b | nvim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
 elif command -v vim > /dev/null ; then
+  echo editor vim
   export EDITOR=vim
   export VISUAL=vim
-  # export MANPAGER="/bin/sh -c \"col -b | vim -c 'set ft=man ts=8 nomod nolist nonu noma' -\""
+fi
+
+command -v zoxide > /dev/null && eval "$(zoxide init bash)"
+
+if type lazygit &> /dev/null ; then
+  alias lg="lazygit"
 fi
 
 export PATH=$HOME/.poetry/bin:$PATH
-source ~/.bash_completion.d/alacritty
+
