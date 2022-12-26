@@ -269,6 +269,15 @@ local config = {
         },
         config = function() require("octo").setup() end,
       },
+      {
+        'phaazon/hop.nvim',
+        branch = 'v2', -- optional but strongly recommended
+        config = function()
+          -- you can configure Hop the way you like here; see :h hop-config
+          require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+        end
+      }
+
     },
 
     -- All other entries override the setup() call for default plugins
@@ -388,6 +397,7 @@ local config = {
       n = {
         -- ["<leader>lf"] = false -- disable formatting keymap
         ["gr"] = false,
+        ["<leader>h"] = false,
       },
     },
     -- override the mason server-registration function
@@ -433,6 +443,12 @@ local config = {
       ["gp"] = { "<cmd>Lspsaga peek_definition<CR>", desc = "Lspsaga peek_definition" },
       ["gr"] = { "<cmd>Telescope lsp_references<CR>", desc = "Telescope lsp_references" },
       -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", desc = "FzfLua lsp_references" },
+      -- ["<leader>w"] = {"<cmd>HopWord<cr>", desc = "HopWord"},
+      [";w"] = {"<cmd>HopWord<cr>", desc = "HopWord"},
+      [";s"] = {"<cmd>HopLineStart<cr>", desc = "HopLineStart"},
+      [";l"] = {"<cmd>HopLine<cr>", desc = "HopLine"},
+      [";1"] = {"<cmd>HopChar1<cr>", desc = "HopChar1"},
+      [";2"] = {"<cmd>HopChar2<cr>", desc = "HopChar2"},
 
       [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
 
