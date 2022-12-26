@@ -270,6 +270,9 @@ local config = {
         config = function() require("octo").setup() end,
       },
       {
+        "tpope/vim-fugitive",
+      },
+      {
         'phaazon/hop.nvim',
         branch = 'v2', -- optional but strongly recommended
         config = function()
@@ -434,6 +437,10 @@ local config = {
         desc = "grep_string word_match",
       },
       ["<leader>fp"] = { "<cmd>Telescope project<cr>", desc = "project" },
+
+      ["<leader>ga"] = { "<cmd>Git blame<cr>", desc = "git blame" },
+      ["<F6>"] = { "<cmd>Git blame<cr>", desc = "git blame" },
+
       ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
       ["]h"] = { "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
       ["[h"] = { "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev Hunk" },
@@ -449,6 +456,8 @@ local config = {
       [";l"] = {"<cmd>HopLine<cr>", desc = "HopLine"},
       [";1"] = {"<cmd>HopChar1<cr>", desc = "HopChar1"},
       [";2"] = {"<cmd>HopChar2<cr>", desc = "HopChar2"},
+
+      ["<F7>"] = {"<cmd>AerialToggle<cr>", desc = "AerialToggle"},
 
       [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
 
