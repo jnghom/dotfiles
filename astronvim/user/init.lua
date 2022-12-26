@@ -1,3 +1,18 @@
+local function get_python_path(workspace)
+  -- Use activated virtualenv.
+  print("virtualenv :", vim.env.VIRTUAL_ENV)
+  if vim.env.VIRTUAL_ENV then return path.join(vim.env.VIRTUAL_ENV, "bin", "python") end
+
+  -- Find and use virtualenv in workspace directory.
+  for _, pattern in ipairs { "*", ".*" } do
+    local match = vim.fn.glob(path.join(workspace, pattern, "pyvenv.cfg"))
+    if match ~= "" then return path.join(path.dirname(match), "bin", "python") end
+  end
+
+  -- Fallback to system Python.
+  return exepath "python3" or exepath "python" or "python"
+end
+
 local config = {
 
   -- Configure AstroNvim updates
@@ -259,28 +274,21 @@ local config = {
     -- All other entries override the setup() call for default plugins
     ["null-ls"] = function(config)
       local null_ls = require "null-ls"
-      -- Check supported formatters and linters
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
       config.sources = {
-        -- null_ls.builtins.diagnostics.pylint,
+        null_ls.builtins.diagnostics.pylint.with {
+          prefer_local = "venv/bin",
+        },
         -- null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.formatting.autopep8,
-        null_ls.builtins.formatting.isort,
-        null_ls.builtins.code_actions.refactoring,
-
-        null_ls.builtins.formatting.json_tool,
-
+        -- null_ls.builtins.formatting.autopep8,
+        -- null_ls.builtins.formatting.isort,
+        -- null_ls.builtins.code_actions.refactoring,
+        -- null_ls.builtins.formatting.json_tool,
+        -- null_ls.builtins.code_actions.eslint,
+        -- null_ls.builtins.diagnostics.eslint,
+        -- null_ls.builtins.code_actions.shellcheck,
+        -- null_ls.builtins.formatting.rufo,
+        -- null_ls.builtins.diagnostics.rubocop,
         -- null_ls.builtins.formatting.lua_format,
-
-        null_ls.builtins.code_actions.eslint,
-        null_ls.builtins.diagnostics.eslint,
-
-        null_ls.builtins.code_actions.shellcheck,
-        -- Set a formatter
-        null_ls.builtins.formatting.rufo,
-        -- Set a linter
-        null_ls.builtins.diagnostics.rubocop,
       }
       -- set up null-ls's on_attach function
       -- config.on_attach = function(client)
@@ -316,8 +324,13 @@ local config = {
         "isort",
         -- "pylint",
         "flake8",
+        "eslint_d",
         "autopep8",
+        "yamlfmt",
+        "yamllint",
+        "jq",
       },
+      automatic_setup = false,
     },
     packer = {
       compile_path = vim.fn.stdpath "data" .. "/packer_compiled.lua",
@@ -355,124 +368,6 @@ local config = {
     },
   },
 
-  -- -- Modify which-key registration
-  -- ["which-key"] = {
-  --   -- Add bindings
-  --   register_mappings = {
-  --     -- first key is the mode, n == normal mode
-  --     n = {
-  --       -- second key is the prefix, <leader> prefixes
-  --       ["<leader>"] = {
-  --         ["<leader>"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
-  --         ["o"] = { "<cmd>Telescope oldfiles<cr>", "Telescope oldfiles" },
-  --         -- ["<leader>"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
-  --         ["f"] = {
-  --           ["c"] = { "<cmd>Telescope grep_string<cr>", "grep_string" },
-  --           ["C"] = {
-  --             "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
-  --             "grep_string word_match",
-  --           },
-  --           ["p"] = { "<cmd>Telescope project<cr>", "project" },
-  --         },
-  --       },
-  --       ["]"] = {
-  --         ["h"] = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
-  --         ["b"] = { "<cmd>bnext<cr>", "Next buffer" },
-  --       },
-  --       ["["] = {
-  --         ["h"] = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
-  --         ["b"] = { "<cmd>bprev<cr>", "Prev buffer" },
-  --       },
-  --       ["g"] = {
-  --         ["h"] = { "<cmd>Lspsaga lsp_finder<CR>", "Lspsaga lsp_finder" },
-  --         ["p"] = { "<cmd>Lspsaga peek_definition<CR>", "Lspsaga peek_definition" },
-  --         ["r"] = { "<cmd>Telescope lsp_references<CR>", "Telescope lsp_references" },
-  --         -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", "FzfLua lsp_references" },
-  --       },
-  --       [","] = {
-  --         [","] = { "<cmd>FzfLua builtin<cr>", "fzf builtin" },
-  --         ["g"] = {},
-  --         ["f"] = {
-  --           ["f"] = { "<cmd>FzfLua files<cr>", "fzf files" },
-  --           ["F"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
-  --           ["b"] = { "<cmd>FzfLua buffers<cr>", "fzf buffers" },
-  --           ["h"] = { "<cmd>FzfLua help_tags<cr>", "fzf help_tags" },
-  --           ["m"] = { "<cmd>FzfLua marks<cr>", "fzf marks" },
-  --           ["o"] = { "<cmd>FzfLua oldfiles<cr>", "fzf oldfiles" },
-  --           ["c"] = { "<cmd>FzfLua grep_cword<cr>", "fzf grep_cword" },
-  --           ["C"] = { "<cmd>FzfLua grep_cWORD<cr>", "fzf grep_cWORD" },
-  --         },
-  --         ["s"] = {
-  --           ["m"] = { "<cmd>FzfLua man_pages<cr>", "fzf man_pages" },
-  --           ["k"] = { "<cmd>FzfLua keymaps<cr>", "fzf keymaps" },
-  --           ["c"] = { "<cmd>FzfLua commands<cr>", "fzf commands" },
-  --         },
-  --         ["l"] = {
-  --           ["i"] = { "<cmd>LspInfo<cr>", "lsp info" },
-  --           ["s"] = { "<cmd>FzfLua lsp_document_symbols<cr>", "fzf lsp_document_symbols" },
-  --           ["S"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", "fzf lsp_workspace_symbols" },
-  --           ["d"] = { "<cmd>FzfLua diagnostics_document<cr>", "fzf diagnostics_document" },
-  --           ["D"] = { "<cmd>FzfLua diagnostics_workspace<cr>", "fzf diagnostics_workspace" },
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
-
-  -- Modify which-key registration
-  ["which-key"] = {
-    -- Add bindings
-    register_mappings = {
-      -- first key is the mode, n == normal mode
-      n = {
-        -- second key is the prefix, <leader> prefixes
-        ["<leader>"] = {
-          ["<leader>"] = { "<cmd>FzfLua git_files<cr>", "fzf git_files" },
-          ["o"] = { "<cmd>Telescope oldfiles<cr>", "Telescope oldfiles" },
-          -- ["<leader>"] = { "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>", "grep_string word_match" },
-          ["f"] = {
-            ["c"] = { "<cmd>Telescope grep_string<cr>", "grep_string" },
-            ["C"] = {
-              "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
-              "grep_string word_match",
-            },
-            ["p"] = { "<cmd>Telescope project<cr>", "project" },
-          },
-        },
-        ["]"] = {
-          ["h"] = { "<cmd>Gitsigns next_hunk<cr>", "Next Hunk" },
-          ["b"] = { "<cmd>bnext<cr>", "Next buffer" },
-        },
-        ["["] = {
-          ["h"] = { "<cmd>Gitsigns prev_hunk<cr>", "Prev Hunk" },
-          ["b"] = { "<cmd>bprev<cr>", "Prev buffer" },
-        },
-        ["g"] = {
-          ["h"] = { "<cmd>Lspsaga lsp_finder<CR>", "Lspsaga lsp_finder" },
-          ["p"] = { "<cmd>Lspsaga peek_definition<CR>", "Lspsaga peek_definition" },
-          ["r"] = { "<cmd>Telescope lsp_references<CR>", "Telescope lsp_references" },
-          -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", "FzfLua lsp_references" },
-        },
-        [","] = {
-          name = "FzfLua",
-          ["f"] = { desc = "find" },
-          ["s"] = {
-            name = "search",
-          },
-          ["l"] = {
-            name = "lsp",
-          },
-        },
-      },
-    },
-  },
-
-  -- CMP Source Priorities
-  -- modify here the priorities of default cmp sources
-  -- higher value == higher priority
-  -- The value can also be set to a boolean for disabling default sources:
-  -- false == disabled
-  -- true == 1000
   cmp = {
     source_priority = {
       nvim_lsp = 1000,
@@ -495,32 +390,18 @@ local config = {
         ["gr"] = false,
       },
     },
-    -- add to the server on_attach function
-    -- on_attach = function(client, bufnr)
-    -- end,
-
-    -- override the lsp installer server-registration function
-    -- server_registration = function(server, opts)
-    --   require("lspconfig")[server].setup(opts)
-    -- end,
-    -- skip_setup = {
-    --   {"pyright"}
-    -- },
-
-    -- Add overrides for LSP server settings, the keys are the name of the server
+    -- override the mason server-registration function
+    server_registration = function(server, opts)
+      if server == "pyright" then
+        require("lspconfig")[server].setup {
+          -- before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
+        }
+      end
+    end,
     ["server-settings"] = {
-      -- example for addings schemas to yamlls
-      -- yamlls = {
-      --   settings = {
-      --     yaml = {
-      --       schemas = {
-      --         ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*.{yml,yaml}",
-      --         ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
-      --         ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
-      --       },
-      --     },
-      --   },
-      -- },
+      --      pyright = {
+      --       before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
+      --    },
     },
   },
 
@@ -535,6 +416,7 @@ local config = {
     n = {
       -- second key is the lefthand side of the map
       ["<leader><leader>"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
+      ["<leader>fg"] = { "<cmd>Telescope git_files<cr>", desc = "Telescope git_files" },
       ["<leader>o"] = { "<cmd>Telescope oldfiles<cr>", desc = "Telescope oldfiles" },
       ["<leader>fc"] = { "<cmd>Telescope grep_string<cr>", desc = "grep_string" },
       ["<leader>fC"] = {
@@ -544,9 +426,8 @@ local config = {
       ["<leader>fp"] = { "<cmd>Telescope project<cr>", desc = "project" },
       ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
       ["]h"] = { "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
-      ["]b"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
-
       ["[h"] = { "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev Hunk" },
+      ["]b"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
       ["[b"] = { "<cmd>bprev<cr>", desc = "Prev buffer" },
       ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>", desc = "Lspsaga lsp_finder" },
       ["gp"] = { "<cmd>Lspsaga peek_definition<CR>", desc = "Lspsaga peek_definition" },
@@ -592,19 +473,6 @@ local config = {
       pattern = "plugins.lua",
       command = "source <afile> | PackerSync",
     })
-
-    -- Set up custom filetypes
-    -- vim.filetype.add {
-    --   extension = {
-    --     foo = "fooscript",
-    --   },
-    --   filename = {
-    --     ["Foofile"] = "fooscript",
-    --   },
-    --   pattern = {
-    --     ["~/%.config/foo/.*"] = "fooscript",
-    --   },
-    -- }
   end,
 }
 
