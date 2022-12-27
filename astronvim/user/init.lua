@@ -273,30 +273,55 @@ local config = {
         "tpope/vim-fugitive",
       },
       {
-        'phaazon/hop.nvim',
-        branch = 'v2', -- optional but strongly recommended
+        "phaazon/hop.nvim",
+        branch = "v2", -- optional but strongly recommended
         config = function()
           -- you can configure Hop the way you like here; see :h hop-config
-          require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-        end
-      }
-
+          require("hop").setup { keys = "etovxqpdygfblzhckisuran" }
+        end,
+      },
+      {
+        "folke/trouble.nvim",
+        requires = "kyazdani42/nvim-web-devicons",
+        config = function() require("trouble").setup {} end,
+      },
     },
 
+    -- "--disable=import-error,no-name-in-module,logging-fstring-interpolation",
     -- All other entries override the setup() call for default plugins
     ["null-ls"] = function(config)
       local null_ls = require "null-ls"
       config.sources = {
         null_ls.builtins.diagnostics.pylint.with {
-          prefer_local = "venv/bin",
+          extra_args = {
+            "--disable="
+                .. "import-error,no-name-in-module,logging-fstring-interpolation,"
+                .. "too-few-public-methods,"
+                .. "too-many-arguments",
+          },
         },
-        -- null_ls.builtins.diagnostics.flake8,
+        -- null_ls.builtins.diagnostics.pylint.with {
+        --   prefer_local = "venv/bin",
+        -- },
+        null_ls.builtins.diagnostics.flake8.with {
+          extra_args = {
+            "--ignore=E203,E402",
+            "--max-line-length",
+            "100",
+          },
+        },
+        null_ls.builtins.diagnostics.mypy,
         -- null_ls.builtins.formatting.autopep8,
-        -- null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.code_actions.gitsigns,
+
+        null_ls.builtins.formatting.jq,
+        null_ls.builtins.formatting.stylua,
         -- null_ls.builtins.code_actions.refactoring,
         -- null_ls.builtins.formatting.json_tool,
-        -- null_ls.builtins.code_actions.eslint,
-        -- null_ls.builtins.diagnostics.eslint,
+        null_ls.builtins.code_actions.eslint,
+        null_ls.builtins.diagnostics.eslint,
         -- null_ls.builtins.code_actions.shellcheck,
         -- null_ls.builtins.formatting.rufo,
         -- null_ls.builtins.diagnostics.rubocop,
@@ -321,7 +346,6 @@ local config = {
     },
 
     ["mason-lspconfig"] = {
-      -- ensure_installed = { "sumneko_lua", "pyright" },
       ensure_installed = {
         "sumneko_lua",
         "pyright",
@@ -334,8 +358,10 @@ local config = {
         "prettier",
         "stylua",
         "isort",
-        -- "pylint",
+        "pylint",
         "flake8",
+        "black",
+        "mypy",
         "eslint_d",
         "autopep8",
         "yamlfmt",
@@ -396,6 +422,11 @@ local config = {
       -- "pyright"
     },
     -- easily add or disable built in mappings added during LSP attaching
+    formatting = {
+      format_on_save = {
+        enabled = false,
+      },
+    },
     mappings = {
       n = {
         -- ["<leader>lf"] = false -- disable formatting keymap
@@ -404,17 +435,22 @@ local config = {
       },
     },
     -- override the mason server-registration function
-    server_registration = function(server, opts)
-      if server == "pyright" then
-        require("lspconfig")[server].setup {
-          -- before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
-        }
-      end
-    end,
+    -- server_registration = function(server, opts)
+    -- end,
+    -- Add overrides for LSP server settings, the keys are the name of the server
     ["server-settings"] = {
-      --      pyright = {
-      --       before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
-      --    },
+      -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
+      -- python.venvPath, python.pythonPath
+      pyright = {
+        settings = {
+          python = {
+            analysis = {
+              autoImportCompletions = false,
+              typeCheckingMode = "off", -- or "basic", "strict"
+            },
+          },
+        },
+      },
     },
   },
 
@@ -430,7 +466,7 @@ local config = {
       -- second key is the lefthand side of the map
       ["<leader><leader>"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
       ["<leader>fg"] = { "<cmd>Telescope git_files<cr>", desc = "Telescope git_files" },
-      ["<leader>o"] = { "<cmd>Telescope oldfiles<cr>", desc = "Telescope oldfiles" },
+      -- ["<leader>o"] = { "<cmd>Telescope oldfiles<cr>", desc = "Telescope oldfiles" },
       ["<leader>fc"] = { "<cmd>Telescope grep_string<cr>", desc = "grep_string" },
       ["<leader>fC"] = {
         "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
@@ -451,13 +487,25 @@ local config = {
       ["gr"] = { "<cmd>Telescope lsp_references<CR>", desc = "Telescope lsp_references" },
       -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", desc = "FzfLua lsp_references" },
       -- ["<leader>w"] = {"<cmd>HopWord<cr>", desc = "HopWord"},
-      [";w"] = {"<cmd>HopWord<cr>", desc = "HopWord"},
-      [";s"] = {"<cmd>HopLineStart<cr>", desc = "HopLineStart"},
-      [";l"] = {"<cmd>HopLine<cr>", desc = "HopLine"},
-      [";1"] = {"<cmd>HopChar1<cr>", desc = "HopChar1"},
-      [";2"] = {"<cmd>HopChar2<cr>", desc = "HopChar2"},
+      [";w"] = { "<cmd>HopWord<cr>", desc = "HopWord" },
+      [";e"] = {
+        "<cmd>lua require'hop'.hint_words({ hint_position = require'hop.hint'.HintPosition.END })<cr>",
+        desc = "HopWord END",
+      },
+      [";s"] = { "<cmd>HopLineStart<cr>", desc = "HopLineStart" },
+      [";l"] = { "<cmd>HopLine<cr>", desc = "HopLine" },
+      [";1"] = { "<cmd>HopChar1<cr>", desc = "HopChar1" },
+      [";2"] = { "<cmd>HopChar2<cr>", desc = "HopChar2" },
 
-      ["<F7>"] = {"<cmd>AerialToggle<cr>", desc = "AerialToggle"},
+      ["<leader>xx"] = { "<cmd>TroubleToggle<cr>", desc = "TroubleToggle" },
+      ["<leader>xw"] = { "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "TroubleToggle workspace_diagnostics" },
+      ["<leader>xq"] = { "<cmd>TroubleToggle document_diagnostics<cr>", desc = "TroubleToggle document_diagnostics" },
+      -- ["xd"] = { "<cmd>TroubleToggle quickfix<cr>", desc = "TroubleToggle quickfix" },
+      -- ["xl"] = { "<cmd>TroubleToggle loclist<cr>", desc = "TroubleToggle loclist" },
+      ["<leader>xr"] = { "<cmd>Trouble lsp_references<cr>", desc = "TroubleToggle lsp_references" },
+      ["<leader>xd"] = { "<cmd>TroubleToggle lsp_definitions<cr>", desc = "TroubleToggle lsp_definitions" },
+
+      ["<F7>"] = { "<cmd>AerialToggle<cr>", desc = "AerialToggle" },
 
       [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
 
@@ -479,6 +527,7 @@ local config = {
       [",lS"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "fzf lsp_workspace_symbols" },
       [",ld"] = { "<cmd>FzfLua diagnostics_document<cr>", desc = "fzf diagnostics_document" },
       [",lD"] = { "<cmd>FzfLua diagnostics_workspace<cr>", desc = "fzf diagnostics_workspace" },
+      [",lr"] = { "<cmd>FzfLua lsp_references<cr>", desc = "fzf lsp_references" },
     },
     t = {
       -- setting a mapping to false will disable it
