@@ -13,6 +13,14 @@ local function get_python_path(workspace)
   return exepath "python3" or exepath "python" or "python"
 end
 
+function _G.get_git_path()
+    local dot_git_path = vim.fn.finddir(".git", ".;")
+    if dot_git_path == nil or dot_git_path == "" then
+      return vim.fn.getcwd()
+    end
+    return vim.fn.fnamemodify(dot_git_path, ":h")
+end
+
 local config = {
 
   -- Configure AstroNvim updates
@@ -99,19 +107,8 @@ local config = {
     -- Add plugins, the packer syntax without the "use"
     init = {
       -- You can disable default plugins as follows:
-      -- ["goolord/alpha-nvim"] = { disable = true },
       ["declancm/cinnamon.nvim"] = { disable = true },
       ["Darazaki/indent-o-matic"] = { disable = true },
-
-      -- You can also add new plugins here as well:
-      -- { "andweeb/presence.nvim" },
-      -- {
-      --   "ray-x/lsp_signature.nvim",
-      --   event = "BufRead",
-      --   config = function()
-      --     require("lsp_signature").setup()
-      --   end,
-      -- },
       {
         "folke/tokyonight.nvim",
         as = "tokyonight",
@@ -129,10 +126,7 @@ local config = {
         config = function()
           local saga = require "lspsaga"
 
-          saga.init_lsp_saga {
-            -- -- lsp finder to find the cursor word definition and reference
-            -- vim.keymap.set("n", "gh", require("lspsaga.finder").lsp_finder, { silent = true,noremap = true })
-          }
+          saga.init_lsp_saga {}
         end,
       },
       {
@@ -193,68 +187,9 @@ local config = {
         requires = "antoinemadec/FixCursorHold.nvim",
         config = function() require("nvim-lightbulb").setup { autocmd = { enabled = true } } end,
       },
-      -- {
-      --   "glepnir/lspsaga.nvim",
-      --   branch = "main",
-      --   config = function()
-      --     local saga = require("lspsaga")
-      --
-      --     -- lsp finder to find the cursor word definition and reference
-      --     vim.keymap.set("n", "gh", require("lspsaga.finder").lsp_finder, { silent = true,noremap = true })
-      --     -- or use command LspSagaFinder
-      --     -- vim.keymap.set("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true,noremap = true})
-      --
-      --     -- show hover doc
-      --     vim.keymap.set("n", "K", require("lspsaga.hover").render_hover_doc, { silent = true })
-      --     -- or use command
-      --     -- vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-      --
-      --     -- local action = require("lspsaga.action")
-      --     -- -- scroll down hover doc or scroll in definition preview
-      --     -- vim.keymap.set("n", "<C-f>", function()
-      --     --   action.smart_scroll_with_saga(1)
-      --     -- end, { silent = true })
-      --     -- -- scroll up hover doc
-      --     -- vim.keymap.set("n", "<C-b>", function()
-      --     --   action.smart_scroll_with_saga(-1)
-      --     -- end, { silent = true })
-      --
-      --     -- preview definition
-      --     vim.keymap.set("n", "gp", require("lspsaga.definition").preview_definition, { silent = true,noremap = true })
-      --     -- or use command
-      --     -- vim.keymap.set("n", "gd", "<cmd>Lspsaga preview_definition<CR>", { silent = true })
-      --
-      --     saga.init_lsp_saga({
-      --       -- your configuration
-      --       max_preview_lines = 20
-      --     })
-      --   end,
-      -- },
       {
         "ibhagwan/fzf-lua",
         requires = { "kyazdani42/nvim-web-devicons" },
-        -- config = function()
-        --   vim.api.nvim_exec(
-        --   [[
-        --   nnoremap <silent> <c-p> :FzfLua files<CR>
-        --   nnoremap <silent> ,g       :FzfLua git_files<CR>
-        --
-        --   nnoremap <silent> <space><space> :FzfLua builtin<CR>
-        --   nnoremap <silent> ,b       :FzfLua blines<CR>
-        --   nnoremap <silent> ,m       :FzfLua marks<CR>
-        --
-        --   nnoremap <silent> ,/       :FzfLua grep_project<CR>
-        --   nnoremap <silent> ,w       :FzfLua grep_cword<CR>
-        --
-        --   nnoremap <silent> ,c       :FzfLua commands<CR>
-        --
-        --   nnoremap <silent> ,j       :FzfLua jumps<CR>
-        --   nnoremap <silent> ,hf      :FzfLua oldfiles<CR>
-        --   nnoremap <silent> ,hc      :FzfLua command_history<CR>
-        --   nnoremap <silent> ,hs      :FzfLua search_history<CR>
-        --   ]],
-        --   true)
-        -- end
       },
       {
         "simrat39/symbols-outline.nvim",
@@ -285,6 +220,12 @@ local config = {
         requires = "kyazdani42/nvim-web-devicons",
         config = function() require("trouble").setup {} end,
       },
+      {
+        "gbprod/yanky.nvim",
+        config = function()
+          require("yanky").setup({})
+        end
+      }
     },
 
     -- "--disable=import-error,no-name-in-module,logging-fstring-interpolation",
@@ -300,9 +241,6 @@ local config = {
                 .. "too-many-arguments",
           },
         },
-        -- null_ls.builtins.diagnostics.pylint.with {
-        --   prefer_local = "venv/bin",
-        -- },
         null_ls.builtins.diagnostics.flake8.with {
           extra_args = {
             "--ignore=E203,E402",
@@ -374,19 +312,21 @@ local config = {
       compile_path = vim.fn.stdpath "data" .. "/packer_compiled.lua",
     },
 
-    -- telescope = function(config)
-    --   config.extensions = {"project"}
-    --   require'telescope'.load_extension('project')
-    --   return config
-    -- end,
-
     telescope = {
+      defaults = {
+        mappings = {
+          i = {
+            -- Telescope not to enter a normal-like mode when hitting escape (and instead exiting)
+            ["<esc>"] = require("telescope.actions").close,
+            -- clear the prompt on <C-u> rather than scroll the previewer
+            ["<C-u>"] = false
+          },
+        },
+      },
       extensions = {
         project = {
           base_dirs = {
             "~/ws",
-            -- {'~/dev/src3', max_depth = 4},
-            -- {path = '~/dev/src5', max_depth = 2},
           },
           hidden_files = false, -- default: false
           -- theme = "dropdown",
@@ -415,13 +355,8 @@ local config = {
     },
   },
 
-  -- Extend LSP configuration
   lsp = {
-    -- enable servers that you already have installed without lsp-installer
-    servers = {
-      -- "pyright"
-    },
-    -- easily add or disable built in mappings added during LSP attaching
+    servers = {},
     formatting = {
       format_on_save = {
         enabled = false,
@@ -430,8 +365,16 @@ local config = {
     mappings = {
       n = {
         -- ["<leader>lf"] = false -- disable formatting keymap
-        ["gr"] = false,
+        -- ["gr"] = false,
         ["<leader>h"] = false,
+        ["<leader>ld"] = {
+          "<cmd>lua require'telescope.builtin'.diagnostics{ bufnr=0 }<cr>",
+          desc = "diagnostics"
+        },
+        ["<leader>lD"] = {
+          "<cmd>lua require'telescope.builtin'.diagnostics{ root_dir=vim.fn.getcwd() }<cr>",
+          desc = "dir diagnostics"
+        },
       },
     },
     -- override the mason server-registration function
@@ -461,32 +404,59 @@ local config = {
   },
 
   mappings = {
-    -- first key is the mode
     n = {
-      -- second key is the lefthand side of the map
-      ["<leader><leader>"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
-      ["<leader>fg"] = { "<cmd>Telescope git_files<cr>", desc = "Telescope git_files" },
-      -- ["<leader>o"] = { "<cmd>Telescope oldfiles<cr>", desc = "Telescope oldfiles" },
-      ["<leader>fc"] = { "<cmd>Telescope grep_string<cr>", desc = "grep_string" },
-      ["<leader>fC"] = {
-        "<cmd>lua require'telescope.builtin'.grep_string{ word_match = '-w' }<cr>",
-        desc = "grep_string word_match",
+
+      -- Grep
+      ["<leader>,"] = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "grep in buffer" },
+      ["<leader>."] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={vim.fn.getcwd()} }<cr>", desc = "grep in dir" },
+      ["<leader>/"] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={get_git_path()} }<cr>", desc = "grep in git dir" },
+
+      ["<leader>w,"] = {
+        "<cmd>lua require'telescope.builtin'.grep_string{ word_match='-w', search_dirs={'%:p'} }<cr>",
+        desc = "word in buffer"
       },
+      ["<leader>w."] = {
+        "<cmd>lua require'telescope.builtin'.grep_string{ word_match='-w', search_dirs={vim.fn.getcwd()} }<cr>",
+        desc = "word in buffer"
+      },
+      ["<leader>w/"] = {
+        "<cmd>lua require'telescope.builtin'.grep_string{ word_match='-w', search_dirs={get_git_path()} }<cr>",
+        desc = "word in git dir",
+      },
+
+      -- file
+      ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", desc = "find_files" },
+      ["<leader>fg"] = { "<cmd>Telescope git_files<cr>", desc = "git_files" },
+      ["<leader>fo"] = { "<cmd>Telescope oldfiles<cr>", desc = "oldfiles" },
+
       ["<leader>fp"] = { "<cmd>Telescope project<cr>", desc = "project" },
+
+      ["<leader>h"] = { "<cmd>Telescope help_tags<cr>", desc = "help_tags" },
+      ["<leader>b"] = { "<cmd>Telescope builtin<cr>", desc = "builtin" },
+      ["<leader>c"] = { "<cmd>Telescope commands<cr>", desc = "command" },
+      ["<leader>C"] = { "<cmd>Telescope command_history<cr>", desc = "command_history" },
+      ["<leader>k"] = { "<cmd>Telescope keymaps<cr>", desc = "keymaps" },
+
+
 
       ["<leader>ga"] = { "<cmd>Git blame<cr>", desc = "git blame" },
       ["<F6>"] = { "<cmd>Git blame<cr>", desc = "git blame" },
 
-      ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
+      -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
+
+      -- Movement
       ["]h"] = { "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
       ["[h"] = { "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev Hunk" },
       ["]b"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
       ["[b"] = { "<cmd>bprev<cr>", desc = "Prev buffer" },
+
+      -- LSP
       ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>", desc = "Lspsaga lsp_finder" },
       ["gp"] = { "<cmd>Lspsaga peek_definition<CR>", desc = "Lspsaga peek_definition" },
-      ["gr"] = { "<cmd>Telescope lsp_references<CR>", desc = "Telescope lsp_references" },
+      -- ["gr"] = { "<cmd>Telescope lsp_references<CR>", desc = "Telescope lsp_references" },
       -- ["r"] = { "<cmd>FzfLua lsp_references<CR>", desc = "FzfLua lsp_references" },
-      -- ["<leader>w"] = {"<cmd>HopWord<cr>", desc = "HopWord"},
+
+      -- Hop
       [";w"] = { "<cmd>HopWord<cr>", desc = "HopWord" },
       [";e"] = {
         "<cmd>lua require'hop'.hint_words({ hint_position = require'hop.hint'.HintPosition.END })<cr>",
@@ -497,16 +467,15 @@ local config = {
       [";1"] = { "<cmd>HopChar1<cr>", desc = "HopChar1" },
       [";2"] = { "<cmd>HopChar2<cr>", desc = "HopChar2" },
 
+      -- Trouble
       ["<leader>xx"] = { "<cmd>TroubleToggle<cr>", desc = "TroubleToggle" },
       ["<leader>xw"] = { "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "TroubleToggle workspace_diagnostics" },
       ["<leader>xq"] = { "<cmd>TroubleToggle document_diagnostics<cr>", desc = "TroubleToggle document_diagnostics" },
-      -- ["xd"] = { "<cmd>TroubleToggle quickfix<cr>", desc = "TroubleToggle quickfix" },
-      -- ["xl"] = { "<cmd>TroubleToggle loclist<cr>", desc = "TroubleToggle loclist" },
       ["<leader>xr"] = { "<cmd>Trouble lsp_references<cr>", desc = "TroubleToggle lsp_references" },
       ["<leader>xd"] = { "<cmd>TroubleToggle lsp_definitions<cr>", desc = "TroubleToggle lsp_definitions" },
 
-      ["<F7>"] = { "<cmd>AerialToggle<cr>", desc = "AerialToggle" },
 
+      -- FzfLua
       [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
 
       [",ff"] = { "<cmd>FzfLua files<cr>", desc = "fzf files" },
