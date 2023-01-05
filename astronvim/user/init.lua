@@ -225,6 +225,14 @@ local config = {
         config = function()
           require("yanky").setup({})
         end
+      },
+      {
+        'jvgrootveld/telescope-zoxide',
+        requires = "nvim-telescope/telescope.nvim",
+        after = "telescope.nvim",
+        config = function()
+          require("telescope").load_extension('zoxide')
+        end
       }
     },
 
@@ -333,6 +341,7 @@ local config = {
           order_by = "recent",
         },
       },
+      zoxide = {}
     },
   },
 
@@ -389,7 +398,7 @@ local config = {
           python = {
             analysis = {
               autoImportCompletions = false,
-              typeCheckingMode = "off", -- or "basic", "strict"
+              typeCheckingMode = "basic", -- or "basic", "strict", "off"
             },
           },
         },
@@ -408,8 +417,10 @@ local config = {
 
       -- Grep
       ["<leader>,"] = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "grep in buffer" },
-      ["<leader>."] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={vim.fn.getcwd()} }<cr>", desc = "grep in dir" },
-      ["<leader>/"] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={get_git_path()} }<cr>", desc = "grep in git dir" },
+      -- ["<leader>."] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={vim.fn.getcwd()} }<cr>", desc = "grep in dir" },
+      -- ["<leader>/"] = { "<cmd>lua require'telescope.builtin'.live_grep{ search_dirs={get_git_path()} }<cr>", desc = "grep in git dir" },
+      ["<leader>."] = { "<cmd>lua require'telescope.builtin'.live_grep{ cwd=vim.fn.getcwd() }<cr>", desc = "grep in dir" },
+      ["<leader>/"] = { "<cmd>lua require'telescope.builtin'.live_grep{ cwd=get_git_path() }<cr>", desc = "grep in git dir" },
 
       ["<leader>w,"] = {
         "<cmd>lua require'telescope.builtin'.grep_string{ word_match='-w', search_dirs={'%:p'} }<cr>",
@@ -429,14 +440,24 @@ local config = {
       ["<leader>fg"] = { "<cmd>Telescope git_files<cr>", desc = "git_files" },
       ["<leader>fo"] = { "<cmd>Telescope oldfiles<cr>", desc = "oldfiles" },
 
+      -- project
       ["<leader>fp"] = { "<cmd>Telescope project<cr>", desc = "project" },
 
+      -- vim
       ["<leader>h"] = { "<cmd>Telescope help_tags<cr>", desc = "help_tags" },
-      ["<leader>b"] = { "<cmd>Telescope builtin<cr>", desc = "builtin" },
       ["<leader>c"] = { "<cmd>Telescope commands<cr>", desc = "command" },
       ["<leader>C"] = { "<cmd>Telescope command_history<cr>", desc = "command_history" },
       ["<leader>k"] = { "<cmd>Telescope keymaps<cr>", desc = "keymaps" },
+      ["<leader>m"] = { "<cmd>Telescope marks<cr>", desc = "marks" },
+      ["<leader>vo"] = { "<cmd>Telescope vim_options<cr>", desc = "vim options" },
+      ["<leader>vr"] = { "<cmd>Telescope registers<cr>", desc = "registers" },
+      ["<leader>vh"] = { "<cmd>Telescope highlights<cr>", desc = "highlights" },
+      ["<leader>va"] = { "<cmd>Telescope autocommands<cr>", desc = "autocommands" },
+      ["<leader>vc"] = { "<cmd>Telescope colorscheme<cr>", desc = "autocommands" },
 
+      -- control
+      ["<leader>r"] = { "<cmd>Telescope resume<cr>", desc = "resume" },
+      ["<leader>b"] = { "<cmd>Telescope builtin<cr>", desc = "builtin" },
 
 
       ["<leader>ga"] = { "<cmd>Git blame<cr>", desc = "git blame" },
@@ -474,29 +495,33 @@ local config = {
       ["<leader>xr"] = { "<cmd>Trouble lsp_references<cr>", desc = "TroubleToggle lsp_references" },
       ["<leader>xd"] = { "<cmd>TroubleToggle lsp_definitions<cr>", desc = "TroubleToggle lsp_definitions" },
 
+      -- UI
+      [",ta"] = { "<cmd>AerialToggle<cr>", desc = "AerialToggle" },
+      [",tt"] = { "<cmd>Neotree toggle<cr>", desc = "Neotree toggle" },
+
 
       -- FzfLua
-      [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
-
-      [",ff"] = { "<cmd>FzfLua files<cr>", desc = "fzf files" },
-      [",fF"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
-      [",fb"] = { "<cmd>FzfLua buffers<cr>", desc = "fzf buffers" },
-      [",fh"] = { "<cmd>FzfLua help_tags<cr>", desc = "fzf help_tags" },
-      [",fm"] = { "<cmd>FzfLua marks<cr>", desc = "fzf marks" },
-      [",fo"] = { "<cmd>FzfLua oldfiles<cr>", desc = "fzf oldfiles" },
-      [",fc"] = { "<cmd>FzfLua grep_cword<cr>", desc = "fzf grep_cword" },
-      [",fC"] = { "<cmd>FzfLua grep_cWORD<cr>", desc = "fzf grep_cWORD" },
-
-      [",sm"] = { "<cmd>FzfLua man_pages<cr>", desc = "fzf man_pages" },
-      [",sk"] = { "<cmd>FzfLua keymaps<cr>", desc = "fzf keymaps" },
-      [",sc"] = { "<cmd>FzfLua commands<cr>", desc = "fzf commands" },
-
-      [",li"] = { "<cmd>LspInfo<cr>", desc = "lsp info" },
-      [",ls"] = { "<cmd>FzfLua lsp_document_symbols<cr>", desc = "fzf lsp_document_symbols" },
-      [",lS"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "fzf lsp_workspace_symbols" },
-      [",ld"] = { "<cmd>FzfLua diagnostics_document<cr>", desc = "fzf diagnostics_document" },
-      [",lD"] = { "<cmd>FzfLua diagnostics_workspace<cr>", desc = "fzf diagnostics_workspace" },
-      [",lr"] = { "<cmd>FzfLua lsp_references<cr>", desc = "fzf lsp_references" },
+      -- [",,"] = { "<cmd>FzfLua builtin<cr>", desc = "fzf builtin" },
+      --
+      -- [",ff"] = { "<cmd>FzfLua files<cr>", desc = "fzf files" },
+      -- [",fF"] = { "<cmd>FzfLua git_files<cr>", desc = "fzf git_files" },
+      -- [",fb"] = { "<cmd>FzfLua buffers<cr>", desc = "fzf buffers" },
+      -- [",fh"] = { "<cmd>FzfLua help_tags<cr>", desc = "fzf help_tags" },
+      -- [",fm"] = { "<cmd>FzfLua marks<cr>", desc = "fzf marks" },
+      -- [",fo"] = { "<cmd>FzfLua oldfiles<cr>", desc = "fzf oldfiles" },
+      -- [",fc"] = { "<cmd>FzfLua grep_cword<cr>", desc = "fzf grep_cword" },
+      -- [",fC"] = { "<cmd>FzfLua grep_cWORD<cr>", desc = "fzf grep_cWORD" },
+      --
+      -- [",sm"] = { "<cmd>FzfLua man_pages<cr>", desc = "fzf man_pages" },
+      -- [",sk"] = { "<cmd>FzfLua keymaps<cr>", desc = "fzf keymaps" },
+      -- [",sc"] = { "<cmd>FzfLua commands<cr>", desc = "fzf commands" },
+      --
+      -- [",li"] = { "<cmd>LspInfo<cr>", desc = "lsp info" },
+      -- [",ls"] = { "<cmd>FzfLua lsp_document_symbols<cr>", desc = "fzf lsp_document_symbols" },
+      -- [",lS"] = { "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "fzf lsp_workspace_symbols" },
+      -- [",ld"] = { "<cmd>FzfLua diagnostics_document<cr>", desc = "fzf diagnostics_document" },
+      -- [",lD"] = { "<cmd>FzfLua diagnostics_workspace<cr>", desc = "fzf diagnostics_workspace" },
+      -- [",lr"] = { "<cmd>FzfLua lsp_references<cr>", desc = "fzf lsp_references" },
     },
     t = {
       -- setting a mapping to false will disable it
