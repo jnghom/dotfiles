@@ -26,7 +26,7 @@ local config = {
   -- Configure AstroNvim updates
   updater = {
     remote = "origin", -- remote to use
-    channel = "nightly", -- "stable" or "nightly"
+    channel = "stable", -- "stable" or "nightly"
     version = "latest", -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
     branch = "main", -- branch name (NIGHTLY ONLY)
     commit = nil, -- commit hash (NIGHTLY ONLY)
@@ -124,9 +124,7 @@ local config = {
         "glepnir/lspsaga.nvim",
         branch = "main",
         config = function()
-          local saga = require "lspsaga"
-
-          saga.init_lsp_saga {}
+          require('lspsaga').setup({})
         end,
       },
       {
