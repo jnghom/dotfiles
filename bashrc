@@ -458,7 +458,7 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 
 if [ -f $HOME/.rsyncignore ]; then
-  alias rsynci="rsync --exclude-from $HOME/.rsyncignore"
+  alias rsync="rsync --exclude-from $HOME/.rsyncignore"
 fi
 
 
