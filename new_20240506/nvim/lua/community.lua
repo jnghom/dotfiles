@@ -14,6 +14,8 @@ return {
   { import = "astrocommunity.git.octo-nvim" },
   { import = "astrocommunity.git.neogit" },
 
+  { import = "astrocommunity.diagnostics.trouble-nvim" },
+
   { import = "astrocommunity.pack.bash" },
   { import = "astrocommunity.pack.html-css" },
   { import = "astrocommunity.pack.json" },
