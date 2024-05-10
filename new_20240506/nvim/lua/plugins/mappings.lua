@@ -8,6 +8,11 @@ return {
         n = {
           ["]h"] = { "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk"},
           ["[h"] = { "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev Hunk"},
+
+          -- ["<Leader>."] = { "<cmd>Telescope grep_string<cr>", desc = "grep_string"},
+          ["<Leader>f."] = { "<cmd>lua require('telescope.builtin').grep_string({word_match = '-w'})<cr>", desc = "grep_string"},
+          ["<Leader>f;"] = { "<cmd>lua require('telescope.builtin').resume()<cr>", desc = "resume"},
+
           -- second key is the lefthand side of the map
           -- mappings seen under group name "Buffer"
           ["<Leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
