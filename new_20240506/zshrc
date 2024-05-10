@@ -59,6 +59,7 @@ if [ -d  "$HOME/.asdf" ]; then
   fpath=(${ASDF_DIR}/completions $fpath)
   # . "$HOME/.asdf/completions/asdf.bash"
 fi
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 
 # eval "$(starship init zsh)"
 
@@ -91,4 +92,9 @@ alias kssh="kitty +kitten ssh"
 display_colors ()
 {
   for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
+}
+
+newenv ()
+{
+  echo "export VIRTUAL_ENV=$PWD/.venv\nexport PATH=$PWD/.venv/bin:\$PATH" > .envrc
 }
