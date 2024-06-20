@@ -1,0 +1,1 @@
+/home/mok/.asdf/completions/asdf.fish
