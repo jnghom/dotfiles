@@ -98,3 +98,5 @@ newenv ()
 {
   echo "export VIRTUAL_ENV=$PWD/.venv\nexport PATH=$PWD/.venv/bin:\$PATH" > .envrc
 }
+
+source ${HOME}/.fzf-utils.zsh

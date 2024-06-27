@@ -218,6 +218,7 @@ zdharma-continuum/fast-syntax-highlighting kind:defer
 
 
 unixorn/fzf-zsh-plugin
+wfxr/forgit
 
 
 ### Final Plugins
