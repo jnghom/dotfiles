@@ -99,4 +99,29 @@ newenv ()
   echo "export VIRTUAL_ENV=$PWD/.venv\nexport PATH=$PWD/.venv/bin:\$PATH" > .envrc
 }
 
+deploy ()
+{
+  SERVER=apple
+  SRC_ROOT=$HOME/ws
+  DEST_ROOT=./ws
+
+  SRCS=(
+    "sec/ProductivityAI/productivity-ai"
+    "sec/ProductivityAI/play-llm"
+  )
+  SRC_DIRS=()
+  DEST_DIRS=()
+
+  for src_path in "${SRCS[@]}"
+  do
+      SRC_DIRS+=($SRC_ROOT/$src_path)
+      DEST_DIRS+=($DEST_ROOT/$src_path)
+  done
+
+  for ((i = 1; i <= $#SRC_DIRS; i++)); do
+    ssh $SERVER mkdir -p ${DEST_DIRS[$i]}
+    rsynci -rave ssh ${SRC_DIRS[$i]}/ $SERVER:${DEST_DIRS[$i]}
+  done
+}
+
 source ${HOME}/.fzf-utils.zsh
