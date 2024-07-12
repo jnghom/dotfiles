@@ -1,0 +1,438 @@
+{
+    "workbench.colorCustomizations": {},
+    "editor.renderWhitespace": "none",
+    "editor.largeFileOptimizations": false,
+    "editor.lineHeight": 20,
+    "editor.lineNumbers": "relative",
+    "editor.smoothScrolling": true,
+    "editor.fontWeight": 400,
+    "editor.minimap.enabled": false,
+    "editor.tabCompletion": "on",
+    "editor.fontLigatures": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.accessibilitySupport": "off",
+    "editor.suggestSelection": "first",
+    "files.watcherExclude": {
+        "**/.venv/*/**": true,
+        "**/venv/*/**": true
+    },
+    "search.exclude": {
+        "**/.idea": true,
+        "**/.venv": true,
+        "**/venv": true,
+        "**/__pycache__": true,
+        "**/node_modules": true
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.next": true,
+        "**/.venv": true,
+        "**/venv": true,
+        "**/node_modules": true
+    },
+    "vim.easymotion": true,
+    "vim.hlsearch": true,
+    "vim.leader": " ",
+    "vim.useCtrlKeys": false,
+    "vim.handleKeys": {
+        "<C-d>": true,
+        "<C-k>": false,
+        "<C-]>": true,
+        "<C-f>": false,
+        "<C-u>": true,
+        "<C-t>": true
+    },
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "d"
+            ],
+            "commands": [
+                "editor.action.revealDefinition"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p",
+                "d"
+            ],
+            "commands": [
+                "editor.action.peekDefinition"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p",
+                "i"
+            ],
+            "commands": [
+                "editor.action.peekImplmentation"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "r"
+            ],
+            "commands": [
+                "references-view.find"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p",
+                "r"
+            ],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "c"
+            ],
+            "commands": [
+                "workbench.action.editor.nextChange"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "c"
+            ],
+            "commands": [
+                "workbench.action.editor.previousChange"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "d"
+            ],
+            "commands": [
+                "editor.action.marker.next"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "d"
+            ],
+            "commands": [
+                "editor.action.marker.prev"
+            ]
+        },
+        {
+            "before": [
+                ":"
+            ],
+            "commands": [
+                "workbench.action.showCommands"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "m"
+            ],
+            "commands": [
+                "bookmarks.toggle"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "b"
+            ],
+            "commands": [
+                "bookmarks.list"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "p",
+                "d"
+            ],
+            "commands": [
+                "editor.action.peekDefinition"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "h"
+            ],
+            "commands": [
+                "editor.action.showDefinitionPreviewHover"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "i"
+            ],
+            "commands": [
+                "editor.action.goToImplementation"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "p",
+                "i"
+            ],
+            "commands": [
+                "editor.action.peekImplementation"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "q"
+            ],
+            "commands": [
+                "editor.action.quickFix"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "r"
+            ],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "t"
+            ],
+            "commands": [
+                "editor.action.goToTypeDefinition"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "p",
+                "t"
+            ],
+            "commands": [
+                "editor.action.peekTypeDefinition"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "p",
+                "r"
+            ],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "p",
+                "c"
+            ],
+            "commands": [
+                "editor.showCallHierarchy"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "1"
+            ],
+            "commands": [
+                ":tabfirst"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "9"
+            ],
+            "commands": [
+                ":tablast"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "2"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex2"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "3"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex3"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "4"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex4"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "5"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex5"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "6"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex6"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "7"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex7"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "8"
+            ],
+            "commands": [
+                "workbench.action.openEditorAtIndex8"
+            ]
+        },
+        {
+            "before": [
+                "K"
+            ],
+            "commands": [
+                "editor.action.showDefinitionPreviewHover"
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [ ">" ],
+            "commands": [
+                "editor.action.indentLines"
+            ]
+        },
+        {
+            "before": [ "<" ],
+            "commands": [
+                "editor.action.outdentLines"
+            ]
+        },
+    ],
+    "python.analysis.logLevel": "Warning",
+    "python.languageServer": "Pylance",
+    "workbench.editor.showTabs": "multiple",
+    "explorer.confirmDragAndDrop": false,
+    "settingsSync.ignoredSettings": [
+        "editor.fontSize",
+        "terminal.integrated.fontSize",
+        "editor.fontFamily",
+        "terminal.integrated.fontFamily"
+    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "git.autofetch": true,
+    "debug.console.fontFamily": "Sarasa Mono K",
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.suggestSelection": "first",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "editor.fontFamily": "Sarasa Mono K",
+    "editor.cursorStyle": "line",
+    "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
+    "editor.wordWrap": "off",
+    "terminal.integrated.lineHeight": 1.2,
+    "redhat.telemetry.enabled": false,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "editor.semanticHighlighting.enabled": true,
+    "[json]": {
+        "editor.tabSize": 2
+    },
+    "dart.openDevTools": "flutter",
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/local/bin/nvim",
+    "vscode-neovim.neovimExecutablePaths.win32": "C:/tools/Neovim/bin/nvim",
+    "security.workspace.trust.untrustedFiles": "open",
+    "Lua.telemetry.enable": false,
+    "vs-kubernetes": {
+        "vscode-kubernetes.minikube-path.windows": "C:\\Users\\mokuf\\.vs-kubernetes\\tools\\minikube\\windows-amd64\\minikube.exe",
+        "vscode-kubernetes.helm-path.windows": "C:\\Users\\mokuf\\.vs-kubernetes\\tools\\helm\\windows-amd64\\helm.exe"
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "python.analysis.autoImportCompletions": true,
+    "git.openRepositoryInParentFolders": "never",
+    "chat.editor.fontSize": 12,
+    "window.zoomLevel": 1,
+    "remote.SSH.remotePlatform": {
+        "ubuntu": "linux"
+    },
+    "remote.autoForwardPortsSource": "hybrid",
+    "go.toolsManagement.autoUpdate": true,
+    "editor.fontSize": 15,
+    "catppuccin.italicKeywords": false,
+    "catppuccin.italicComments": false,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "python.analysis.diagnosticSeverityOverrides": {
+
+    },
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.pytestParameters": true,
+    "python.analysis.inlayHints.variableTypes": true,
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    "workbench.colorTheme": "Darcula Pycharm with Dark GUI",
+    "terminal.integrated.fontFamily": "Sarasa Mono K",
+    "workbench.tree.indent": 12
+}
