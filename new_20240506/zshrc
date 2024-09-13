@@ -130,3 +130,11 @@ source ${HOME}/.fzf-utils.zsh
 
 source <(kubectl completion zsh)
 source <(helm completion zsh)
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
+eval "$(atuin init zsh)"
+

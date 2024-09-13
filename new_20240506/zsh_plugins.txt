@@ -231,3 +231,5 @@ wfxr/forgit
 # These popular core plugins should be loaded at the end
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-history-substring-search
+
+atuinsh/atuin
